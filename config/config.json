@@ -1,0 +1,19 @@
+{
+  "development": {
+    "use_env_variables": "SUPA_DATABASE_URL"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "#808080",
+    "database": "classmate_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "#808080",
+    "database": "classmate_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
