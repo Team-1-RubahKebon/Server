@@ -1,0 +1,182 @@
+[
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 1,
+    "AssignmentId": 1
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 2,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 3,
+    "AssignmentId": 2
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 4,
+    "AssignmentId": 2
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 5,
+    "AssignmentId": 3
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 6,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 7,
+    "AssignmentId": 2
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 8,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 9,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 10,
+    "AssignmentId": 6
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 11,
+    "AssignmentId": 6
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 12,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 13,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 14,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 15,
+    "AssignmentId": 1
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 16,
+    "AssignmentId": 6
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 17,
+    "AssignmentId": 1
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 18,
+    "AssignmentId": 6
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 19,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 20,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 21,
+    "AssignmentId": 2
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 22,
+    "AssignmentId": 1
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 23,
+    "AssignmentId": 5
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 24,
+    "AssignmentId": 6
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 25,
+    "AssignmentId": 3
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 26,
+    "AssignmentId": 2
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 27,
+    "AssignmentId": 1
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 28,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 29,
+    "AssignmentId": 4
+  },
+  {
+    "score": 0,
+    "status": "Assigned",
+    "StudentId": 30,
+    "AssignmentId": 2
+  }
+]

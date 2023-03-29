@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Assignment Lon Tuckett",
+    "subject": "physics",
+    "deadline": "2022-10-12",
+    "TeacherId": 1
+  },
+  {
+    "name": "Assignment Gifford Phittiplace",
+    "subject": "physics",
+    "deadline": "2023-03-29",
+    "TeacherId": 1
+  },
+  {
+    "name": "Assignment Judi Backs",
+    "subject": "biology",
+    "deadline": "2022-06-29",
+    "TeacherId": 4
+  },
+  {
+    "name": "Assignment Bellina Krysiak",
+    "subject": "chemistry",
+    "deadline": "2022-07-29",
+    "TeacherId": 4
+  },
+  {
+    "name": "Assignment Gabe Spinello",
+    "subject": "physics",
+    "deadline": "2022-11-05",
+    "TeacherId": 4
+  },
+  {
+    "name": "Assignment Esdras Dugood",
+    "subject": "chemistry",
+    "deadline": "2022-04-27",
+    "TeacherId": 6
+  }
+]
