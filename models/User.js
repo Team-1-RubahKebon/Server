@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     enum: ["Student", "Teacher"],
   },
   address: String,
+  profilePicture: String,
 });
 
 // userSchema.pre("save", (next) => {

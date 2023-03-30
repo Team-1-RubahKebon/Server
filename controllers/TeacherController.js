@@ -1,7 +1,6 @@
 const Errors = require("../helpers/Errors");
 
 module.exports = class TeacherController {
-  static async home() {}
   static async login(req, res, next) {
     try {
       let { email, password } = req.body;
@@ -32,4 +31,6 @@ module.exports = class TeacherController {
       next(err);
     }
   }
+
+  static async;
 };
