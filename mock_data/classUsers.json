@@ -1,0 +1,152 @@
+[
+  {
+    "ClassId": 1,
+    "UserId": 1,
+    "scoreAvg": 67
+  },
+  {
+    "ClassId": 2,
+    "UserId": 2,
+    "scoreAvg": 62
+  },
+  {
+    "ClassId": 2,
+    "UserId": 3,
+    "scoreAvg": 82
+  },
+  {
+    "ClassId": 2,
+    "UserId": 4,
+    "scoreAvg": 74
+  },
+  {
+    "ClassId": 1,
+    "UserId": 5,
+    "scoreAvg": 61
+  },
+  {
+    "ClassId": 5,
+    "UserId": 6,
+    "scoreAvg": 78
+  },
+  {
+    "ClassId": 6,
+    "UserId": 7,
+    "scoreAvg": 65
+  },
+  {
+    "ClassId": 4,
+    "UserId": 8,
+    "scoreAvg": 61
+  },
+  {
+    "ClassId": 4,
+    "UserId": 9,
+    "scoreAvg": 90
+  },
+  {
+    "ClassId": 5,
+    "UserId": 10,
+    "scoreAvg": 75
+  },
+  {
+    "ClassId": 6,
+    "UserId": 11,
+    "scoreAvg": 92
+  },
+  {
+    "ClassId": 1,
+    "UserId": 12,
+    "scoreAvg": 72
+  },
+  {
+    "ClassId": 6,
+    "UserId": 13,
+    "scoreAvg": 85
+  },
+  {
+    "ClassId": 5,
+    "UserId": 14,
+    "scoreAvg": 62
+  },
+  {
+    "ClassId": 6,
+    "UserId": 15,
+    "scoreAvg": 99
+  },
+  {
+    "ClassId": 1,
+    "UserId": 16,
+    "scoreAvg": 89
+  },
+  {
+    "ClassId": 5,
+    "UserId": 17,
+    "scoreAvg": 67
+  },
+  {
+    "ClassId": 5,
+    "UserId": 18,
+    "scoreAvg": 94
+  },
+  {
+    "ClassId": 6,
+    "UserId": 19,
+    "scoreAvg": 85
+  },
+  {
+    "ClassId": 3,
+    "UserId": 20,
+    "scoreAvg": 67
+  },
+  {
+    "ClassId": 4,
+    "UserId": 21,
+    "scoreAvg": 78
+  },
+  {
+    "ClassId": 3,
+    "UserId": 22,
+    "scoreAvg": 85
+  },
+  {
+    "ClassId": 4,
+    "UserId": 23,
+    "scoreAvg": 69
+  },
+  {
+    "ClassId": 3,
+    "UserId": 24,
+    "scoreAvg": 91
+  },
+  {
+    "ClassId": 3,
+    "UserId": 25,
+    "scoreAvg": 87
+  },
+  {
+    "ClassId": 2,
+    "UserId": 26,
+    "scoreAvg": 66
+  },
+  {
+    "ClassId": 3,
+    "UserId": 27,
+    "scoreAvg": 74
+  },
+  {
+    "ClassId": 4,
+    "UserId": 28,
+    "scoreAvg": 90
+  },
+  {
+    "ClassId": 4,
+    "UserId": 29,
+    "scoreAvg": 64
+  },
+  {
+    "ClassId": 4,
+    "UserId": 30,
+    "scoreAvg": 76
+  }
+]

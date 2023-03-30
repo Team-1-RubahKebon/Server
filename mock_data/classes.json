@@ -1,26 +1,158 @@
 [
   {
     "name": "xii-1",
-    "TeacherId": 6
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   },
   {
     "name": "xii-2",
-    "TeacherId": 5
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   },
   {
     "name": "xii-3",
-    "TeacherId": 1
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   },
   {
     "name": "xii-4",
-    "TeacherId": 4
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   },
   {
     "name": "xii-5",
-    "TeacherId": 3
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   },
   {
     "name": "xii-6",
-    "TeacherId": 2
+    "classAvg": 0,
+    "schedule": [
+      {
+        "day": "monday",
+        "subjects": ""
+      },
+      {
+        "day": "tuesday",
+        "subjects": ""
+      },
+      {
+        "day": "wednesday",
+        "subjects": ""
+      },
+      {
+        "day": "thursday",
+        "subjects": ""
+      },
+      {
+        "day": "friday",
+        "subjects": ""
+      }
+    ]
   }
 ]

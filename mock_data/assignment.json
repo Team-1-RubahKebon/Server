@@ -1,38 +1,42 @@
 [
   {
-    "name": "Assignment Lon Tuckett",
-    "subject": "physics",
-    "deadline": "2022-10-12",
-    "TeacherId": 1
+    "name": "ballred0",
+    "QuestionId": 1,
+    "ClassId": 3,
+    "subject": "Chemistry",
+    "deadline": "2023-02-04",
+    "assignmentDate": "2022-10-26"
   },
   {
-    "name": "Assignment Gifford Phittiplace",
-    "subject": "physics",
-    "deadline": "2023-03-29",
-    "TeacherId": 1
+    "name": "rhagston1",
+    "QuestionId": 1,
+    "ClassId": 5,
+    "subject": "Math",
+    "deadline": "2023-02-09",
+    "assignmentDate": "2022-09-17"
   },
   {
-    "name": "Assignment Judi Backs",
-    "subject": "biology",
-    "deadline": "2022-06-29",
-    "TeacherId": 4
+    "name": "ljedraszczyk2",
+    "QuestionId": 1,
+    "ClassId": 3,
+    "subject": "Physics",
+    "deadline": "2023-01-07",
+    "assignmentDate": "2023-02-09"
   },
   {
-    "name": "Assignment Bellina Krysiak",
-    "subject": "chemistry",
-    "deadline": "2022-07-29",
-    "TeacherId": 4
+    "name": "bbrayson3",
+    "QuestionId": 1,
+    "ClassId": 1,
+    "subject": "Math",
+    "deadline": "2022-09-25",
+    "assignmentDate": "2022-09-13"
   },
   {
-    "name": "Assignment Gabe Spinello",
-    "subject": "physics",
-    "deadline": "2022-11-05",
-    "TeacherId": 4
-  },
-  {
-    "name": "Assignment Esdras Dugood",
-    "subject": "chemistry",
-    "deadline": "2022-04-27",
-    "TeacherId": 6
+    "name": "rshobrook4",
+    "QuestionId": 5,
+    "ClassId": 4,
+    "subject": "Biology",
+    "deadline": "2023-03-13",
+    "assignmentDate": "2023-01-22"
   }
 ]

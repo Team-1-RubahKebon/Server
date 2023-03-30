@@ -1,0 +1,182 @@
+[
+  {
+    "AssignmentId": 4,
+    "StudentId": 1,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 2,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 2,
+    "StudentId": 3,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/dddddd/000000"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 4,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/cc0000/ffffff"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 5,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 6,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 7,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/dddddd/000000"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 8,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/cc0000/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 9,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 2,
+    "StudentId": 10,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 3,
+    "StudentId": 11,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 12,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/cc0000/ffffff"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 13,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 14,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/dddddd/000000"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 15,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 2,
+    "StudentId": 16,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 17,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 18,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 19,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/dddddd/000000"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 20,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/cc0000/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 21,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 3,
+    "StudentId": 22,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/5fa2dd/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 23,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/dddddd/000000"
+  },
+  {
+    "AssignmentId": 3,
+    "StudentId": 24,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 1,
+    "StudentId": 25,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 26,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 2,
+    "StudentId": 27,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 5,
+    "StudentId": 28,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 4,
+    "StudentId": 29,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  },
+  {
+    "AssignmentId": 2,
+    "StudentId": 30,
+    "Status": "Assigned",
+    "imgUrl": "http://dummyimage.com/x.png/ff4444/ffffff"
+  }
+]
