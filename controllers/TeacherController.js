@@ -34,6 +34,8 @@ module.exports = class TeacherController {
       next(err);
     }
   }
+
+  static async;
   static async register(req, res, next) {
     try {
       let { email, name, password, address } = req.body;

@@ -89,4 +89,11 @@ module.exports = class StudentController {
       next(err);
     }
   }
+
+  static async getStudents(req, res, next) {
+    try {
+    } catch (err) {
+      next(err);
+    }
+  }
 };
