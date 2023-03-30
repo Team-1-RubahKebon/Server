@@ -6,6 +6,8 @@ const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const { CallSettings } = require("google-gax");
 const Class = require("../models/Class");
+const Assignment = require("../models/Assignment");
+const { ObjectId } = require("mongodb");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -100,5 +102,32 @@ module.exports = class TeacherController {
       next(err);
     }
   }
-  //test
+
+  static async getClass(req, res, next) {
+    try {
+      let allClass = await Class.find({});
+
+      allClass = await Promise.all(
+        allClass.map(async (el) => {
+          let Assignments = await Assignment.find({ ClassId: el._id });
+          el.Assignments = Assignments;
+          return el;
+        })
+      );
+
+      res.status(200).json(allClass);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getAssignments(req, res, next) {
+    try {
+      let assignments = await Assignment.find();
+
+      res.status(200).json(assignments);
+    } catch (err) {
+      next(err);
+    }
+  }
 };

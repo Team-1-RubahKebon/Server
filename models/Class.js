@@ -17,7 +17,7 @@ const classSchema = new mongoose.Schema({
       },
     },
   ],
-  assignment: [{ type: mongoose.Schema.ClassId, ref: "Assignment" }],
+  Assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Assignment" }],
 });
 
 const Class = mongoose.model("Class", classSchema);
