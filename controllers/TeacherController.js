@@ -4,6 +4,8 @@ const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
+const { CallSettings } = require("google-gax");
+const Class = require("../models/Class");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -92,15 +94,8 @@ module.exports = class TeacherController {
       const user = result.toObject();
       // const created = result._doc && result._doc.__v === 0;
 
-      const access_token = createToken({id: user.id })
-      res.status(200).json({access_token})
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async getAssignments(req, res, next) {
-    try {
+      const access_token = createToken({ id: user.id });
+      res.status(200).json({ access_token });
     } catch (err) {
       next(err);
     }
