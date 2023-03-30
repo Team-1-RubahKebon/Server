@@ -1,4 +1,7 @@
 const Errors = require("../helpers/Errors");
+const User = require("../models/User");
+const Hash = require("../helpers/Hash");
+const Token = require("../helpers/Token");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -33,4 +36,39 @@ module.exports = class TeacherController {
   }
 
   static async;
+  static async register(req, res, next) {
+    try {
+      let { email, name, password, address } = req.body;
+
+      if (!email || !name || !password) {
+        throw new Errors(400, "required fields must be filled");
+      }
+
+      password = Hash.create(password);
+
+      let user = new User({
+        email,
+        name,
+        password,
+        address,
+        role: "Teacher",
+      });
+
+      let registeringUser = await user.save();
+
+      let access_token = Token.create({ id: registeringUser._id });
+
+      res.status(201).json({ access_token, name: registeringUser.name });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async googleLogin(req, res, next) {
+    try {
+      //isi google login
+    } catch (err) {
+      next(err);
+    }
+  }
 };
