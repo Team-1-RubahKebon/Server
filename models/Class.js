@@ -13,6 +13,7 @@ const classSchema = new mongoose.Schema({
       },
       subjects: {
         type: String,
+        enum: ["Math", "Chemistry", "Physics", "Biology"],
       },
     },
   ],

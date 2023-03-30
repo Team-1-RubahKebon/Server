@@ -27,9 +27,9 @@ module.exports = class TeacherController {
         throw new Errors(401, "Wrong Email/Password");
       }
 
-      // let access_token = Token.create({ id: user._id });
+      let access_token = Token.create({ id: user._id });
 
-      res.status(200).json(user);
+      res.status(200).json({ access_token, name: user.name });
     } catch (err) {
       next(err);
     }
@@ -66,6 +66,13 @@ module.exports = class TeacherController {
   static async googleLogin(req, res, next) {
     try {
       //isi google login
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getAssignments(req, res, next) {
+    try {
     } catch (err) {
       next(err);
     }
