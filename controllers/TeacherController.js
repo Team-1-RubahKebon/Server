@@ -2,6 +2,8 @@ const Errors = require("../helpers/Errors");
 const User = require("../models/User");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
+const { OAuth2Client } = require("google-auth-library");
+const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -27,9 +29,9 @@ module.exports = class TeacherController {
         throw new Errors(401, "Wrong Email/Password");
       }
 
-      // let access_token = Token.create({ id: user._id });
+      let access_token = Token.create({ id: user._id });
 
-      res.status(200).json(user);
+      res.status(200).json({ access_token, name: user.name });
     } catch (err) {
       next(err);
     }
@@ -65,7 +67,33 @@ module.exports = class TeacherController {
 
   static async googleLogin(req, res, next) {
     try {
-      //isi google login
+      const { token_google } = req.headers;
+      const client = new OAuth2Client(credential.client_id);
+      const ticket = await client.verifyIdToken({
+        idToken: token_google,
+        audience: credential.client_id, // Specify the CLIENT_ID of the app that accesses the backend
+        // Or, if multiple clients access the backend:
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+      });
+      const payload = ticket.getPayload();
+      const filter = { email: payload.email };
+      const update = {
+        $setOnInsert: {
+          username: payload.name,
+          email: payload.email,
+          password: "googlePassword",
+          role: "Teacher",
+        },
+      };
+
+      const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+      const result = await User.findOneAndUpdate(filter, update, options);
+      const user = result.toObject();
+      // const created = result._doc && result._doc.__v === 0;
+
+      const access_token = createToken({id: user.id })
+      res.status(200).json({access_token})
     } catch (err) {
       next(err);
     }
