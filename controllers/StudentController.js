@@ -118,7 +118,12 @@ module.exports = class StudentController {
     try {
       let users = await User.find({ role: "Student" });
 
-      res.status(200).json(users);
+      let newUsers =  users.map(el=>{
+        delete el._doc.password
+        return el
+      })
+
+      res.status(200).json(newUsers);
     } catch (err) {
       next(err);
     }
