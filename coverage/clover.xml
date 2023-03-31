@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1680276159206" clover="3.2.0">
-  <project timestamp="1680276159206" name="All files">
-    <metrics statements="268" coveredstatements="118" conditionals="54" coveredconditionals="4" methods="28" coveredmethods="2" elements="350" coveredelements="124" complexity="0" loc="268" ncloc="268" packages="7" files="17" classes="17"/>
+<coverage generated="1680278340517" clover="3.2.0">
+  <project timestamp="1680278340517" name="All files">
+    <metrics statements="275" coveredstatements="134" conditionals="54" coveredconditionals="4" methods="29" coveredmethods="6" elements="358" coveredelements="144" complexity="0" loc="275" ncloc="275" packages="7" files="17" classes="17"/>
     <package name="Server">
       <metrics statements="14" coveredstatements="14" conditionals="2" coveredconditionals="2" methods="0" coveredmethods="0"/>
       <file name="app.js" path="C:\Users\ASUS\Documents\gardenia-fox\PHASE-3\WEEK-3\Final-Project\Server\app.js">
@@ -36,9 +36,9 @@
       </file>
     </package>
     <package name="Server.controllers">
-      <metrics statements="169" coveredstatements="34" conditionals="46" coveredconditionals="0" methods="18" coveredmethods="1"/>
+      <metrics statements="175" coveredstatements="49" conditionals="46" coveredconditionals="0" methods="19" coveredmethods="5"/>
       <file name="StudentController.js" path="C:\Users\ASUS\Documents\gardenia-fox\PHASE-3\WEEK-3\Final-Project\Server\controllers\StudentController.js">
-        <metrics statements="71" coveredstatements="17" conditionals="15" coveredconditionals="0" methods="9" coveredmethods="1"/>
+        <metrics statements="77" coveredstatements="32" conditionals="15" coveredconditionals="0" methods="10" coveredmethods="5"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -91,25 +91,31 @@
         <line num="112" count="0" type="stmt"/>
         <line num="113" count="0" type="stmt"/>
         <line num="115" count="0" type="stmt"/>
-        <line num="120" count="0" type="stmt"/>
-        <line num="121" count="0" type="stmt"/>
-        <line num="127" count="0" type="stmt"/>
-        <line num="128" count="0" type="stmt"/>
-        <line num="129" count="0" type="stmt"/>
-        <line num="132" count="0" type="stmt"/>
+        <line num="120" count="1" type="stmt"/>
+        <line num="121" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="128" count="32" type="stmt"/>
+        <line num="129" count="32" type="stmt"/>
+        <line num="132" count="1" type="stmt"/>
         <line num="134" count="0" type="stmt"/>
-        <line num="155" count="0" type="stmt"/>
+        <line num="139" count="1" type="stmt"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="141" count="1" type="stmt"/>
+        <line num="142" count="1" type="stmt"/>
+        <line num="144" count="1" type="stmt"/>
+        <line num="146" count="0" type="stmt"/>
+        <line num="151" count="1" type="stmt"/>
+        <line num="152" count="1" type="stmt"/>
+        <line num="153" count="1" type="stmt"/>
+        <line num="154" count="1" type="stmt"/>
         <line num="156" count="0" type="stmt"/>
-        <line num="157" count="0" type="stmt"/>
-        <line num="158" count="0" type="stmt"/>
-        <line num="160" count="0" type="stmt"/>
+        <line num="161" count="1" type="stmt"/>
+        <line num="162" count="1" type="stmt"/>
+        <line num="163" count="1" type="stmt"/>
+        <line num="164" count="1" type="stmt"/>
         <line num="165" count="1" type="stmt"/>
         <line num="166" count="1" type="stmt"/>
-        <line num="167" count="1" type="stmt"/>
-        <line num="168" count="1" type="stmt"/>
-        <line num="169" count="1" type="stmt"/>
-        <line num="170" count="1" type="stmt"/>
-        <line num="172" count="0" type="stmt"/>
+        <line num="168" count="0" type="stmt"/>
       </file>
       <file name="TeacherController.js" path="C:\Users\ASUS\Documents\gardenia-fox\PHASE-3\WEEK-3\Final-Project\Server\controllers\TeacherController.js">
         <metrics statements="90" coveredstatements="12" conditionals="31" coveredconditionals="0" methods="8" coveredmethods="0"/>
@@ -300,7 +306,7 @@
       </file>
     </package>
     <package name="Server.routers">
-      <metrics statements="31" coveredstatements="31" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="32" coveredstatements="32" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="index.js" path="C:\Users\ASUS\Documents\gardenia-fox\PHASE-3\WEEK-3\Final-Project\Server\routers\index.js">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -313,7 +319,7 @@
         <line num="11" count="1" type="stmt"/>
       </file>
       <file name="student.js" path="C:\Users\ASUS\Documents\gardenia-fox\PHASE-3\WEEK-3\Final-Project\Server\routers\student.js">
-        <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -322,6 +328,7 @@
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="1" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
         <line num="16" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>

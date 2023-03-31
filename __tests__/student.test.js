@@ -64,7 +64,7 @@ describe("GET /students/assignments", () => {
 
 
 
-        test.only('should get assignments by id and return status 200', async () => {
+        test('should get assignments by id and return status 200', async () => {
 
 
             const response = await request(app).get("/students/assignments/64269093860b241f551672f4")
@@ -84,22 +84,19 @@ describe("GET /students/assignments", () => {
         });
 
 
-        test.skip('should get student by id and return status 200', async () => {
+        test('should get student by id and return status 200', async () => {
 
-            const response = await request(app).get("/students/5")
-            // console.log(response.body)
+            const response = await request(app).get("/students/64259587118dc84bb0073ea2")
+            console.log(response.body, "<<<<<<<<<<<<<<<<<<<<<<<<<<<< ini ")
             expect(response.status).toBe(200)
             expect(response.body).toBeInstanceOf(Object)
-            expect(response.body).toHaveProperty("id", expect.any(Number))
-            expect(response.body).toHaveProperty("title", expect.any(String))
-            expect(response.body).toHaveProperty("synopsis", expect.any(String))
-            expect(response.body).toHaveProperty("trailerUrl", expect.any(String))
-            expect(response.body).toHaveProperty("rating", expect.any(Number))
-            expect(response.body).toHaveProperty("genreId", expect.any(Number))
-            expect(response.body).toHaveProperty("authorId", expect.any(Number))
-            expect(response.body).toHaveProperty("status", expect.any(String))
-            expect(response.body).toHaveProperty("createdAt", expect.any(String))
-            expect(response.body).toHaveProperty("updatedAt", expect.any(String))
+            expect(response.body).toHaveProperty("_id", expect.any(String))
+            expect(response.body).toHaveProperty("name", expect.any(String))
+            expect(response.body).toHaveProperty("email", expect.any(String))
+            expect(response.body).toHaveProperty("address", expect.any(String))
+            expect(response.body).toHaveProperty("__v", expect.any(Number))
+            expect(response.body).toHaveProperty("role", expect.any(String))
+            expect(response.body).toHaveProperty("Class", expect.any(String))
 
         });
     })
