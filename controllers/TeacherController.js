@@ -4,10 +4,11 @@ const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
-const { CallSettings } = require("google-gax");
 const Class = require("../models/Class");
 const Assignment = require("../models/Assignment");
 const { ObjectId } = require("mongodb");
+const { default: mongoose } = require("mongoose");
+const Question = require("../models/Question");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -127,6 +128,55 @@ module.exports = class TeacherController {
 
       res.status(200).json(assignments);
     } catch (err) {
+      next(err);
+    }
+  }
+
+  static async createAssignment(req, res, next) {
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+      let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
+        req.body;
+
+      if (
+        !questionForm ||
+        !questionForm.questions ||
+        questionForm.questions.length < 15
+      ) {
+        throw new Errors(
+          400,
+          "Must include 15 questions when creating assignment"
+        );
+      }
+
+      if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
+        throw new Errors(400, "All assignment details must be filled");
+      }
+
+      let { questions } = questionForm;
+
+      let questionCreated = await Question.create({ questions });
+
+      let assignmentCreated = await Assignment.create({
+        name,
+        ClassId,
+        QuestionId: questionCreated._id,
+        subject,
+        deadline,
+        assignmentDate,
+      });
+
+      assignmentCreated.Question = questionCreated;
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).json(assignmentCreated);
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.log(err);
       next(err);
     }
   }
