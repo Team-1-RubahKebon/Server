@@ -6,6 +6,7 @@ const Token = require("../helpers/Token");
 const User = require("../models/User");
 const { OAuth2Client } = require('google-auth-library');
 const Assignment = require("../models/Assignment");
+const Class = require("../models/Class");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -136,15 +137,11 @@ module.exports = class StudentController {
 
   static async getStudentById(req, res, next) {
     try {
-      let user = await User.find({ _id: req.params.id });
-
-
-      let newUser = user.map(el => {
-        delete el._doc.password
-        return el
-      })
-
-      res.status(200).json(newUser);
+      let user = await User.findOne({_id: req.params.id });
+      console.log(user)
+      delete user._doc.password
+      
+      res.status(200).json(user);
     } catch (err) {
       next(err);
     }
@@ -152,6 +149,7 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
+      console.log('masuk sini bos <<<<<<<<<<<<<<')
       let assignments = await Assignment.find();
       res.status(200).json(assignments);
     } catch (err) {
@@ -159,21 +157,6 @@ module.exports = class StudentController {
     }
   }
 
-  static async getAssignment(req, res, next) {
-    try {
-      let _id = req.params.id;
-
-      let assignmentById = await Assignment.findOne({ _id });
-
-      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
-
-      let assignment = { ...assignmentById._doc, Class: assignedClass };
-
-      res.status(200).json(assignment);
-    } catch (err) {
-      next(err);
-    }
-  }
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
