@@ -180,4 +180,20 @@ module.exports = class TeacherController {
       next(err);
     }
   }
+
+  static async createClass(req, res, next) {
+    try {
+      let { name, schedule } = req.body;
+
+      if (!name || !schedule) {
+        throw new Errors(400, "All class details must be filled");
+      }
+
+      await Class.create({ name, classAvg: 0, schedule });
+
+      res.status(200).json({ message: "Class has been successfully added" });
+    } catch (err) {
+      next(err);
+    }
+  }
 };
