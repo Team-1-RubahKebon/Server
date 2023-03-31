@@ -4,11 +4,12 @@ const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
+const { OAuth2Client } = require('google-auth-library');
 
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() {}
+  static async home() { }
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
@@ -84,7 +85,30 @@ module.exports = class StudentController {
 
   static async googleLogin(req, res, next) {
     try {
-      //isi google login
+      const client = new OAuth2Client(process.env.GOOGLE_SECRET);
+
+      const ticket = await client.verifyIdToken({
+        idToken: req.headers.token_google,
+        audience: process.env.GOOGLE_SECRET,
+      });
+      const payload = ticket.getPayload();
+
+      const [user] = await User.findOrCreate({
+        where: { email: payload.email },
+        defaults: {
+          username: payload.name,
+          email: payload.email,
+          password: 'bebas',
+          role: 'student'
+        },
+        hooks: false
+      });
+      const payloadController = {
+        id: user.id
+      }
+
+      const access_token = createToken(payloadController)
+      res.status(200).json({ access_token, user })
     } catch (err) {
       next(err);
     }
