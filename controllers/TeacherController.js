@@ -103,7 +103,7 @@ module.exports = class TeacherController {
     }
   }
 
-  static async getClass(req, res, next) {
+  static async getClasses(req, res, next) {
     try {
       let allClass = await Class.find({})
         .populate("Assignments")
@@ -210,6 +210,20 @@ module.exports = class TeacherController {
       await Class.create({ name, classAvg: 0, schedule });
 
       res.status(200).json({ message: "Class has been successfully added" });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getClass(req, res, next) {
+    try {
+      let classId = req.params.id;
+      let singleClass = await Class.findById(classId)
+        .populate("Assignments")
+        .populate("Teacher")
+        .populate("Students");
+
+      res.status(200).json(singleClass);
     } catch (err) {
       next(err);
     }
