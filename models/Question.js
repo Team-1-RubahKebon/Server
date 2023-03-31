@@ -11,7 +11,7 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      type: {
+      answerType: {
         type: String,
         enum: ["pg", "essay"],
       },

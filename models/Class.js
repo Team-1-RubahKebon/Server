@@ -13,10 +13,11 @@ const classSchema = new mongoose.Schema({
       },
       subjects: {
         type: String,
+        enum: ["Math", "Chemistry", "Physics", "Biology"],
       },
     },
   ],
-  assignment: [{ type: mongoose.Schema.ClassId, ref: "Assignment" }],
+  Assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Assignment" }],
 });
 
 const Class = mongoose.model("Class", classSchema);

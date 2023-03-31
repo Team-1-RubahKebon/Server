@@ -4,8 +4,11 @@ const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
-const { CallSettings } = require("google-gax");
 const Class = require("../models/Class");
+const Assignment = require("../models/Assignment");
+const { ObjectId } = require("mongodb");
+const { default: mongoose } = require("mongoose");
+const Question = require("../models/Question");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -94,8 +97,8 @@ module.exports = class TeacherController {
       const user = result.toObject();
       // const created = result._doc && result._doc.__v === 0;
 
-      const access_token = createToken({id: user.id })
-      res.status(200).json({access_token})
+      const access_token = createToken({ id: user.id });
+      res.status(200).json({ access_token });
     } catch (err) {
       next(err);
     }
@@ -103,17 +106,110 @@ module.exports = class TeacherController {
 
   static async getClass(req, res, next) {
     try {
-      let allClass = await Class.find({}).populate({
-        path: 'assignment',
-        populate: {
-          path: 'ClassId',
-          select: 'name',
-        },
-      });
+      let allClass = await Class.find({}).populate("Assignments");
+
+      // allClass = await Promise.all(
+      //   allClass.map(async (el) => {
+      //     let Assignments = await Assignment.find({ ClassId: el._id });
+      //     el.Assignments = Assignments;
+      //     return el;
+      //   })
+      // );
+
       res.status(200).json(allClass);
     } catch (err) {
       next(err);
     }
   }
-  //test
+
+  static async getAssignments(req, res, next) {
+    try {
+      let assignments = await Assignment.find();
+
+      res.status(200).json(assignments);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getAssignment(req, res, next) {
+    try {
+      let _id = req.params.id;
+
+      let assignmentById = await Assignment.findOne({ _id });
+
+      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
+
+      let assignment = { ...assignmentById._doc, Class: assignedClass };
+
+      res.status(200).json(assignment);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async createAssignment(req, res, next) {
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+      let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
+        req.body;
+
+      if (
+        !questionForm ||
+        !questionForm.questions ||
+        questionForm.questions.length < 15
+      ) {
+        throw new Errors(
+          400,
+          "Must include 15 questions when creating assignment"
+        );
+      }
+
+      if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
+        throw new Errors(400, "All assignment details must be filled");
+      }
+
+      let { questions } = questionForm;
+
+      let questionCreated = await Question.create({ questions });
+
+      let assignmentCreated = await Assignment.create({
+        name,
+        ClassId,
+        QuestionId: questionCreated._id,
+        subject,
+        deadline,
+        assignmentDate,
+      });
+
+      //cek kelasnya dulu terus update one kelasnya biar nanti gampang populate
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).json(assignmentCreated);
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.log(err);
+      next(err);
+    }
+  }
+
+  static async createClass(req, res, next) {
+    try {
+      let { name, schedule } = req.body;
+
+      if (!name || !schedule) {
+        throw new Errors(400, "All class details must be filled");
+      }
+
+      await Class.create({ name, classAvg: 0, schedule });
+
+      res.status(200).json({ message: "Class has been successfully added" });
+    } catch (err) {
+      next(err);
+    }
+  }
 };
