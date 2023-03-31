@@ -15,12 +15,12 @@ async function seeding() {
 
     let objAssignments = assignments.map((el) => el._id);
 
-    let updateClass = await Class.updateOne(
-      {
-        _id: new ObjectId("642690626946f9457e8bd91e"),
-      },
-      { $set: { Assignments: objAssignments } }
-    );
+    // let updateClass = await Class.updateOne(
+    //   {
+    //     _id: new ObjectId("642690626946f9457e8bd91e"),
+    //   },
+    //   { $set: { Assignments: objAssignments } }
+    // );
 
     console.log(updateClass);
   } catch (err) {

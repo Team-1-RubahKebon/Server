@@ -11,5 +11,8 @@ studentsRouter.post(
   StudentController.recognizing
 );
 studentsRouter.get("/", StudentController.getStudents);
+studentsRouter.get("/:id", StudentController.getStudentById);
+studentsRouter.get("/assignments", StudentController.getAssignments);
+studentsRouter.get("/assignments/:id", StudentController.getAssignment);
 
 module.exports = studentsRouter;

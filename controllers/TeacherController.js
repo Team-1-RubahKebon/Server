@@ -6,7 +6,6 @@ const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Class = require("../models/Class");
 const Assignment = require("../models/Assignment");
-const { ObjectId } = require("mongodb");
 const { default: mongoose } = require("mongoose");
 const Question = require("../models/Question");
 
