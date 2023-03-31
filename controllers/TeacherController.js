@@ -105,7 +105,10 @@ module.exports = class TeacherController {
 
   static async getClass(req, res, next) {
     try {
-      let allClass = await Class.find({}).populate("Assignments");
+      let allClass = await Class.find({})
+        .populate("Assignments")
+        .populate("Teacher")
+        .populate("Students");
 
       // allClass = await Promise.all(
       //   allClass.map(async (el) => {
