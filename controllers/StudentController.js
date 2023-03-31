@@ -85,11 +85,11 @@ module.exports = class StudentController {
 
   static async googleLogin(req, res, next) {
     try {
-      const client = new OAuth2Client(process.env.GOOGLE_SECRET);
+      const client = new OAuth2Client(credential.client_id);
 
       const ticket = await client.verifyIdToken({
         idToken: req.headers.token_google,
-        audience: process.env.GOOGLE_SECRET,
+        audience: credential.client_id,
       });
       const payload = ticket.getPayload();
 
@@ -117,6 +117,7 @@ module.exports = class StudentController {
   static async getStudents(req, res, next) {
     try {
       let users = await User.find({ role: "Student" });
+
 
       let newUsers =  users.map(el=>{
         delete el._doc.password
