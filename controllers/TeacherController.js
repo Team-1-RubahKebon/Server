@@ -132,6 +132,22 @@ module.exports = class TeacherController {
     }
   }
 
+  static async getAssignment(req, res, next) {
+    try {
+      let _id = req.params.id;
+
+      let assignmentById = await Assignment.findOne({ _id });
+
+      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
+
+      let assignment = { ...assignmentById._doc, Class: assignedClass };
+
+      res.status(200).json(assignment);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async createAssignment(req, res, next) {
     const session = await mongoose.startSession();
     try {
