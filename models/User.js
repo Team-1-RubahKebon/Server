@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -16,10 +17,6 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ["Student", "Teacher"],
-  },
-  ClassId: {
-    type: String,
-    required: true,
   },
   Class: {
     type: mongoose.Schema.Types.ObjectId,

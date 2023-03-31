@@ -26,6 +26,125 @@ afterAll(async () => {
     await Assignment.deleteMany({ assignments });
 })
 
+describe("POST /students/register", () => {
+    describe("SUCCESS CASE", () => {
+
+        test('should create new student and return status 201', async () => {
+
+            const body = {
+                email: 'eren@mail.com',
+                password: '123456',
+                name: 'eren',
+                Class: '6426f6c99381fcb4116592f9',
+                address: 'Namek',
+
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(201)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("access_token", expect.any(String))
+            expect(response.body).toHaveProperty("name", expect.any(String))
+
+        });
+    })
+
+    describe("FAIL CASE", () => {
+
+        test.only('should fail to create customer because email is registered and return status 400', async () => {
+
+            const body = {
+                email: 'eren@mail.com',
+                password: '123456'
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "required fields must be filled")
+
+        });
+        test('should fail to create customer because email is null and return status 400', async () => {
+
+            const body = {
+                // email: 'eren@mail.com',
+                password: '123456'
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "required fields must be filled")
+
+        });
+
+        test('should fail to create customer because password is null and return status 400', async () => {
+
+            const body = {
+                email: 'luke@mail.com',
+                // password: '123456'
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "required fields must be filled")
+
+        });
+
+        test('should fail to create customer because of wrong email format and return status 400', async () => {
+
+            const body = {
+                email: 'brand@mail',
+                password: '123456'
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "This should be an email")
+
+        });
+
+        test('should fail to create customer because email is empty and return status 400', async () => {
+
+            const body = {
+                email: '',
+                password: '123456'
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "Email cannot be empty")
+
+        });
+
+        test('should fail to create customer because password is empty and return status 400', async () => {
+
+            const body = {
+                email: 'jack@mail.com',
+                password: ''
+            }
+
+            const response = await request(app).post("/students/register").send(body)
+
+            expect(response.status).toBe(400)
+            expect(response.body).toBeInstanceOf(Object)
+            expect(response.body).toHaveProperty("message", "Password cannot be empty")
+
+        });
+    })
+
+
+})
+
 
 describe("GET /students/assignments", () => {
     describe("SUCCESS CASE", () => {
@@ -67,7 +186,7 @@ describe("GET /students/assignments", () => {
         test('should get assignments by id and return status 200', async () => {
 
 
-            const response = await request(app).get("/students/assignments/64269093860b241f551672f4")
+            const response = await request(app).get("/students/assignments/642707212f3ca070247c2fab")
 
             expect(response.status).toBe(200)
             expect(response.body).toBeInstanceOf(Object)
@@ -87,7 +206,6 @@ describe("GET /students/assignments", () => {
         test('should get student by id and return status 200', async () => {
 
             const response = await request(app).get("/students/64259587118dc84bb0073ea2")
-            console.log(response.body, "<<<<<<<<<<<<<<<<<<<<<<<<<<<< ini ")
             expect(response.status).toBe(200)
             expect(response.body).toBeInstanceOf(Object)
             expect(response.body).toHaveProperty("_id", expect.any(String))
@@ -106,7 +224,7 @@ describe("GET /students/assignments", () => {
     //     test.skip('should fail to create movies because of data not found return status 404', async () => {
 
 
-    //         const response = await (await request(app).get("/customers/movies/33"))
+    //         const response = await (await request(app).get("/students/movies/33"))
     //         console.log(response.body, '<<<<<<<<<<<<<<<<<< ini res.body')
     //         expect(response.status).toBe(404)
     //         expect(response.body).toBeInstanceOf(Object)
@@ -115,3 +233,5 @@ describe("GET /students/assignments", () => {
     //     });
     // })
 })
+
+
