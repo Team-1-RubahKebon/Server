@@ -138,13 +138,15 @@ module.exports = class TeacherController {
     try {
       let _id = req.params.id;
 
-      let assignmentById = await Assignment.findOne({ _id });
+      let assignmentById = await Assignment.findOne({ _id }).populate(
+        "ClassId"
+      );
 
-      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
+      // let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
 
-      let assignment = { ...assignmentById._doc, Class: assignedClass };
+      // let assignment = { ...assignmentById._doc, Class: assignedClass };
 
-      res.status(200).json(assignment);
+      res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
     }
@@ -224,6 +226,16 @@ module.exports = class TeacherController {
         .populate("Students");
 
       res.status(200).json(singleClass);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async destroyAssignment(req, res, next) {
+    try {
+      let id = req.params.id;
+      await Assignment.findByIdAndDelete(id);
+      res.status(200).json("Assigment has been successfully deleted");
     } catch (err) {
       next(err);
     }
