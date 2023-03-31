@@ -5,6 +5,8 @@ const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
 const { OAuth2Client } = require('google-auth-library');
+const Assignment = require("../models/Assignment");
+const Class = require("../models/Class");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -86,7 +88,6 @@ module.exports = class StudentController {
   static async googleLogin(req, res, next) {
     try {
       const client = new OAuth2Client(credential.client_id);
-
       const ticket = await client.verifyIdToken({
         idToken: req.headers.token_google,
         audience: credential.client_id,
@@ -116,10 +117,22 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
-      let users = await User.find({ role: "Student" });
+      let users = await User.find({ role: "Student" , class: req.user.classId});
       res.status(200).json(users);
     } catch (err) {
       next(err);
     }
   }
+
+  static async getAssignments(req, res, next) {
+    try {
+      let assignments = await Assignment.find();
+
+      res.status(200).json(assignments);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
 };
