@@ -133,7 +133,7 @@ module.exports = class StudentController {
 
   static async getStudentById(req, res, next) {
     try {
-      let user = await User.findOne({ _id: req.params.id });
+      let user = await User.findOne({ _id: req.params.id }).populate("Class");
       console.log(user);
       delete user._doc.password;
 
