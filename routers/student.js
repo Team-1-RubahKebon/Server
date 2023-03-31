@@ -10,6 +10,6 @@ studentsRouter.post(
   upload.single("file"),
   StudentController.recognizing
 );
-studentsRouter.get("/all", StudentController.getStudents);
+studentsRouter.get("/", StudentController.getStudents);
 
 module.exports = studentsRouter;
