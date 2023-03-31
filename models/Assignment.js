@@ -6,7 +6,8 @@ const assignmentSchema = new mongoose.Schema({
     required: true,
   },
   QuestionId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Question",
     required: true,
   },
   ClassId: {

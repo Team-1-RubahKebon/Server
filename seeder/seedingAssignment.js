@@ -1,7 +1,6 @@
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 require("../connection");
-
 let assignments = require("../mock_data/assignment.json");
 
 async function seeding() {

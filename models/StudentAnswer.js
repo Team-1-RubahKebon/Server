@@ -1,16 +1,19 @@
 const mongoose = require("mongoose");
 
 const studentAnswerSchema = new mongoose.Schema({
-  AssignmentId: {
-    type: String,
+  Assignment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Assignment",
     required: true,
   },
-  StudentId: {
-    type: String,
+  Student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   status: {
     type: String,
+    enum: ["Assigned", "Returned", "Missing"],
     required: true,
   },
   imgUrl: String,
@@ -19,12 +22,10 @@ const studentAnswerSchema = new mongoose.Schema({
     {
       rowNumber: {
         type: Number,
-        required: true,
       },
       answer: String,
       answerType: {
         enum: ["pg", "essay"],
-        required: true,
       },
       isWrong: Boolean,
     },

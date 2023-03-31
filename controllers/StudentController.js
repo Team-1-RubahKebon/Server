@@ -4,13 +4,13 @@ const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
-const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() { }
+  static async home() {}
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
@@ -23,6 +23,7 @@ module.exports = class StudentController {
       next(err);
     }
   }
+
   static async login(req, res, next) {
     try {
       let { email, password } = req.body;
@@ -99,17 +100,17 @@ module.exports = class StudentController {
         defaults: {
           username: payload.name,
           email: payload.email,
-          password: 'bebas',
-          role: 'student'
+          password: "bebas",
+          role: "student",
         },
-        hooks: false
+        hooks: false,
       });
       const payloadController = {
-        id: user.id
-      }
+        id: user.id,
+      };
 
-      const access_token = createToken(payloadController)
-      res.status(200).json({ access_token, user })
+      const access_token = createToken(payloadController);
+      res.status(200).json({ access_token, user });
     } catch (err) {
       next(err);
     }
@@ -122,11 +123,10 @@ module.exports = class StudentController {
         // class: req.user.class
       });
 
-
-      let newUsers = users.map(el => {
-        delete el._doc.password
-        return el
-      })
+      let newUsers = users.map((el) => {
+        delete el._doc.password;
+        return el;
+      });
 
       res.status(200).json(newUsers);
     } catch (err) {
@@ -138,11 +138,10 @@ module.exports = class StudentController {
     try {
       let user = await User.find({ _id: req.params.id });
 
-
-      let newUser = user.map(el => {
-        delete el._doc.password
-        return el
-      })
+      let newUser = user.map((el) => {
+        delete el._doc.password;
+        return el;
+      });
 
       res.status(200).json(newUser);
     } catch (err) {
@@ -174,6 +173,7 @@ module.exports = class StudentController {
       next(err);
     }
   }
+
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
@@ -185,6 +185,4 @@ module.exports = class StudentController {
       next(err);
     }
   }
-
-
 };
