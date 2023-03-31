@@ -117,7 +117,7 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
-      let users = await User.find({ role: "Student" , class: req.user.classId});
+      let users = await User.find({ role: "Student" });
       res.status(200).json(users);
     } catch (err) {
       next(err);
