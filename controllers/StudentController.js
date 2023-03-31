@@ -7,6 +7,7 @@ const User = require("../models/User");
 const { OAuth2Client } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
+const { ObjectId } = require("mongodb");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -15,9 +16,6 @@ module.exports = class StudentController {
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
-
-      console.log(req.file.filename);
-      console.log(result.textAnnotations[0].description);
 
       res.status(200).json(result.textAnnotations[0].description);
     } catch (err) {
@@ -41,7 +39,6 @@ module.exports = class StudentController {
       if (user.role !== "Student") {
         throw new Errors(403, "You are not student");
       }
-
       let valid = Hash.verify(password, user.password);
 
       if (!valid) {
@@ -58,7 +55,7 @@ module.exports = class StudentController {
 
   static async register(req, res, next) {
     try {
-      let { email, name, password, address } = req.body;
+      let { email, name, password, address, Class } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -71,12 +68,11 @@ module.exports = class StudentController {
         name,
         password,
         address,
+        Class: new ObjectId(Class),
         role: "Student",
       });
 
       let registeringUser = await user.save();
-
-      console.log(registeringUser);
 
       let access_token = Token.create({ id: registeringUser._id });
 
@@ -149,7 +145,8 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find().populate("ClassId");
+      console.log("masuk sini bos <<<<<<<<<<<<<<");
+      let assignments = await Assignment.find();
       res.status(200).json(assignments);
     } catch (err) {
       next(err);

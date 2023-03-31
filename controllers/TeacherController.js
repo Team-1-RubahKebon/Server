@@ -142,10 +142,6 @@ module.exports = class TeacherController {
         "ClassId"
       );
 
-      // let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
-
-      // let assignment = { ...assignmentById._doc, Class: assignedClass };
-
       res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
