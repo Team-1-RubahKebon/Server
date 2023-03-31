@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   Class: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    // required: true,
+    required: true,
   },
   scoreAvg: {
     type: Number,

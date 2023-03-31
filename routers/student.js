@@ -10,7 +10,7 @@ studentsRouter.get("/", StudentController.getStudents);
 studentsRouter.get("/assignments", StudentController.getAssignments);
 studentsRouter.post(
   "/upload/:courseId",
-  upload.single("file"),
+  upload.single("image"),
   StudentController.recognizing
 );
 studentsRouter.get("/:id", StudentController.getStudentById);

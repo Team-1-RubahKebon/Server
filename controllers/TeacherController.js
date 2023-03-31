@@ -8,6 +8,7 @@ const Class = require("../models/Class");
 const Assignment = require("../models/Assignment");
 const { default: mongoose } = require("mongoose");
 const Question = require("../models/Question");
+const { ObjectId } = require("mongodb");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -43,7 +44,7 @@ module.exports = class TeacherController {
 
   static async register(req, res, next) {
     try {
-      let { email, name, password, address } = req.body;
+      let { email, name, password, address, Class } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -57,6 +58,7 @@ module.exports = class TeacherController {
         password,
         address,
         role: "Teacher",
+        Class: new ObjectId(Class),
       });
 
       let registeringUser = await user.save();
@@ -75,9 +77,7 @@ module.exports = class TeacherController {
       const client = new OAuth2Client(credential.client_id);
       const ticket = await client.verifyIdToken({
         idToken: token_google,
-        audience: credential.client_id, // Specify the CLIENT_ID of the app that accesses the backend
-        // Or, if multiple clients access the backend:
-        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+        audience: credential.client_id,
       });
       const payload = ticket.getPayload();
       const filter = { email: payload.email };
@@ -94,7 +94,6 @@ module.exports = class TeacherController {
 
       const result = await User.findOneAndUpdate(filter, update, options);
       const user = result.toObject();
-      // const created = result._doc && result._doc.__v === 0;
 
       const access_token = createToken({ id: user.id });
       res.status(200).json({ access_token });
@@ -109,14 +108,6 @@ module.exports = class TeacherController {
         .populate("Assignments")
         .populate("Teacher")
         .populate("Students");
-
-      // allClass = await Promise.all(
-      //   allClass.map(async (el) => {
-      //     let Assignments = await Assignment.find({ ClassId: el._id });
-      //     el.Assignments = Assignments;
-      //     return el;
-      //   })
-      // );
 
       res.status(200).json(allClass);
     } catch (err) {

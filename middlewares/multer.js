@@ -1,42 +1,18 @@
 const multer = require("multer");
-const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
-
-async function uploadFile() {
-  const options = {
-    destination: "test_file.jpeg",
-
-    preconditionOpts: { ifGenerationMatch: generationMatchPrecondition },
-  };
-
-  await googleStora.bucket(bucketName).upload(filePath, options);
-  console.log(`${filePath} uploaded to ${bucketName}`);
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
+const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
+const multerGoogleStorage = require("multer-google-storage");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./test");
-  },
-  filename: function (req, file, cb) {
-    // console.log(req.user); => dari authentication. untuk ubah file original name jadi tiap murid
-    cb(null, file.originalname);
-  },
-});
-// const storage = googleStorage({
-//   projectId: credential.project_id,
-//   keyFilename: "../arctic-plasma-377908-7bbfda6bfa06.json",
-// });
-
-// const bucket = storage.bucket();
-
-const upload = multer({
-  storage: storage,
-  // fileFilter: function (req, file, cb) {
-  //   if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-  //     return cb(new Error("Only image files are allowed!"));
-  //   }
-  //   cb(null, true);
-  // },
-  fieldName: "images",
+let storage = multerGoogleStorage.storageEngine({
+  keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
+  bucket: process.env.BUCKET_NAME,
+  autoRetry: true,
+  maxRetries: 3,
+  projectId: credential.project_id,
 });
 
-module.exports = { upload };
+const upload = multer({ storage });
+
+module.exports = { upload, storage };

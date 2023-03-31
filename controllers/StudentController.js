@@ -1,4 +1,7 @@
 const { ImageAnnotatorClient } = require("@google-cloud/vision");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
@@ -6,8 +9,8 @@ const Token = require("../helpers/Token");
 const User = require("../models/User");
 const { OAuth2Client } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
-const Class = require("../models/Class");
 const { ObjectId } = require("mongodb");
+const googleStorage = require("../config/firestore");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -15,9 +18,19 @@ module.exports = class StudentController {
   static async home() {}
   static async recognizing(req, res, next) {
     try {
-      const [result] = await client.documentTextDetection(req.file.path);
+      console.log(req.file);
+      const filePath = await googleStorage.getPublicUrl(req.file.filename);
 
-      res.status(200).json(result.textAnnotations[0].description);
+      console.log(fileName);
+
+      const [result] = await client.annotateImage(
+        `gs://${process.env.BUCKET_NAME}/${fileName}`
+      );
+
+      console.log(result);
+      const fullTextAnnotation = result.fullTextAnnotation;
+
+      res.status(200).json(fullTextAnnotation);
     } catch (err) {
       next(err);
     }
