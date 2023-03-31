@@ -12,5 +12,6 @@ routerTeacher.get("/assignments", TeacherController.getAssignments);
 routerTeacher.post("/assignments", TeacherController.createAssignment);
 routerTeacher.get("/class/:id", TeacherController.getClass);
 routerTeacher.get("/assignments/:id", TeacherController.getAssignment);
+routerTeacher.delete("/assignments/:id", TeacherController.destroyAssignment);
 
 module.exports = routerTeacher;
