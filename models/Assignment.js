@@ -10,7 +10,8 @@ const assignmentSchema = new mongoose.Schema({
     required: true,
   },
   ClassId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Class",
     required: true,
   },
   subject: {
@@ -25,6 +26,12 @@ const assignmentSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  StudentAnswers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "StudentAnswer",
+    },
+  ],
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);

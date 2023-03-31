@@ -106,15 +106,15 @@ module.exports = class TeacherController {
 
   static async getClass(req, res, next) {
     try {
-      let allClass = await Class.find({});
+      let allClass = await Class.find({}).populate("Assignments");
 
-      allClass = await Promise.all(
-        allClass.map(async (el) => {
-          let Assignments = await Assignment.find({ ClassId: el._id });
-          el.Assignments = Assignments;
-          return el;
-        })
-      );
+      // allClass = await Promise.all(
+      //   allClass.map(async (el) => {
+      //     let Assignments = await Assignment.find({ ClassId: el._id });
+      //     el.Assignments = Assignments;
+      //     return el;
+      //   })
+      // );
 
       res.status(200).json(allClass);
     } catch (err) {
@@ -183,7 +183,7 @@ module.exports = class TeacherController {
         assignmentDate,
       });
 
-      assignmentCreated.Question = questionCreated;
+      //cek kelasnya dulu terus update one kelasnya biar nanti gampang populate
 
       await session.commitTransaction();
       session.endSession();

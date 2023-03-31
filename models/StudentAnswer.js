@@ -14,6 +14,21 @@ const studentAnswerSchema = new mongoose.Schema({
     required: true,
   },
   imgUrl: String,
+  turnedAt: Date,
+  Answers: [
+    {
+      rowNumber: {
+        type: Number,
+        required: true,
+      },
+      answer: String,
+      answerType: {
+        enum: ["pg", "essay"],
+        required: true,
+      },
+      isWrong: Boolean,
+    },
+  ],
 });
 
 const StudentAnswer = mongoose.model("StudentAnswer", studentAnswerSchema);
