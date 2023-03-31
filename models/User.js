@@ -17,12 +17,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["Student", "Teacher"],
   },
-  ClassId: {
-    type: String,
-    required: true,
-  },
   Class: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Class",
     required: true,
   },
   scoreAvg: {

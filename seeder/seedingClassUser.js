@@ -46,8 +46,6 @@ async function seeding() {
         console.log(updated);
       });
     }
-
-    seeding();
   });
 }
 

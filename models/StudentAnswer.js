@@ -11,6 +11,7 @@ const studentAnswerSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    enum: ["Assigned", "Returned", "Missing"],
     required: true,
   },
   imgUrl: String,

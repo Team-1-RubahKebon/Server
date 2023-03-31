@@ -4,12 +4,12 @@ const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
-const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client } = require("google-auth-library");
 
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() { }
+  static async home() {}
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
@@ -98,17 +98,17 @@ module.exports = class StudentController {
         defaults: {
           username: payload.name,
           email: payload.email,
-          password: 'bebas',
-          role: 'student'
+          password: "bebas",
+          role: "student",
         },
-        hooks: false
+        hooks: false,
       });
       const payloadController = {
-        id: user.id
-      }
+        id: user.id,
+      };
 
-      const access_token = createToken(payloadController)
-      res.status(200).json({ access_token, user })
+      const access_token = createToken(payloadController);
+      res.status(200).json({ access_token, user });
     } catch (err) {
       next(err);
     }
@@ -118,11 +118,10 @@ module.exports = class StudentController {
     try {
       let users = await User.find({ role: "Student" });
 
-
-      let newUsers =  users.map(el=>{
-        delete el._doc.password
-        return el
-      })
+      let newUsers = users.map((el) => {
+        delete el._doc.password;
+        return el;
+      });
 
       res.status(200).json(newUsers);
     } catch (err) {
