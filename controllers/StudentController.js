@@ -149,25 +149,8 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      console.log("masuk sini bos <<<<<<<<<<<<<<");
-      let assignments = await Assignment.find();
+      let assignments = await Assignment.find().populate("ClassId");
       res.status(200).json(assignments);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async getAssignment(req, res, next) {
-    try {
-      let _id = req.params.id;
-
-      let assignmentById = await Assignment.findOne({ _id });
-
-      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
-
-      let assignment = { ...assignmentById._doc, Class: assignedClass };
-
-      res.status(200).json(assignment);
     } catch (err) {
       next(err);
     }
@@ -176,10 +159,11 @@ module.exports = class StudentController {
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
-      let assignmentById = await Assignment.findOne({ _id });
-      let assignedClass = await Class.findOne({ _id: assignmentById.ClassId });
-      let assignment = { ...assignmentById._doc, Class: assignedClass };
-      res.status(200).json(assignment);
+      let assignmentById = await Assignment.findOne({ _id }).populate(
+        "ClassId"
+      );
+      // .populate("QuestionId") nanti dimasukin lagi
+      res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
     }
