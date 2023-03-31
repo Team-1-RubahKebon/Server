@@ -10,5 +10,6 @@ routerTeacher.get("/class", TeacherController.getClass);
 routerTeacher.post("/class", TeacherController.createClass);
 routerTeacher.get("/assignments", TeacherController.getAssignments);
 routerTeacher.post("/assignments", TeacherController.createAssignment);
+routerTeacher.get("/assignments/:id", TeacherController.getAssignment);
 
 module.exports = routerTeacher;
