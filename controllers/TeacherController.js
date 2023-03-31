@@ -4,8 +4,11 @@ const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
+const Class = require("../models/Class");
 const Assignment = require("../models/Assignment");
-const StudentAnswer = require("../models/StudentAnswer");
+const { ObjectId } = require("mongodb");
+const { default: mongoose } = require("mongoose");
+const Question = require("../models/Question");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -94,8 +97,8 @@ module.exports = class TeacherController {
       const user = result.toObject();
       // const created = result._doc && result._doc.__v === 0;
 
-      const access_token = createToken({ id: user.id });
-      res.status(200).json({ access_token });
+      const access_token = createToken({id: user.id })
+      res.status(200).json({access_token})
     } catch (err) {
       next(err);
     }
@@ -103,10 +106,18 @@ module.exports = class TeacherController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find();
-      console.log(assignments);
-
-      res.status(200).json(assignments);
+=========
+  static async getClass(req, res, next) {
+    try {
+      let allClass = await Class.find({}).populate({
+        path: 'assignment',
+        populate: {
+          path: 'ClassId',
+          select: 'name',
+        },
+      });
+      res.status(200).json(allClass);
+>>>>>>>>> Temporary merge branch 2
     } catch (err) {
       next(err);
     }
