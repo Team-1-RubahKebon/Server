@@ -5,7 +5,7 @@ const routerTeacher = require("express").Router();
 routerTeacher.post("/login", TeacherController.login);
 routerTeacher.post("/googlein", TeacherController.googleLogin);
 routerTeacher.post("/register", TeacherController.register);
-routerTeacher.post("/googleLogin", TeacherController.googleLogin);
+routerTeacher.post("/googlein", TeacherController.googleLogin);
 routerTeacher.get("/class", TeacherController.getClasses);
 routerTeacher.post("/class", TeacherController.createClass);
 routerTeacher.get("/assignments", TeacherController.getAssignments);
