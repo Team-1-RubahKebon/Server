@@ -13,7 +13,15 @@ const { ObjectId } = require("mongodb");
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() {}
+  static async getClass(req, res, next) {
+    try {
+      let classes = await Class.find();
+
+      res.status(200).json(classes);
+    } catch (err) {
+      next(err);
+    }
+  }
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
