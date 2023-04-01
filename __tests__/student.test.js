@@ -4,35 +4,43 @@ const { Hash } = require('../helpers/Hash');
 const Assignment = require('../models/Assignment');
 const Class = require('../models/Class');
 const User = require('../models/User');
+const { create } = require('../helpers/Token');
 
-let assignments
-beforeAll(async () => {
-    const users = require("../mock_data/users.json");
-    let hashedUsers = users.map((el) => {
-        el.password = Hash.create(el.password);
-        return el;
-    });
-    await User.insertMany(hashedUsers);
+// let access_token = null
+// let assignments
+// beforeAll(async () => {
+//     access_token = create({ _id: "64279daff8fac2152acafb09" })
 
+//     const users = require("../mock_data/users.json");
+//     let hashedUsers = users.map((el) => {
+//         el.password = Hash.create(el.password);
+//         el.test = 'testing'
+//         return el;
+//     });
+//     console.log(hashedUsers ," BEFORE <<<<<<<<<<<<<<<<<<<<<<<<<<")
+//     await User.insertMany(hashedUsers);
 
-    assignments = require("../mock_data/assignment.json");
-    let classes = await (await Class.find()).map((el) => el.id);
-    assignments = assignments.map((el) => {
-        let idx = Math.floor(Math.random() * classes.length);
-        let randomClass = classes[idx];
-        el.ClassId = randomClass;
+    
+//     assignments = require("../mock_data/assignment.json");
+//     let classes = await (await Class.find()).map((el) => el.id);
+//     assignments = assignments.map((el) => {
+//         let idx = Math.floor(Math.random() * classes.length);
+//         let randomClass = classes[idx];
+//         el.ClassId = randomClass;
+//         el.test = 'testing'
+//         return el;
+//     });
+//     console.log(assignments ," BEFORE <<<<<<<<<<<<<<<<<<<<<<<<<<")
+//     await Assignment.insertMany(assignments);
 
-        return el;
-    });
-    await Assignment.insertMany(assignments);
+// })
 
-
-})
-
-afterAll(async () => {
-    await User.deleteMany({ assignments });
-    await Assignment.deleteMany({ assignments });
-})
+// afterAll(async () => {
+//     let user = await User.deleteMany({ test: 'testing' });
+//     let assignment =await Assignment.deleteMany({ test: 'testing' });
+//     console.log(user,' user<<<<<<<<<<<<')
+//     console.log(assignment,'assignmen <<<<<<<<<<<<<<<<<<<<,')
+// })
 
 describe("POST /students/register", () => {
     describe("SUCCESS CASE", () => {
@@ -179,7 +187,7 @@ describe("POST /student/login", () => {
 
 //         test('should get assignments and return status 200', async () => {
 
-//             const response = await request(app).get("/students/assignments")
+//             const response = await request(app).get("/students/assignments").set("access_token", access_token)
 //             expect(response.status).toBe(200)
 //             expect(response.body).toBeInstanceOf(Array)
 //             expect(response.body[0]).toHaveProperty("StudentAnswers", expect.any(Array))
@@ -196,7 +204,7 @@ describe("POST /student/login", () => {
 
 //         test('should get students and return status 200', async () => {
 
-//             const response = await request(app).get("/students")
+//             const response = await request(app).get("/students").set("access_token", access_token)
 //             expect(response.status).toBe(200)
 //             expect(response.body).toBeInstanceOf(Array)
 //             expect(response.body[0]).toHaveProperty("_id", expect.any(String))
@@ -214,7 +222,7 @@ describe("POST /student/login", () => {
 //         test('should get assignments by id and return status 200', async () => {
 
 
-//             const response = await request(app).get("/students/assignments/6427aba6f0e4d5d1ee0d7c71")
+//             const response = await request(app).get("/students/assignments/6427aba6f0e4d5d1ee0d7c71").set("access_token", access_token)
 
 //             expect(response.status).toBe(200)
 //             expect(response.body).toBeInstanceOf(Object)
@@ -233,7 +241,7 @@ describe("POST /student/login", () => {
 
 //         test('should get student by id and return status 200', async () => {
 
-//             const response = await request(app).get("/students/6427276088a14b06ae616964")
+//             const response = await request(app).get("/students/6427276088a14b06ae616964").set("access_token", access_token)
 //             expect(response.status).toBe(200)
 //             expect(response.body).toBeInstanceOf(Object)
 //             expect(response.body).toHaveProperty("_id", expect.any(String))
@@ -247,19 +255,19 @@ describe("POST /student/login", () => {
 //         });
 //     })
 
-//     describe("FAIL CASE", () => {
+//     // describe("FAIL CASE", () => {
 
-//         test.skip('should fail to create assignment because of data not found return status 404', async () => {
+//     //     test.skip('should fail to create assignment because of data not found return status 404', async () => {
 
 
-//             const response = await (await request(app).get("/students/assignment/asasdad"))
-//             console.log(response.body, '<<<<<<<<<<<<<<<<<< ini res.body')
-//             expect(response.status).toBe(404)
-//             expect(response.body).toBeInstanceOf(Object)
-//             expect(response.body).toHaveProperty("message", `Data not found!`)
+//     //         const response = await (await request(app).get("/students/assignment/asasdad"))
+//     //         console.log(response.body, '<<<<<<<<<<<<<<<<<< ini res.body')
+//     //         expect(response.status).toBe(404)
+//     //         expect(response.body).toBeInstanceOf(Object)
+//     //         expect(response.body).toHaveProperty("message", `Data not found!`)
 
-//         });
-//     })
+//     //     });
+//     // })
 // })
 
 

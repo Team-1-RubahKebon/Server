@@ -58,8 +58,6 @@ module.exports = class StudentController {
     try {
       let { email, name, password, address, Class } = req.body;
 
-
-
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
       }
