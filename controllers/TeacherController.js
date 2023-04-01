@@ -46,10 +46,9 @@ module.exports = class TeacherController {
     try {
       let { email, name, password, address, Class } = req.body;
 
-      if (!email || !name || !password) {
+      if (!email || !password) {
         throw new Errors(400, "required fields must be filled");
       }
-
       password = Hash.create(password);
 
       let user = new User({
@@ -196,14 +195,22 @@ module.exports = class TeacherController {
   }
 
   static async createClass(req, res, next) {
+    //! ini harus dihandle besok
     try {
-      let { name, schedule } = req.body;
+      let { name, schedule, Students, Teacher } = req.body;
 
-      if (!name || !schedule) {
+      if (!name || !schedule || !Students || !Teacher) {
         throw new Errors(400, "All class details must be filled");
       }
 
-      await Class.create({ name, classAvg: 0, schedule });
+      await Class.create({
+        name,
+        classAvg: 0,
+        schedule,
+        Assignments: [],
+        Students,
+        Teacher,
+      });
 
       res.status(200).json({ message: "Class has been successfully added" });
     } catch (err) {
