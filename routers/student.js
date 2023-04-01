@@ -8,8 +8,8 @@ studentsRouter.post("/googlein", StudentController.googleLogin);
 studentsRouter.post("/register", StudentController.register);
 studentsRouter.get("/class", StudentController.getClass);
 
-// studentsRouter.use(authentication); //auth goes here
-
+studentsRouter.use(authentication); //auth goes here
+studentsRouter.get("/", StudentController.getStudents);
 studentsRouter.get("/assignments", StudentController.getAssignments);
 studentsRouter.post(
   "/upload/:courseId",

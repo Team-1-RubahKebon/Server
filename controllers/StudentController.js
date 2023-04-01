@@ -124,9 +124,10 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
+      console.log(req.user);
       let users = await User.find({
         role: "Student",
-        // class: req.user.class
+        Class: req.user.Class,
       });
 
       let newUsers = users.map((el) => {
@@ -143,7 +144,6 @@ module.exports = class StudentController {
   static async getStudentById(req, res, next) {
     try {
       let user = await User.findOne({ _id: req.params.id }).populate("Class");
-      console.log(user);
       delete user._doc.password;
 
       res.status(200).json(user);
@@ -168,6 +168,10 @@ module.exports = class StudentController {
         .populate("ClassId")
         .populate("StudentAnswers");
       // .populate("QuestionId") nanti dimasukin lagi
+
+      if (!assignmentById) {
+        throw new Errors(404, "Data not found!");
+      }
       res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
