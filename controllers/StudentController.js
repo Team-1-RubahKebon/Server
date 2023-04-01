@@ -7,6 +7,7 @@ const User = require("../models/User");
 const { OAuth2Client } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
+const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
 
 const client = new ImageAnnotatorClient(credential);
@@ -147,10 +148,7 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      console.log("masuk sini bos <<<<<<<<<<<<<<");
-      let assignments = await Assignment.find().populate(
-        "ClassId"
-      );
+      let assignments = await Assignment.find();
       res.status(200).json(assignments);
     } catch (err) {
       next(err);
@@ -160,15 +158,50 @@ module.exports = class StudentController {
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
-      let assignmentById = await Assignment.findOne({ _id }).populate(
-        "ClassId"
-      );
+      let assignmentById = await Assignment.findOne({ _id })
+        .populate("ClassId")
+        .populate("StudentAnswers");
       // .populate("QuestionId") nanti dimasukin lagi
 
       if (!assignmentById) {
         throw new Errors(404, "Data not found!");
       }
       res.status(200).json(assignmentById);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswers(req, res, next) {
+    try {
+      let _id = req.user._id;
+
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+
+      let studentAnswers = await StudentAnswer.find({ Student: _id });
+
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswerById(req, res, next) {
+    try {
+      let _id = req.params.id;
+
+      if (_id) {
+        throw new Errors(404, "Answers not found");
+      }
+
+      let studentAnswer = await StudentAnswer.findById(_id)
+        .populate("Assignment")
+        .populate("Student");
+      //.populate('Answers') //kalo udah up answers baru uncomment
+
+      res.status(200).json(studentAnswer);
     } catch (err) {
       next(err);
     }
