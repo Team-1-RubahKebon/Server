@@ -34,12 +34,11 @@ const userSchema = new mongoose.Schema({
   profilePicture: String,
 });
 
-// userSchema.pre("save", (next) => {
-//   console.log(this.password);
-//   this.password = Hash.create(this.password);
-//   next();
-// });
-//urus nanti setelah hampir kelar
+userSchema.pre("save", function (next) {
+  console.log(this.password);
+  this.password = Hash.create(this.password);
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 

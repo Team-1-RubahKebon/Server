@@ -89,7 +89,7 @@ module.exports = class StudentController {
         throw new Errors(400, "required fields must be filled");
       }
 
-      password = Hash.create(password);
+      // password = Hash.create(password);
 
       let user = new User({
         email,
