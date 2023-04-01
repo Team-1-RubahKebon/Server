@@ -5,11 +5,10 @@ const assignmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  QuestionId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Question",
-    required: true,
-  },
+  // QuestionId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Question",
+  // },
   ClassId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
