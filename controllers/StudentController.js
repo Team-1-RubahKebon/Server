@@ -1,4 +1,7 @@
 const { ImageAnnotatorClient } = require("@google-cloud/vision");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
@@ -24,9 +27,15 @@ module.exports = class StudentController {
   }
   static async recognizing(req, res, next) {
     try {
-      const [result] = await client.documentTextDetection(req.file.path);
+      const fileUri = req.file.uri;
 
-      res.status(200).json(result.textAnnotations[0].description);
+      console.log(req.file);
+
+      const [result] = await client.textDetection(fileUri);
+
+      const desc = result.textAnnotations[0].description;
+
+      res.status(200).json(desc);
     } catch (err) {
       next(err);
     }
