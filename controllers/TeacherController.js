@@ -109,14 +109,6 @@ module.exports = class TeacherController {
         .populate("Teacher")
         .populate("Students");
 
-      // allClass = await Promise.all(
-      //   allClass.map(async (el) => {
-      //     let Assignments = await Assignment.find({ ClassId: el._id });
-      //     el.Assignments = Assignments;
-      //     return el;
-      //   })
-      // );
-
       res.status(200).json(allClass);
     } catch (err) {
       next(err);
@@ -197,14 +189,22 @@ module.exports = class TeacherController {
   }
 
   static async createClass(req, res, next) {
+    //! ini harus dihandle besok
     try {
-      let { name, schedule } = req.body;
+      let { name, schedule, Students, Teacher } = req.body;
 
-      if (!name || !schedule) {
+      if (!name || !schedule || !Students || !Teacher) {
         throw new Errors(400, "All class details must be filled");
       }
 
-      await Class.create({ name, classAvg: 0, schedule });
+      await Class.create({
+        name,
+        classAvg: 0,
+        schedule,
+        Assignments: [],
+        Students,
+        Teacher,
+      });
 
       res.status(200).json({ message: "Class has been successfully added" });
     } catch (err) {
