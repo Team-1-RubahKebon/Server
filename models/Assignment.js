@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const assignmentSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: "Assignment name is required",
   },
   // QuestionId: {
   //   type: mongoose.Schema.Types.ObjectId,
@@ -12,19 +12,19 @@ const assignmentSchema = new mongoose.Schema({
   ClassId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    required: true,
+    required: "Class is required",
   },
   subject: {
     type: String,
-    required: true,
+    required: "Subject must be defined",
   },
   deadline: {
     type: Date,
-    required: true,
+    required: "please pick date for deadline",
   },
   assignmentDate: {
     type: Date,
-    required: true,
+    required: "please pick date for starting assignment",
   },
   StudentAnswers: [
     {

@@ -1,5 +1,5 @@
 module.exports = (err, req, res, next) => {
-  // console.log(err);
+  console.log(err);
   console.log(err.message);
   if (err.name === "Handled") {
     res.status(err.status).json(err.message);

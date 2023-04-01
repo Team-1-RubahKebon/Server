@@ -180,8 +180,6 @@ module.exports = class TeacherController {
         { $push: { Assignments: assignmentCreated._id } }
       );
 
-      //cek kelasnya dulu terus update one kelasnya biar nanti gampang populate
-
       await session.commitTransaction();
       session.endSession();
 
