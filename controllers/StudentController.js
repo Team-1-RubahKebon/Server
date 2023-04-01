@@ -12,7 +12,7 @@ const { ObjectId } = require("mongodb");
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() {}
+  static async home() { }
   static async recognizing(req, res, next) {
     try {
       const [result] = await client.documentTextDetection(req.file.path);
@@ -56,6 +56,8 @@ module.exports = class StudentController {
   static async register(req, res, next) {
     try {
       let { email, name, password, address, Class } = req.body;
+
+
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -115,9 +117,10 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
+
       let users = await User.find({
         role: "Student",
-        // class: req.user.class
+        // Class: req.user.class
       });
 
       let newUsers = users.map((el) => {
@@ -134,7 +137,6 @@ module.exports = class StudentController {
   static async getStudentById(req, res, next) {
     try {
       let user = await User.findOne({ _id: req.params.id }).populate("Class");
-      console.log(user);
       delete user._doc.password;
 
       res.status(200).json(user);
@@ -146,7 +148,9 @@ module.exports = class StudentController {
   static async getAssignments(req, res, next) {
     try {
       console.log("masuk sini bos <<<<<<<<<<<<<<");
-      let assignments = await Assignment.find();
+      let assignments = await Assignment.find().populate(
+        "ClassId"
+      );
       res.status(200).json(assignments);
     } catch (err) {
       next(err);
@@ -160,6 +164,10 @@ module.exports = class StudentController {
         "ClassId"
       );
       // .populate("QuestionId") nanti dimasukin lagi
+
+      if (!assignmentById) {
+        throw new Errors(404, "Data not found!");
+      }
       res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
