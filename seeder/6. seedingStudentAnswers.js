@@ -15,12 +15,11 @@ async function seeding() {
     console.log(adaptedUsers);
     console.log(adaptedAssignments);
 
-    let studentAnswersUp = studentAnswers.map((el) => {
+    let studentAnswersUp = studentAnswers.map((el, idx) => {
       let idxAsgn = Math.floor(Math.random() * adaptedAssignments.length);
       el.Assignment = adaptedAssignments[idxAsgn];
 
-      let idxUser = Math.floor(Math.random() * adaptedUsers.length);
-      el.Student = adaptedUsers[idxUser];
+      el.Student = adaptedUsers[idx];
       return el;
     });
 
