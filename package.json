@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit --coverage"
+    "test": "jest --detectOpenHandles --forceExit --coverage",
+    "dev": "nodemon ./bin/www"
   },
   "author": "Team1",
   "license": "ISC",

@@ -45,10 +45,9 @@ module.exports = class TeacherController {
     try {
       let { email, name, password, address } = req.body;
 
-      if (!email || !name || !password) {
+      if (!email || !password) {
         throw new Errors(400, "required fields must be filled");
       }
-
       password = Hash.create(password);
 
       let user = new User({
