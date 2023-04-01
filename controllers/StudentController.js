@@ -12,6 +12,7 @@ const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
+const ocrAdapter = require("../helpers/ocrAdapter");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -27,15 +28,24 @@ module.exports = class StudentController {
   }
   static async recognizing(req, res, next) {
     try {
-      const fileUri = req.file.uri;
-
       console.log(req.file);
+      const fileUri = req.file.linkUrl;
 
-      const [result] = await client.textDetection(fileUri);
+      const options = {
+        image: { source: { imageUri: fileUri } },
+        features: [
+          { type: "DOCUMENT_TEXT_DETECTION" },
+          { type: "FORMULA_DETECTION" },
+        ],
+      };
 
-      const desc = result.textAnnotations[0].description;
+      const [result] = await client.annotateImage(options);
 
-      res.status(200).json(desc);
+      const text = result.fullTextAnnotation.text;
+
+      const studentAnswers = ocrAdapter(text);
+
+      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
