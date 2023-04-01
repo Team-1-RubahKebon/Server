@@ -165,4 +165,39 @@ module.exports = class StudentController {
       next(err);
     }
   }
+
+  static async getStudentAnswers(req, res, next) {
+    try {
+      let _id = req.user._id;
+
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+
+      let studentAnswers = await StudentAnswer.find({ Student: _id });
+
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswerById(req, res, next) {
+    try {
+      let _id = req.params.id;
+
+      if (_id) {
+        throw new Errors(404, "Answers not found");
+      }
+
+      let studentAnswer = await StudentAnswer.findById(_id)
+        .populate("Assignment")
+        .populate("Student");
+      //.populate('Answers') //kalo udah up answers baru uncomment
+
+      res.status(200).json(studentAnswer);
+    } catch (err) {
+      next(err);
+    }
+  }
 };
