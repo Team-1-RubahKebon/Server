@@ -27,15 +27,19 @@ module.exports = class StudentController {
   }
   static async recognizing(req, res, next) {
     try {
-      const fileUri = req.file.uri;
+      const fileLink = req.file.uri;
 
       console.log(req.file);
 
-      const [result] = await client.textDetection(fileUri);
+      const [result] = await client.documentTextDetection(fileLink);
 
-      const desc = result.textAnnotations[0].description;
+      const desc = result.fullTextAnnotation.text;
 
-      res.status(200).json(desc);
+      let answer = {
+        selection: {},
+      };
+
+      res.status(200).json(`${answers} || ${essay}`);
     } catch (err) {
       next(err);
     }
