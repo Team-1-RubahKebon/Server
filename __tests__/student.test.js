@@ -27,8 +27,6 @@ beforeAll(async () => {
     await Assignment.insertMany(assignments);
 
 
-
-
 })
 
 afterAll(async () => {

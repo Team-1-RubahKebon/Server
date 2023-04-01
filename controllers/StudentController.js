@@ -118,10 +118,10 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
-
+      console.log(req.user)
       let users = await User.find({
         role: "Student",
-        // Class: req.user.class
+        Class: req.user.Class
       });
 
       let newUsers = users.map((el) => {
