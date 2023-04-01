@@ -12,7 +12,6 @@ const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
-const googleStorage = require("../config/firestore");
 
 const client = new ImageAnnotatorClient(credential);
 
@@ -28,19 +27,15 @@ module.exports = class StudentController {
   }
   static async recognizing(req, res, next) {
     try {
+      const fileUri = req.file.uri;
+
       console.log(req.file);
-      const filePath = await googleStorage.getPublicUrl(req.file.filename);
 
-      console.log(fileName);
+      const [result] = await client.textDetection(fileUri);
 
-      const [result] = await client.annotateImage(
-        `gs://${process.env.BUCKET_NAME}/${fileName}`
-      );
+      const desc = result.textAnnotations[0].description;
 
-      console.log(result);
-      const fullTextAnnotation = result.fullTextAnnotation;
-
-      res.status(200).json(fullTextAnnotation);
+      res.status(200).json(desc);
     } catch (err) {
       next(err);
     }
