@@ -7,6 +7,7 @@ const User = require("../models/User");
 const { OAuth2Client } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
+const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
 
 const client = new ImageAnnotatorClient(credential);
@@ -145,7 +146,6 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      console.log("masuk sini bos <<<<<<<<<<<<<<");
       let assignments = await Assignment.find();
       res.status(200).json(assignments);
     } catch (err) {
@@ -156,9 +156,9 @@ module.exports = class StudentController {
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
-      let assignmentById = await Assignment.findOne({ _id }).populate(
-        "ClassId"
-      );
+      let assignmentById = await Assignment.findOne({ _id })
+        .populate("ClassId")
+        .populate("StudentAnswers");
       // .populate("QuestionId") nanti dimasukin lagi
       res.status(200).json(assignmentById);
     } catch (err) {
