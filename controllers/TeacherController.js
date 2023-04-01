@@ -146,24 +146,24 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      if (
-        !questionForm ||
-        !questionForm.questions ||
-        questionForm.questions.length < 15
-      ) {
-        throw new Errors(
-          400,
-          "Must include 15 questions when creating assignment"
-        );
-      }
+      // if (
+      //   !questionForm ||
+      //   !questionForm.questions ||
+      //   questionForm.questions.length < 15
+      // ) {
+      //   throw new Errors(
+      //     400,
+      //     "Must include 15 questions when creating assignment"
+      //   );
+      // }
 
       if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
         throw new Errors(400, "All assignment details must be filled");
       }
 
-      let { questions } = questionForm;
+      let questionCreated = new Question(questionForm);
 
-      let questionCreated = await Question.create({ questions });
+      await questionCreated.save();
 
       let assignmentCreated = await Assignment.create({
         name,
@@ -173,6 +173,13 @@ module.exports = class TeacherController {
         deadline,
         assignmentDate,
       });
+
+      let updateClass = await Class.updateOne(
+        {
+          _id: assignmentCreated.ClassId,
+        },
+        { $push: { Assignments: assignmentCreated._id } }
+      );
 
       //cek kelasnya dulu terus update one kelasnya biar nanti gampang populate
 
