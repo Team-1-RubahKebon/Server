@@ -117,7 +117,19 @@ module.exports = class TeacherController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find();
+      let ClassId = req.query.Class;
+      let name = req.query.name;
+      let query = {};
+
+      if (ClassId) {
+        query.ClassId = ClassId;
+      }
+
+      if (name) {
+        query.name = { $regex: `${name}` };
+      }
+
+      let assignments = await Assignment.find(query);
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -132,7 +144,8 @@ module.exports = class TeacherController {
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
         .populate("StudentAnswers")
-        .populate("Student");
+        .populate("Student")
+        .populate("QuestionId");
 
       res.status(200).json(assignmentById);
     } catch (err) {
