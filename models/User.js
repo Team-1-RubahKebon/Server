@@ -7,12 +7,16 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: "Email is required",
     unique: true,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "Please fill a valid email address",
+    ],
   },
   password: {
     type: String,
-    required: true,
+    required: "Password is required",
   },
   role: {
     type: String,
@@ -21,7 +25,7 @@ const userSchema = new mongoose.Schema({
   Class: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    // required: true,
+    required: "Class Id is required",
   },
   scoreAvg: {
     type: Number,
@@ -30,12 +34,11 @@ const userSchema = new mongoose.Schema({
   profilePicture: String,
 });
 
-// userSchema.pre("save", (next) => {
-//   console.log(this.password);
-//   this.password = Hash.create(this.password);
-//   next();
-// });
-//urus nanti setelah hampir kelar
+userSchema.pre("save", function (next) {
+  console.log(this.password);
+  this.password = Hash.create(this.password);
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 

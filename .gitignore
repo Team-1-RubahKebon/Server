@@ -2,3 +2,4 @@ node_modules
 .env
 arctic-plasma-377908-7bbfda6bfa06.json
 sandbox.js
+coverage

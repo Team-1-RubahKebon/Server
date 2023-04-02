@@ -15,4 +15,9 @@ app.use(errorHandler);
 
 // app.listen(PORT, () => console.log(`listening to port ${PORT}`));
 
+<<<<<<< HEAD
 module.exports =  app 
+=======
+// module.exports =  app
+module.exports = app;
+>>>>>>> 8c00af33e83164d7f73edb8b9be38fd17b26ee76

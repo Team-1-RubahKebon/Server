@@ -5,11 +5,17 @@ const questionSchema = new mongoose.Schema({
     {
       rowNumber: {
         type: Number,
-        required: true,
+        // required: true,
       },
       question: {
         type: String,
-        required: true,
+        // required: true,
+      },
+      selection: {
+        A: String,
+        B: String,
+        C: String,
+        D: String,
       },
       answerType: {
         type: String,

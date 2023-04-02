@@ -6,7 +6,6 @@ const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 
 const googleStorage = new Storage({
   projectId: credential.project_id,
-  keyFilename: "../arctic-plasma-377908-7bbfda6bfa06.json",
 });
 
 /**

@@ -1,4 +1,7 @@
 const { ImageAnnotatorClient } = require("@google-cloud/vision");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
@@ -9,16 +12,40 @@ const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
+const ocrAdapter = require("../helpers/ocrAdapter");
 
 const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
-  static async home() { }
+  static async getClass(req, res, next) {
+    try {
+      let classes = await Class.find();
+
+      res.status(200).json(classes);
+    } catch (err) {
+      next(err);
+    }
+  }
   static async recognizing(req, res, next) {
     try {
-      const [result] = await client.documentTextDetection(req.file.path);
+      console.log(req.file);
+      const fileUri = req.file.linkUrl;
 
-      res.status(200).json(result.textAnnotations[0].description);
+      const options = {
+        image: { source: { imageUri: fileUri } },
+        features: [
+          { type: "DOCUMENT_TEXT_DETECTION" },
+          { type: "FORMULA_DETECTION" },
+        ],
+      };
+
+      const [result] = await client.annotateImage(options);
+
+      const text = result.fullTextAnnotation.text;
+
+      const studentAnswers = ocrAdapter(text);
+
+      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
@@ -62,7 +89,7 @@ module.exports = class StudentController {
         throw new Errors(400, "required fields must be filled");
       }
 
-      password = Hash.create(password);
+      // password = Hash.create(password);
 
       let user = new User({
         email,
@@ -116,10 +143,10 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
-      console.log(req.user)
+      console.log(req.user);
       let users = await User.find({
         role: "Student",
-        Class: req.user.Class
+        Class: req.user.Class,
       });
 
       let newUsers = users.map((el) => {
