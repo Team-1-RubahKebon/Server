@@ -199,8 +199,6 @@ module.exports = class TeacherController {
   }
 
   static async createClass(req, res, next) {
-    //! ini harus dihandle besok
-
     try {
       let { name, schedule } = req.body;
 
