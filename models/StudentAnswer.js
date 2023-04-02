@@ -18,6 +18,7 @@ const studentAnswerSchema = new mongoose.Schema({
   },
   imgUrl: String,
   turnedAt: Date,
+  score: Number,
   Answers: [
     {
       rowNumber: {
