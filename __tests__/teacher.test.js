@@ -387,7 +387,7 @@ describe("DELETE /teachers/assignments", () => {
 
 describe("POST /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
-    test.only("should create single assignment and return status 201", async () => {
+    test("should create single assignment and return status 201", async () => {
       const access_token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
 
@@ -423,6 +423,9 @@ describe("POST /teachers/assignments", () => {
   });
   describe("FAILED CASE", () => {
     test("should fail to create assignment because the name is not inputted and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         // name: "bangun candi 3",
         ClassId: "6427ba76af2401519a68219e",
@@ -436,7 +439,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -446,6 +450,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the ClassId is not inputted and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         name: "bangun candi 3",
         // ClassId: "6427ba76af2401519a68219e",
@@ -459,7 +466,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -469,6 +477,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the subject is not inputted and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         name: "bangun candi 3",
         ClassId: "6427ba76af2401519a68219e",
@@ -482,7 +493,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -492,6 +504,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the deadline is not inputted and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         name: "bangun candi 3",
         ClassId: "6427ba76af2401519a68219e",
@@ -505,7 +520,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -515,6 +531,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the assignmentDate is not inputted and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         name: "bangun candi 3",
         ClassId: "6427ba76af2401519a68219e",
@@ -528,7 +547,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -540,7 +560,7 @@ describe("POST /teachers/assignments", () => {
   });
 });
 
-describe("POST /teachers/class", () => {
+describe.only("POST /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should post single class and return status 200", async () => {
       const body = {

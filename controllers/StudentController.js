@@ -36,7 +36,7 @@ module.exports = class StudentController {
       });
 
       let assignmentId = req.params.courseId;
-      const fileUri = req.file.linkUrl;
+      const fileUri = req.file.uri;
 
       if (!assignmentId) {
         throw new Errors(404, "Not found");
@@ -61,6 +61,7 @@ module.exports = class StudentController {
       const [result] = await client.annotateImage(options);
 
       const text = result.fullTextAnnotation.text;
+      console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId("6427e7fadee199082ba386c8"),
       });
