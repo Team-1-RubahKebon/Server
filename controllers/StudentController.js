@@ -28,9 +28,9 @@ module.exports = class StudentController {
     }
   }
   static async createStudentAnswer(req, res, next) {
-    const session = await mongoose.startSession();
+    // const session = await mongoose.startSession();
     try {
-      session.startTransaction();
+      // session.startTransaction();
       const client = new ImageAnnotatorClient({
         keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
       });
@@ -61,7 +61,6 @@ module.exports = class StudentController {
       const [result] = await client.annotateImage(options);
 
       const text = result.fullTextAnnotation.text;
-      console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId("6427e7fadee199082ba386c8"),
       });
@@ -72,43 +71,44 @@ module.exports = class StudentController {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
 
+      console.log(text);
       const answers = ocrAdapter(text, questions);
 
-      if (!answers.length) {
-        throw new Errors(400, "Wrong Form Format");
-      }
+      // if (!answers.length) {
+      //   throw new Errors(400, "Wrong Form Format");
+      // }
 
-      let studentId = req.user._id;
-      let status = "Assigned";
-      let dateNow = new Date();
-      let turnedAt = dateFormatter(dateNow);
+      // let studentId = req.user._id;
+      // let status = "Assigned";
+      // let dateNow = new Date();
+      // let turnedAt = dateFormatter(dateNow);
 
-      let StudentAnswerCreate = new StudentAnswer({
-        Assignment: new ObjectId(assignmentId),
-        Student: new ObjectId(studentId),
-        status,
-        imgUrl: fileUri,
-        turnedAt,
-        Answers: answers,
-      });
+      // let StudentAnswerCreate = new StudentAnswer({
+      //   Assignment: new ObjectId(assignmentId),
+      //   Student: new ObjectId(studentId),
+      //   status,
+      //   imgUrl: fileUri,
+      //   turnedAt,
+      //   Answers: answers,
+      // });
 
-      let created = await StudentAnswerCreate.save({ session });
+      // let created = await StudentAnswerCreate.save({ session });
 
-      let updateAssignment = await Assignment.updateOne(
-        {
-          _id: new ObjectId(assignmentId),
-        },
-        { $push: { StudentAnswers: created._id } },
-        { session }
-      );
+      // let updateAssignment = await Assignment.updateOne(
+      //   {
+      //     _id: new ObjectId(assignmentId),
+      //   },
+      //   { $push: { StudentAnswers: created._id } },
+      //   { session }
+      // );
 
-      await session.commitTransaction();
-      session.endSession();
+      // await session.commitTransaction();
+      // session.endSession();
 
-      res.status(200).json(created);
+      res.status(200).json(answers);
     } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
+      // await session.abortTransaction();
+      // session.endSession();
       next(err);
     }
   }
