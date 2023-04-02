@@ -9,13 +9,29 @@ routerTeacher.post("/register", TeacherController.register); //done testing
 
 // routerTeacher.use(authentication); //auth goes here
 
-routerTeacher.get("/class", TeacherController.getClasses); //done testing
+routerTeacher.get("/class", authentication, TeacherController.getClasses); //done testing
 routerTeacher.post("/class", authentication, TeacherController.createClass); //done testing
-routerTeacher.get("/assignments", TeacherController.getAssignments); //done testing
-routerTeacher.post("/assignments", TeacherController.createAssignment); //done testing
-routerTeacher.get("/class/:id", TeacherController.getClass); //done testing
-routerTeacher.get("/assignments/:id", TeacherController.getAssignment); //done testing
-routerTeacher.delete("/assignments/:id", TeacherController.destroyAssignment); //done testing
+routerTeacher.get(
+  "/assignments",
+  authentication,
+  TeacherController.getAssignments
+); //done testing
+routerTeacher.post(
+  "/assignments",
+  authentication,
+  TeacherController.createAssignment
+); //done testing
+routerTeacher.get("/class/:id", authentication, TeacherController.getClass); //done testing
+routerTeacher.get(
+  "/assignments/:id",
+  authentication,
+  TeacherController.getAssignment
+); //done testing
+routerTeacher.delete(
+  "/assignments/:id",
+  authentication,
+  TeacherController.destroyAssignment
+); //done testing
 routerTeacher.get("/answers/:courseId", TeacherController.getStudentAnswers);
 routerTeacher.post("/ai", TeacherController.chatOpenAi);
 
