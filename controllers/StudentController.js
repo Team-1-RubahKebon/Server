@@ -7,7 +7,7 @@ const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
-const { OAuth2Client } = require("google-auth-library");
+const { OAuth2Client, auth } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
@@ -15,8 +15,6 @@ const { ObjectId } = require("mongodb");
 const ocrAdapter = require("../helpers/ocrAdapter");
 const dateFormatter = require("../helpers/dateFormatter");
 const { default: mongoose } = require("mongoose");
-
-const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
   static async getClass(req, res, next) {
@@ -32,8 +30,10 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
+      const client = new ImageAnnotatorClient({
+        keyFilename: './arctic-plasma-377908-7bbfda6bfa06.json',
+      });
 
-      console.log(req.user);
       let assignmentId = req.params.courseId;
       const fileUri = req.file.linkUrl;
 
@@ -63,8 +63,6 @@ module.exports = class StudentController {
 
       const answers = ocrAdapter(text);
 
-      console.log(answers);
-
       if (!answers.length) {
         throw new Errors(400, "Wrong Form Format");
       }
@@ -73,7 +71,6 @@ module.exports = class StudentController {
       let status = "Assigned";
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
-      console.log(assignmentId);
 
       let StudentAnswerCreate = new StudentAnswer({
         Assignment: new ObjectId(assignmentId),
@@ -86,8 +83,6 @@ module.exports = class StudentController {
 
       let created = await StudentAnswerCreate.save({ session });
 
-      console.log(created);
-
       let updateAssignment = await Assignment.updateOne(
         {
           _id: new ObjectId(assignmentId),
@@ -96,7 +91,6 @@ module.exports = class StudentController {
         { session }
       );
 
-      console.log(updateAssignment);
       await session.commitTransaction();
       session.endSession();
 
