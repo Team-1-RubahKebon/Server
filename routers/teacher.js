@@ -17,5 +17,6 @@ routerTeacher.get("/class/:id", TeacherController.getClass); //done testing
 routerTeacher.get("/assignments/:id", TeacherController.getAssignment); //done testing
 routerTeacher.delete("/assignments/:id", TeacherController.destroyAssignment); //done testing
 routerTeacher.get("/answers/:courseId", TeacherController.getStudentAnswers);
+routerTeacher.post("/ai", TeacherController.chatOpenAi);
 
 module.exports = routerTeacher;
