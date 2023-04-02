@@ -9,7 +9,7 @@ beforeAll(async () => {});
 afterAll(async () => {});
 
 describe("POST /teachers/register", () => {
-  describe.skip("SUCCESS CASE", () => {
+  describe("SUCCESS CASE", () => {
     test("should create new teacher and return status 201", async () => {
       const body = {
         email: "teachertest@mail.com",
@@ -36,7 +36,7 @@ describe("POST /teachers/register", () => {
         address: "Namek",
       };
 
-      const response = await request(app).post("/teachers/register").send(body);
+      const response = await request(app).post("/teachers/regZister").send(body);
 
       expect(response.status).toBe(400);
       expect(response.body).toBeInstanceOf(Object);
@@ -232,7 +232,7 @@ describe("POST /teachers/login", () => {
       expect(response.body).toHaveProperty("message", "Wrong Email/Password");
     });
 
-    test.skip("should fail to login because the role is not teacher and return status 403", async () => {
+    test("should fail to login because the role is not teacher and return status 403", async () => {
       const body = {
         email: "hvolet0@netvibes.com",
         password: "fVxDRdzPxhgb",
@@ -338,7 +338,7 @@ describe("GET /teachers/assignments", () => {
   });
 });
 
-describe.skip("POST /teachers/class", () => {
+describe("POST /teachers/class", () => {
   //! ini harus dihandle besok
   describe("SUCCESS CASE", () => {
     test("should get get all classes and return status 200", async () => {
