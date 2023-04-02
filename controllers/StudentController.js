@@ -86,7 +86,7 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { email, name, password, address, Class } = req.body;
+      let { email, name, password, address, classId } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -99,7 +99,7 @@ module.exports = class StudentController {
         name,
         password,
         address,
-        Class: new ObjectId(Class),
+        Class: new ObjectId(classId),
         role: "Student",
       });
 
@@ -107,6 +107,8 @@ module.exports = class StudentController {
       let registeringUser = await user.save({
         session
       });
+
+      console.log(registeringUser,"ini register user baru <<<<<<<<<<<<<<<<<<,")
       let updateClass = await Class.updateOne(
         {
           _id: registeringUser.Class,
@@ -165,7 +167,7 @@ module.exports = class StudentController {
       console.log(req.user);
       let users = await User.find({
         role: "Student",
-        // Class: req.user.Class,
+        Class: req.user.Class,
       });
 
       let newUsers = users.map((el) => {
@@ -193,10 +195,10 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      // let ClassId = req.user.Class
+      let ClassId = req.user.Class
       console.log(req.user)
       let assignments = await Assignment.find({
-        // ClassId
+        ClassId
       }).populate("ClassId")
 
       res.status(200).json(assignments)
@@ -246,8 +248,8 @@ module.exports = class StudentController {
 
       let studentAnswer = await StudentAnswer.findOne({ Student: _id })
         .populate("Assignment")
-        .populate("Student");
-      //.populate('Answers') //kalo udah up answers baru uncomment
+        .populate("Student")
+        .populate('Answers') //kalo udah up answers baru uncomment
 
       res.status(200).json(studentAnswer);
     } catch (err) {
