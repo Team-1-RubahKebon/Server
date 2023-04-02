@@ -249,9 +249,7 @@ module.exports = class StudentController {
     try {
       // let ClassId = req.user.Class
       console.log(req.user);
-      let assignments = await Assignment.find({
-        // ClassId
-      }).populate("ClassId");
+      let assignments = await Assignment.find({}).populate("ClassId");
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -283,7 +281,9 @@ module.exports = class StudentController {
         throw new Errors(404, "Student not found");
       }
 
-      let studentAnswers = await StudentAnswer.find({ Student: _id });
+      let studentAnswers = await StudentAnswer.find({ Student: _id }).populate(
+        "Assignment"
+      );
 
       res.status(200).json(studentAnswers);
     } catch (err) {
