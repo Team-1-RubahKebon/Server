@@ -51,6 +51,7 @@ module.exports = class TeacherController {
       if (!email || !password) {
         throw new Errors(400, "required fields must be filled");
       }
+
       // password = Hash.create(password);
 
       let user = new User({
@@ -105,7 +106,13 @@ module.exports = class TeacherController {
 
   static async getClasses(req, res, next) {
     try {
-      let allClass = await Class.find({})
+      let name = req.query.name;
+      let query = {};
+
+      if (name) {
+        query.name = { $regex: `${name}` };
+      }
+      let allClass = await Class.find(query)
         .populate("Assignments")
         .populate("Teacher")
         .populate("Students");
@@ -130,7 +137,7 @@ module.exports = class TeacherController {
         query.name = { $regex: `${name}` };
       }
 
-      let assignments = await Assignment.find(query);
+      let assignments = await Assignment.find(query).populate("ClassId");
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -145,7 +152,8 @@ module.exports = class TeacherController {
 
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
-        .populate("StudentAnswers");
+        .populate("StudentAnswers")
+        .populate("QuestionId");
 
       res.status(200).json(assignmentById);
     } catch (err) {

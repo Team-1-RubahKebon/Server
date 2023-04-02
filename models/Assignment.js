@@ -32,6 +32,12 @@ const assignmentSchema = new mongoose.Schema({
       ref: "StudentAnswer",
     },
   ],
+  Students: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+    },
+  ],
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);
