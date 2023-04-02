@@ -128,11 +128,11 @@ module.exports = class TeacherController {
   static async getAssignment(req, res, next) {
     try {
       let _id = req.params.id;
+      console.log(_id);
 
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
-        .populate("StudentAnswers")
-        .populate("Student");
+        .populate("StudentAnswers");
 
       res.status(200).json(assignmentById);
     } catch (err) {
@@ -146,6 +146,8 @@ module.exports = class TeacherController {
       session.startTransaction();
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
+
+      console.log(req.body);
 
       // if (
       //   !questionForm ||
@@ -166,17 +168,15 @@ module.exports = class TeacherController {
 
       await questionCreated.save({ session });
 
-      let assignmentCreated = await Assignment.create(
-        {
-          name,
-          ClassId,
-          QuestionId: questionCreated._id,
-          subject,
-          deadline,
-          assignmentDate,
-        },
-        { session }
-      );
+      let assignmentCreated = new Assignment({
+        name,
+        ClassId,
+        QuestionId: questionCreated._id,
+        subject,
+        deadline,
+        assignmentDate,
+      });
+      await assignmentCreated.save({ session });
 
       let updateClass = await Class.updateOne(
         {
@@ -241,7 +241,9 @@ module.exports = class TeacherController {
     try {
       let id = req.params.id;
       await Assignment.findByIdAndDelete(id);
-      res.status(200).json("Assigment has been successfully deleted");
+      res
+        .status(200)
+        .json({ message: "Assigment has been successfully deleted" });
     } catch (err) {
       next(err);
     }

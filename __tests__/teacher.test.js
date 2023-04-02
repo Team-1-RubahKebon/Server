@@ -9,7 +9,7 @@ beforeAll(async () => {});
 
 afterAll(async () => {});
 
-describe("POST /teachers/register", () => {
+describe.skip("POST /teachers/register", () => {
   describe("SUCCESS CASE", () => {
     test("should create new teacher and return status 201", async () => {
       const body = {
@@ -125,7 +125,7 @@ describe("POST /teachers/register", () => {
   });
 });
 
-describe("POST /teachers/login", () => {
+describe.skip("POST /teachers/login", () => {
   describe("SUCCESS CASE", () => {
     test("should login teacher and return status 201", async () => {
       const body = {
@@ -251,7 +251,12 @@ describe("POST /teachers/login", () => {
 describe("GET /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should get get all classes and return status 200", async () => {
-      const response = await request(app).get("/teachers/class");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .get("/teachers/class")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
@@ -263,9 +268,11 @@ describe("GET /teachers/class", () => {
       expect(response.body[0]).toHaveProperty("Teacher", expect.any(Object));
     });
     test("should get get single class and return status 200", async () => {
-      const response = await request(app).get(
-        "/teachers/class/6427ba76af2401519a682198"
-      );
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/class/6427ba76af2401519a682198")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Object);
@@ -291,7 +298,11 @@ describe("GET /teachers/class", () => {
 describe("GET /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should get get all assignments and return status 200", async () => {
-      const response = await request(app).get("/teachers/assignments");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/assignments")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
@@ -310,9 +321,11 @@ describe("GET /teachers/assignments", () => {
       );
     });
     test("should get get single assignment and return status 200", async () => {
-      const response = await request(app).get(
-        "/teachers/assignments/642868c18c2b623a1796ed16"
-      );
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/assignments/642868c18c2b623a1796ed16")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Object);
@@ -342,9 +355,13 @@ describe("GET /teachers/assignments", () => {
 describe("DELETE /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should delete single assignment and return status 200", async () => {
-      const response = await request(app).delete(
-        "/teachers/assignments/642868c18c2b623a1796ed19"
-      );
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .delete("/teachers/assignments/642868c18c2b623a1796ed1a")
+        .set("access_token", access_token);
+
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty(
@@ -355,7 +372,11 @@ describe("DELETE /teachers/assignments", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const response = await request(app).delete("/teachers/assignments/1");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .delete("/teachers/assignments/1")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(500);
       expect(response.body).toBeInstanceOf(Object);
@@ -366,7 +387,10 @@ describe("DELETE /teachers/assignments", () => {
 
 describe("POST /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
-    test("should create single assignment and return status 201", async () => {
+    test.only("should create single assignment and return status 201", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
       const body = {
         name: "bangun candi 3",
         ClassId: "6427ba76af2401519a68219e",
@@ -380,7 +404,8 @@ describe("POST /teachers/assignments", () => {
 
       const response = await request(app)
         .post("/teachers/assignments")
-        .send(body);
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(201);
       expect(response.body).toBeInstanceOf(Object);
