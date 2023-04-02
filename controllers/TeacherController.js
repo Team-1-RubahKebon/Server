@@ -51,6 +51,7 @@ module.exports = class TeacherController {
       if (!email || !password) {
         throw new Errors(400, "required fields must be filled");
       }
+
       // password = Hash.create(password);
 
       let user = new User({
