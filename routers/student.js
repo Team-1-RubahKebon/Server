@@ -20,7 +20,7 @@ studentsRouter.post(
   upload.single("image"),
   StudentController.createStudentAnswer
 );
-studentsRouter.get("/:id", StudentController.getStudentById);
+studentsRouter.get("/profile", StudentController.getStudentById);
 studentsRouter.get("/assignments/:id", StudentController.getAssignmentById);
 
 module.exports = studentsRouter;

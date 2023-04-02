@@ -15,6 +15,7 @@ const { ObjectId } = require("mongodb");
 const ocrAdapter = require("../helpers/ocrAdapter");
 const dateFormatter = require("../helpers/dateFormatter");
 const { default: mongoose } = require("mongoose");
+const Question = require("../models/Question");
 
 module.exports = class StudentController {
   static async getClass(req, res, next) {
@@ -31,7 +32,7 @@ module.exports = class StudentController {
     try {
       session.startTransaction();
       const client = new ImageAnnotatorClient({
-        keyFilename: './arctic-plasma-377908-7bbfda6bfa06.json',
+        keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
       });
 
       let assignmentId = req.params.courseId;
@@ -60,8 +61,11 @@ module.exports = class StudentController {
       const [result] = await client.annotateImage(options);
 
       const text = result.fullTextAnnotation.text;
-
-      const answers = ocrAdapter(text);
+      const questionAssignment = await Question.findOne({
+        _id: assignmentCheck.QuestionId,
+      });
+      let questions = questionAssignment.questions;
+      const answers = ocrAdapter(text, questions);
 
       if (!answers.length) {
         throw new Errors(400, "Wrong Form Format");
@@ -231,8 +235,8 @@ module.exports = class StudentController {
 
   static async getStudentById(req, res, next) {
     try {
-      let user = await User.findOne({ _id: req.params.id }).populate("Class");
-      console.log(user, "ini user <<<<<<<<<<<<<<<<<<,");
+      let user = await User.findOne({ _id: req.user._id }).populate("Class");
+
       delete user._doc.password;
 
       res.status(200).json(user);

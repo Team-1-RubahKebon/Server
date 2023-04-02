@@ -211,6 +211,53 @@ module.exports = class TeacherController {
     }
   }
 
+  static async updateAssignment(req, res, next) {
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+      let { questionForm, StudentAnswers } = req.body;
+      let _id = req.params.id;
+
+      // if (
+      //   !questionForm ||
+      //   !questionForm.questions ||
+      //   questionForm.questions.length < 15
+      // ) {
+      //   throw new Errors(
+      //     400,
+      //     "Must include 15 questions when creating assignment"
+      //   );
+      // }
+
+      let assignment = await Assignment.findOne(
+        { _id: new ObjectId(_id) },
+        { session }
+      ).populate("QuestionId");
+
+      let question = assignment.QuestionId;
+
+      // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
+      //   await StudentAnswer.updateOne(
+      //     {
+      //       _id: new ObjectId(el._id),
+      //     },
+      //     { status: "Returned" },
+      //     { session }
+      //   );
+      // });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(200).json(question);
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.log(err);
+      next(err);
+    }
+  }
+
   static async createClass(req, res, next) {
     try {
       let { name, schedule } = req.body;

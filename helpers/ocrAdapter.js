@@ -1,4 +1,4 @@
-module.exports = (text) => {
+module.exports = async (text, question) => {
   const pattern =
     /\((\d+)\)\. (A B C D ##)\n|\((#[0-9]+)\) (.+)\n|\((10)\)\. (A B C D ##)$/gm;
 
@@ -35,11 +35,22 @@ module.exports = (text) => {
 
     if (answerText.includes("(")) {
       const answer = answerText.match(/\(([A-D])\)/)[1];
+
+      let isWrong = false;
+
+      question.forEach((el) => {
+        if (el.rowNumber == rowNumber) {
+          if (answer != el.keyword) {
+            isWrong = true;
+          }
+        }
+      });
+
       answers.push({
         rowNumber: Number(rowNumber),
         answer,
         answerType: "pg",
-        isWrong: false,
+        isWrong,
       });
     }
   }
