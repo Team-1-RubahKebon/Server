@@ -9,6 +9,7 @@ const Assignment = require("../models/Assignment");
 const { default: mongoose } = require("mongoose");
 const Question = require("../models/Question");
 const { ObjectId } = require("mongodb");
+const StudentAnswer = require("../models/StudentAnswer");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -128,9 +129,10 @@ module.exports = class TeacherController {
     try {
       let _id = req.params.id;
 
-      let assignmentById = await Assignment.findOne({ _id }).populate(
-        "ClassId"
-      );
+      let assignmentById = await Assignment.findOne({ _id })
+        .populate("ClassId")
+        .populate("StudentAnswers")
+        .populate("Student");
 
       res.status(200).json(assignmentById);
     } catch (err) {
@@ -242,6 +244,20 @@ module.exports = class TeacherController {
       let id = req.params.id;
       await Assignment.findByIdAndDelete(id);
       res.status(200).json("Assigment has been successfully deleted");
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswers(req, res, next) {
+    try {
+      let assignmentId = req.params.courseId;
+
+      let studentAnswers = await StudentAnswer.find({
+        Assignment: new ObjectId(assignmentId),
+      }).populate("Student");
+
+      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
