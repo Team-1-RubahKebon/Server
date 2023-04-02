@@ -300,8 +300,8 @@ module.exports = class StudentController {
 
       let studentAnswer = await StudentAnswer.findOne({ Student: _id })
         .populate("Assignment")
-        .populate("Student");
-      //.populate('Answers') //kalo udah up answers baru uncomment
+        .populate("Student")
+        .populate("Answers"); //kalo udah up answers baru uncomment
 
       res.status(200).json(studentAnswer);
     } catch (err) {
