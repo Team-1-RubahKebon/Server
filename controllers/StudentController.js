@@ -265,13 +265,11 @@ module.exports = class StudentController {
     try {
       let _id = req.params.id;
       let assignmentById = await Assignment.findOne({ _id })
+        .populate("ClassId")
         .populate({
-          path: "ClassId",
-          populate: {
-            path: "Students",
-          },
+          path: "StudentAnswers",
+          populate: "Student",
         })
-        .populate("StudentAnswers")
         .populate("QuestionId");
 
       res.status(200).json(assignmentById);
