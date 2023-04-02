@@ -32,6 +32,8 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
+
+      console.log(req.user);
       let assignmentId = req.params.courseId;
       const fileUri = req.file.linkUrl;
 
