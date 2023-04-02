@@ -1,4 +1,4 @@
-module.exports = async (text, question) => {
+module.exports = (text, question) => {
   const pattern =
     /\((\d+)\)\. (A B C D ##)\n|\((#[0-9]+)\) (.+)\n|\((10)\)\. (A B C D ##)$/gm;
 

@@ -62,9 +62,15 @@ module.exports = class StudentController {
 
       const text = result.fullTextAnnotation.text;
       const questionAssignment = await Question.findOne({
-        _id: assignmentCheck.QuestionId,
+        _id: new ObjectId("6427e7fadee199082ba386c8"),
       });
+
       let questions = questionAssignment.questions;
+
+      if (!questions) {
+        throw new Errors(404, "Assignment has no question assigned for it");
+      }
+
       const answers = ocrAdapter(text, questions);
 
       if (!answers.length) {
@@ -267,6 +273,8 @@ module.exports = class StudentController {
           populate: "Student",
         })
         .populate("QuestionId");
+
+      console.log(assignmentById);
 
       res.status(200).json(assignmentById);
     } catch (err) {

@@ -130,7 +130,7 @@ module.exports = class TeacherController {
         query.name = { $regex: `${name}` };
       }
 
-      let assignments = await Assignment.find(query);
+      let assignments = await Assignment.find(query).populate("QuestionId");
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -145,7 +145,8 @@ module.exports = class TeacherController {
 
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
-        .populate("StudentAnswers");
+        .populate("StudentAnswers")
+        .populate("QuestionId");
 
       res.status(200).json(assignmentById);
     } catch (err) {
