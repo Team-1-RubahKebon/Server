@@ -9,6 +9,8 @@ const Assignment = require("../models/Assignment");
 const { default: mongoose } = require("mongoose");
 const Question = require("../models/Question");
 const { ObjectId } = require("mongodb");
+const StudentAnswer = require("../models/StudentAnswer");
+const openai = require("../config/openAI");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -46,11 +48,10 @@ module.exports = class TeacherController {
     try {
       let { email, name, password, address, Class } = req.body;
 
-      if (!email || !name || !password) {
+      if (!email || !password) {
         throw new Errors(400, "required fields must be filled");
       }
-
-      password = Hash.create(password);
+      // password = Hash.create(password);
 
       let user = new User({
         email,
@@ -117,7 +118,19 @@ module.exports = class TeacherController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find();
+      let ClassId = req.query.Class;
+      let name = req.query.name;
+      let query = {};
+
+      if (ClassId) {
+        query.ClassId = ClassId;
+      }
+
+      if (name) {
+        query.name = { $regex: `${name}` };
+      }
+
+      let assignments = await Assignment.find(query);
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -128,10 +141,11 @@ module.exports = class TeacherController {
   static async getAssignment(req, res, next) {
     try {
       let _id = req.params.id;
+      console.log(_id);
 
-      let assignmentById = await Assignment.findOne({ _id }).populate(
-        "ClassId"
-      );
+      let assignmentById = await Assignment.findOne({ _id })
+        .populate("ClassId")
+        .populate("StudentAnswers");
 
       res.status(200).json(assignmentById);
     } catch (err) {
@@ -145,6 +159,8 @@ module.exports = class TeacherController {
       session.startTransaction();
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
+
+      console.log(req.body);
 
       // if (
       //   !questionForm ||
@@ -163,9 +179,9 @@ module.exports = class TeacherController {
 
       let questionCreated = new Question(questionForm);
 
-      await questionCreated.save();
+      await questionCreated.save({ session });
 
-      let assignmentCreated = await Assignment.create({
+      let assignmentCreated = new Assignment({
         name,
         ClassId,
         QuestionId: questionCreated._id,
@@ -173,20 +189,67 @@ module.exports = class TeacherController {
         deadline,
         assignmentDate,
       });
+      await assignmentCreated.save({ session });
 
       let updateClass = await Class.updateOne(
         {
           _id: assignmentCreated.ClassId,
         },
-        { $push: { Assignments: assignmentCreated._id } }
+        { $push: { Assignments: assignmentCreated._id } },
+        { session }
       );
-
-      //cek kelasnya dulu terus update one kelasnya biar nanti gampang populate
 
       await session.commitTransaction();
       session.endSession();
 
       res.status(201).json(assignmentCreated);
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.log(err);
+      next(err);
+    }
+  }
+
+  static async updateAssignment(req, res, next) {
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+      let { questionForm, StudentAnswers } = req.body;
+      let _id = req.params.id;
+
+      // if (
+      //   !questionForm ||
+      //   !questionForm.questions ||
+      //   questionForm.questions.length < 15
+      // ) {
+      //   throw new Errors(
+      //     400,
+      //     "Must include 15 questions when creating assignment"
+      //   );
+      // }
+
+      let assignment = await Assignment.findOne(
+        { _id: new ObjectId(_id) },
+        { session }
+      ).populate("QuestionId");
+
+      let question = assignment.QuestionId;
+
+      // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
+      //   await StudentAnswer.updateOne(
+      //     {
+      //       _id: new ObjectId(el._id),
+      //     },
+      //     { status: "Returned" },
+      //     { session }
+      //   );
+      // });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(200).json(question);
     } catch (err) {
       await session.abortTransaction();
       session.endSession();
@@ -203,7 +266,16 @@ module.exports = class TeacherController {
         throw new Errors(400, "All class details must be filled");
       }
 
-      await Class.create({ name, classAvg: 0, schedule });
+      let Teacher = req.user._id;
+
+      await Class.create({
+        name,
+        classAvg: 0,
+        schedule,
+        Assignments: [],
+        Students: [],
+        Teacher,
+      });
 
       res.status(200).json({ message: "Class has been successfully added" });
     } catch (err) {
@@ -229,7 +301,38 @@ module.exports = class TeacherController {
     try {
       let id = req.params.id;
       await Assignment.findByIdAndDelete(id);
-      res.status(200).json("Assigment has been successfully deleted");
+      res
+        .status(200)
+        .json({ message: "Assigment has been successfully deleted" });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswers(req, res, next) {
+    try {
+      let assignmentId = req.params.courseId;
+
+      let studentAnswers = await StudentAnswer.find({
+        Assignment: new ObjectId(assignmentId),
+      }).populate("Student");
+
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async chatOpenAi(req, res, next) {
+    try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: req.body.chat,
+        temperature: 0.5,
+        max_tokens: 2048,
+      });
+
+      res.status(200).json({ message: completion.data.choices[0].text });
     } catch (err) {
       next(err);
     }

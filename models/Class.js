@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const classSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: "Class must have name",
   },
   schedule: [
     {
@@ -20,6 +20,9 @@ const classSchema = new mongoose.Schema({
   Assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Assignment" }],
   Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  classAvg: {
+    type: Number,
+  },
 });
 
 const Class = mongoose.model("Class", classSchema);
