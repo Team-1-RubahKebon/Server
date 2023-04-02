@@ -3,6 +3,7 @@ const request = require("supertest");
 const { Hash } = require("../helpers/Hash");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
+const Token = require("../helpers/Token");
 
 beforeAll(async () => {});
 
@@ -12,7 +13,7 @@ describe("POST /teachers/register", () => {
   describe.skip("SUCCESS CASE", () => {
     test("should create new teacher and return status 201", async () => {
       const body = {
-        email: "teachertest@mail.com",
+        email: "teachertest2@mail.com",
         password: "123456",
         name: "teachertest",
         address: "Namek",
@@ -232,10 +233,10 @@ describe("POST /teachers/login", () => {
       expect(response.body).toHaveProperty("message", "Wrong Email/Password");
     });
 
-    test.skip("should fail to login because the role is not teacher and return status 403", async () => {
+    test("should fail to login because the role is not teacher and return status 403", async () => {
       const body = {
-        email: "hvolet0@netvibes.com",
-        password: "fVxDRdzPxhgb",
+        email: "jambu@pohon.com",
+        password: "jambu",
       };
 
       const response = await request(app).post("/teachers/login").send(body);
@@ -277,7 +278,7 @@ describe("GET /teachers/class", () => {
     });
   });
   describe("FAILED CASE", () => {
-    it("should be failed and return status 500", async () => {
+    test("should be failed and return status 500", async () => {
       const response = await request(app).get("/teachers/class/1");
 
       expect(response.status).toBe(500);
@@ -328,7 +329,7 @@ describe("GET /teachers/assignments", () => {
     });
   });
   describe("FAILED CASE", () => {
-    it("should be failed and return status 500", async () => {
+    test("should be failed and return status 500", async () => {
       const response = await request(app).get("/teachers/assignments/1");
 
       expect(response.status).toBe(500);
@@ -338,33 +339,263 @@ describe("GET /teachers/assignments", () => {
   });
 });
 
-describe.skip("POST /teachers/class", () => {
-  //! ini harus dihandle besok
+describe("DELETE /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
-    test("should get get all classes and return status 200", async () => {
+    test("should delete single assignment and return status 200", async () => {
+      const response = await request(app).delete(
+        "/teachers/assignments/642868c18c2b623a1796ed19"
+      );
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "Assigment has been successfully deleted"
+      );
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should be failed and return status 500", async () => {
+      const response = await request(app).delete("/teachers/assignments/1");
+
+      expect(response.status).toBe(500);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "Internal Server Error");
+    });
+  });
+});
+
+describe("POST /teachers/assignments", () => {
+  describe("SUCCESS CASE", () => {
+    test("should create single assignment and return status 201", async () => {
       const body = {
-        name: "xii-21",
+        name: "bangun candi 3",
+        ClassId: "6427ba76af2401519a68219e",
+        subject: "Chemistry",
+        deadline: "2023-02-04T00:00:00.000Z",
+        assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(201);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("name", expect.any(String));
+      expect(response.body).toHaveProperty("ClassId", expect.any(String));
+      expect(response.body).toHaveProperty("subject", expect.any(String));
+      expect(response.body).toHaveProperty("deadline", expect.any(String));
+      expect(response.body).toHaveProperty(
+        "assignmentDate",
+        expect.any(String)
+      );
+      expect(response.body).toHaveProperty("StudentAnswers", expect.any(Array));
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should fail to create assignment because the name is not inputted and return status 400", async () => {
+      const body = {
+        // name: "bangun candi 3",
+        ClassId: "6427ba76af2401519a68219e",
+        subject: "Chemistry",
+        deadline: "2023-02-04T00:00:00.000Z",
+        assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All assignment details must be filled"
+      );
+    });
+    test("should fail to create assignment because the ClassId is not inputted and return status 400", async () => {
+      const body = {
+        name: "bangun candi 3",
+        // ClassId: "6427ba76af2401519a68219e",
+        subject: "Chemistry",
+        deadline: "2023-02-04T00:00:00.000Z",
+        assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All assignment details must be filled"
+      );
+    });
+    test("should fail to create assignment because the subject is not inputted and return status 400", async () => {
+      const body = {
+        name: "bangun candi 3",
+        ClassId: "6427ba76af2401519a68219e",
+        // subject: "Chemistry",
+        deadline: "2023-02-04T00:00:00.000Z",
+        assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All assignment details must be filled"
+      );
+    });
+    test("should fail to create assignment because the deadline is not inputted and return status 400", async () => {
+      const body = {
+        name: "bangun candi 3",
+        ClassId: "6427ba76af2401519a68219e",
+        subject: "Chemistry",
+        // deadline: "2023-02-04T00:00:00.000Z",
+        assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All assignment details must be filled"
+      );
+    });
+    test("should fail to create assignment because the assignmentDate is not inputted and return status 400", async () => {
+      const body = {
+        name: "bangun candi 3",
+        ClassId: "6427ba76af2401519a68219e",
+        subject: "Chemistry",
+        deadline: "2023-02-04T00:00:00.000Z",
+        // assignmentDate: "2022-10-26T00:00:00.000Z",
+        questionForm: {
+          questions: [],
+        },
+      };
+
+      const response = await request(app)
+        .post("/teachers/assignments")
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All assignment details must be filled"
+      );
+    });
+  });
+});
+
+describe("POST /teachers/class", () => {
+  describe("SUCCESS CASE", () => {
+    test("should post single class and return status 200", async () => {
+      const body = {
+        name: "xii-200",
         schedule: [
           {
             day: "monday",
             subjects: "Math",
           },
         ],
-        Students: [
-          {
-            _id: "6427276088a14b06ae616964",
-          },
-        ],
-        Teacher: {
-          _id: "6427276088a14b06ae616982",
-        },
       };
 
-      const response = await request(app).post("/teachers/login").send(body);
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .post("/teachers/class")
+        .send(body)
+        .set("access_token", access_token);
 
       expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "Class has been successfully added"
+      );
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should fail to create class because the name is not inputted and return status 400", async () => {
+      const body = {
+        // name: "xii-200",
+        schedule: [
+          {
+            day: "monday",
+            subjects: "Math",
+          },
+        ],
+      };
+
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .post("/teachers/class")
+        .send(body)
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All class details must be filled"
+      );
+    });
+    test("should fail to create class because the schedule is not inputted and return status 400", async () => {
+      const body = {
+        name: "xii-200",
+        // schedule: [
+        //   {
+        //     day: "monday",
+        //     subjects: "Math",
+        //   },
+        // ],
+      };
+
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .post("/teachers/class")
+        .send(body)
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "All class details must be filled"
+      );
     });
   });
 });

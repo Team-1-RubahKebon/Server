@@ -128,9 +128,8 @@ module.exports = class TeacherController {
     try {
       let _id = req.params.id;
 
-      let assignmentById = await Assignment.findOne({ _id }).populate(
-        "ClassId"
-      );
+      let assignmentById = await Assignment.findOne({ _id }).populate("ClassId")
+        .populate;
 
       res.status(200).json(assignmentById);
     } catch (err) {
@@ -162,22 +161,26 @@ module.exports = class TeacherController {
 
       let questionCreated = new Question(questionForm);
 
-      await questionCreated.save();
+      await questionCreated.save({ session });
 
-      let assignmentCreated = await Assignment.create({
-        name,
-        ClassId,
-        QuestionId: questionCreated._id,
-        subject,
-        deadline,
-        assignmentDate,
-      });
+      let assignmentCreated = await Assignment.create(
+        {
+          name,
+          ClassId,
+          QuestionId: questionCreated._id,
+          subject,
+          deadline,
+          assignmentDate,
+        },
+        { session }
+      );
 
       let updateClass = await Class.updateOne(
         {
           _id: assignmentCreated.ClassId,
         },
-        { $push: { Assignments: assignmentCreated._id } }
+        { $push: { Assignments: assignmentCreated._id } },
+        { session }
       );
 
       await session.commitTransaction();
@@ -193,20 +196,21 @@ module.exports = class TeacherController {
   }
 
   static async createClass(req, res, next) {
-    //! ini harus dihandle besok
     try {
-      let { name, schedule, Students, Teacher } = req.body;
+      let { name, schedule } = req.body;
 
-      if (!name || !schedule || !Students || !Teacher) {
+      if (!name || !schedule) {
         throw new Errors(400, "All class details must be filled");
       }
+
+      let Teacher = req.user._id;
 
       await Class.create({
         name,
         classAvg: 0,
         schedule,
         Assignments: [],
-        Students,
+        Students: [],
         Teacher,
       });
 
@@ -235,6 +239,16 @@ module.exports = class TeacherController {
       let id = req.params.id;
       await Assignment.findByIdAndDelete(id);
       res.status(200).json("Assigment has been successfully deleted");
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getStudentAnswers(req, res, next) {
+    try {
+      let assignmentId = req.params.courseId;
+
+      res.status(200).json({ assignmentId });
     } catch (err) {
       next(err);
     }
