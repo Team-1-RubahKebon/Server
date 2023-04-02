@@ -162,22 +162,26 @@ module.exports = class TeacherController {
 
       let questionCreated = new Question(questionForm);
 
-      await questionCreated.save();
+      await questionCreated.save({ session });
 
-      let assignmentCreated = await Assignment.create({
-        name,
-        ClassId,
-        QuestionId: questionCreated._id,
-        subject,
-        deadline,
-        assignmentDate,
-      });
+      let assignmentCreated = await Assignment.create(
+        {
+          name,
+          ClassId,
+          QuestionId: questionCreated._id,
+          subject,
+          deadline,
+          assignmentDate,
+        },
+        { session }
+      );
 
       let updateClass = await Class.updateOne(
         {
           _id: assignmentCreated.ClassId,
         },
-        { $push: { Assignments: assignmentCreated._id } }
+        { $push: { Assignments: assignmentCreated._id } },
+        { session }
       );
 
       await session.commitTransaction();
@@ -194,19 +198,22 @@ module.exports = class TeacherController {
 
   static async createClass(req, res, next) {
     //! ini harus dihandle besok
-    try {
-      let { name, schedule, Students, Teacher } = req.body;
 
-      if (!name || !schedule || !Students || !Teacher) {
+    try {
+      let { name, schedule } = req.body;
+
+      if (!name || !schedule) {
         throw new Errors(400, "All class details must be filled");
       }
+
+      let Teacher = req.user._id;
 
       await Class.create({
         name,
         classAvg: 0,
         schedule,
         Assignments: [],
-        Students,
+        Students: [],
         Teacher,
       });
 

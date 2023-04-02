@@ -21,7 +21,7 @@ const studentAnswerSchema = new mongoose.Schema({
   Answers: [
     {
       rowNumber: {
-        type: Number,
+        type: mongoose.Schema.Types.Mixed,
       },
       answer: String,
       answerType: {
