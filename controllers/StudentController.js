@@ -137,7 +137,9 @@ module.exports = class StudentController {
   }
 
   static async register(req, res, next) {
+    const session = await mongoose.startSession();
     try {
+      session.startTransaction();
       let { email, name, password, address, Class } = req.body;
 
       if (!email || !name || !password) {
@@ -155,12 +157,27 @@ module.exports = class StudentController {
         role: "Student",
       });
 
-      let registeringUser = await user.save();
+      let registeringUser = await user.save({
+        session,
+      });
+      let updateClass = await Class.updateOne(
+        {
+          _id: registeringUser.Class,
+        },
+        { $push: { Students: registeringUser._id } },
+        {
+          session,
+        }
+      );
 
       let access_token = Token.create({ id: registeringUser._id });
 
+      await session.commitTransaction();
+      session.endSession();
       res.status(201).json({ access_token, name: registeringUser.name });
     } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
       next(err);
     }
   }
@@ -200,7 +217,7 @@ module.exports = class StudentController {
     try {
       let users = await User.find({
         role: "Student",
-        Class: req.user.Class,
+        // Class: req.user.Class,
       });
 
       let newUsers = users.map((el) => {
@@ -217,6 +234,7 @@ module.exports = class StudentController {
   static async getStudentById(req, res, next) {
     try {
       let user = await User.findOne({ _id: req.params.id }).populate("Class");
+      console.log(user, "ini user <<<<<<<<<<<<<<<<<<,");
       delete user._doc.password;
 
       res.status(200).json(user);
@@ -227,7 +245,12 @@ module.exports = class StudentController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find();
+      // let ClassId = req.user.Class
+      console.log(req.user);
+      let assignments = await Assignment.find({
+        // ClassId
+      }).populate("ClassId");
+
       res.status(200).json(assignments);
     } catch (err) {
       next(err);
@@ -239,12 +262,9 @@ module.exports = class StudentController {
       let _id = req.params.id;
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
-        .populate("StudentAnswers");
-      // .populate("QuestionId") nanti dimasukin lagi
+        .populate("StudentAnswers")
+        .populate("QuestionId");
 
-      if (!assignmentById) {
-        throw new Errors(404, "Data not found!");
-      }
       res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
@@ -254,7 +274,6 @@ module.exports = class StudentController {
   static async getStudentAnswers(req, res, next) {
     try {
       let _id = req.user._id;
-
       if (!_id) {
         throw new Errors(404, "Student not found");
       }
@@ -271,11 +290,11 @@ module.exports = class StudentController {
     try {
       let _id = req.params.id;
 
-      if (_id) {
+      if (!_id) {
         throw new Errors(404, "Answers not found");
       }
 
-      let studentAnswer = await StudentAnswer.findById(_id)
+      let studentAnswer = await StudentAnswer.findOne({ Student: _id })
         .populate("Assignment")
         .populate("Student");
       //.populate('Answers') //kalo udah up answers baru uncomment

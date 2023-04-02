@@ -7,7 +7,7 @@ routerTeacher.post("/login", TeacherController.login); //done testting
 routerTeacher.post("/googlein", TeacherController.googleLogin);
 routerTeacher.post("/register", TeacherController.register); //done testing
 
-// routerTeacher.use(authentication); //auth goes here
+// routerTeacher.use(authentication); //auth goes here 
 
 routerTeacher.get("/class", TeacherController.getClasses); //done testing
 routerTeacher.post("/class", TeacherController.createClass);
