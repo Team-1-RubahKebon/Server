@@ -10,6 +10,7 @@ const { default: mongoose } = require("mongoose");
 const Question = require("../models/Question");
 const { ObjectId } = require("mongodb");
 const StudentAnswer = require("../models/StudentAnswer");
+const openai = require("../config/openAI");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -117,7 +118,19 @@ module.exports = class TeacherController {
 
   static async getAssignments(req, res, next) {
     try {
-      let assignments = await Assignment.find();
+      let ClassId = req.query.Class;
+      let name = req.query.name;
+      let query = {};
+
+      if (ClassId) {
+        query.ClassId = ClassId;
+      }
+
+      if (name) {
+        query.name = { $regex: `${name}` };
+      }
+
+      let assignments = await Assignment.find(query);
 
       res.status(200).json(assignments);
     } catch (err) {
@@ -258,6 +271,21 @@ module.exports = class TeacherController {
       }).populate("Student");
 
       res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async chatOpenAi(req, res, next) {
+    try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: req.body.chat,
+        temperature: 0.5,
+        max_tokens: 2048,
+      });
+
+      res.status(200).json({ message: completion.data.choices[0].text });
     } catch (err) {
       next(err);
     }

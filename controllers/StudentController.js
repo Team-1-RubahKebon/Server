@@ -7,7 +7,7 @@ const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
-const { OAuth2Client } = require("google-auth-library");
+const { OAuth2Client, auth } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
@@ -15,8 +15,6 @@ const { ObjectId } = require("mongodb");
 const ocrAdapter = require("../helpers/ocrAdapter");
 const dateFormatter = require("../helpers/dateFormatter");
 const { default: mongoose } = require("mongoose");
-
-const client = new ImageAnnotatorClient(credential);
 
 module.exports = class StudentController {
   static async getClass(req, res, next) {
@@ -32,8 +30,10 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
+      const client = new ImageAnnotatorClient({
+        keyFilename: './arctic-plasma-377908-7bbfda6bfa06.json',
+      });
 
-      console.log(req.user);
       let assignmentId = req.params.courseId;
       const fileUri = req.file.linkUrl;
 
@@ -63,8 +63,6 @@ module.exports = class StudentController {
 
       const answers = ocrAdapter(text);
 
-      console.log(answers);
-
       if (!answers.length) {
         throw new Errors(400, "Wrong Form Format");
       }
@@ -73,7 +71,6 @@ module.exports = class StudentController {
       let status = "Assigned";
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
-      console.log(assignmentId);
 
       let StudentAnswerCreate = new StudentAnswer({
         Assignment: new ObjectId(assignmentId),
@@ -86,8 +83,6 @@ module.exports = class StudentController {
 
       let created = await StudentAnswerCreate.save({ session });
 
-      console.log(created);
-
       let updateAssignment = await Assignment.updateOne(
         {
           _id: new ObjectId(assignmentId),
@@ -96,7 +91,6 @@ module.exports = class StudentController {
         { session }
       );
 
-      console.log(updateAssignment);
       await session.commitTransaction();
       session.endSession();
 
@@ -142,7 +136,7 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { email, name, password, address, Class } = req.body;
+      let { email, name, password, address, ClassId } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -155,7 +149,7 @@ module.exports = class StudentController {
         name,
         password,
         address,
-        Class: new ObjectId(Class),
+        Class: new ObjectId(ClassId),
         role: "Student",
       });
 
@@ -171,6 +165,8 @@ module.exports = class StudentController {
           session,
         }
       );
+
+      console.log(updateClass);
 
       let access_token = Token.create({ id: registeringUser._id });
 
@@ -264,7 +260,10 @@ module.exports = class StudentController {
       let _id = req.params.id;
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
-        .populate("StudentAnswers")
+        .populate({
+          path: "StudentAnswers",
+          populate: "Student",
+        })
         .populate("QuestionId");
 
       res.status(200).json(assignmentById);
@@ -298,8 +297,8 @@ module.exports = class StudentController {
 
       let studentAnswer = await StudentAnswer.findOne({ Student: _id })
         .populate("Assignment")
-        .populate("Student");
-      //.populate('Answers') //kalo udah up answers baru uncomment
+        .populate("Student")
+        .populate("Answers");
 
       res.status(200).json(studentAnswer);
     } catch (err) {
