@@ -18,7 +18,7 @@ studentsRouter.get("/answers/:id", StudentController.getStudentAnswerById);
 studentsRouter.post(
   "/upload/:courseId",
   upload.single("image"),
-  StudentController.recognizing
+  StudentController.createStudentAnswer
 );
 studentsRouter.get("/:id", StudentController.getStudentById);
 studentsRouter.get("/assignments/:id", StudentController.getAssignmentById);

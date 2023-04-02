@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.29% </span>
+                <span class="strong">70.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>77/108</span>
+                <span class='fraction'>78/110</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.29% </span>
+                <span class="strong">70.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/108</span>
+                <span class='fraction'>78/110</span>
             </div>
         
             
@@ -320,7 +320,9 @@
 <a name='L255'></a><a href='#L255'>255</a>
 <a name='L256'></a><a href='#L256'>256</a>
 <a name='L257'></a><a href='#L257'>257</a>
-<a name='L258'></a><a href='#L258'>258</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -429,6 +431,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -491,8 +495,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -515,7 +519,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -665,7 +669,7 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { email, name, password, address, Class } = req.body;
+      let { email, name, password, address, classId } = req.body;
 &nbsp;
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -678,7 +682,7 @@ module.exports = class StudentController {
         name,
         password,
         address,
-        Class: new ObjectId(Class),
+        Class: new ObjectId(classId),
         role: "Student",
       });
 &nbsp;
@@ -686,6 +690,8 @@ module.exports = class StudentController {
       let registeringUser = await user.save({
         session
       });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      console.log(registeringUser,"ini register user baru &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;,")</span>
       let updateClass = <span class="cstat-no" title="statement not covered" >await Class.updateOne(</span>
         {
           _id: registeringUser.Class,
@@ -744,7 +750,7 @@ module.exports = class StudentController {
       console.log(req.user);
       let users = await User.find({
         role: "Student",
-        // Class: req.user.Class,
+        Class: req.user.Class,
       });
 &nbsp;
       let newUsers = users.map((el) =&gt; {
@@ -772,10 +778,10 @@ module.exports = class StudentController {
 &nbsp;
   static async getAssignments(req, res, next) {
     try {
-      // let ClassId = req.user.Class
+      let ClassId = req.user.Class
       console.log(req.user)
       let assignments = await Assignment.find({
-        // ClassId
+        ClassId
       }).populate("ClassId")
 &nbsp;
       res.status(200).json(assignments)
@@ -825,8 +831,8 @@ module.exports = class StudentController {
 &nbsp;
       let studentAnswer = await StudentAnswer.findOne({ Student: _id })
         .populate("Assignment")
-        .populate("Student");
-      //.populate('Answers') //kalo udah up answers baru uncomment
+        .populate("Student")
+        .populate('Answers') //kalo udah up answers baru uncomment
 &nbsp;
       res.status(200).json(studentAnswer);
     } catch (err) {
@@ -841,7 +847,7 @@ module.exports = class StudentController {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-02T07:34:27.358Z
+                at 2023-04-02T09:29:42.504Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

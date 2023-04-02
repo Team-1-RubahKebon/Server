@@ -13,6 +13,7 @@ const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
 const { ObjectId } = require("mongodb");
 const ocrAdapter = require("../helpers/ocrAdapter");
+const dateFormatter = require("../helpers/dateFormatter");
 const { default: mongoose } = require("mongoose");
 
 const client = new ImageAnnotatorClient(credential);
@@ -27,10 +28,26 @@ module.exports = class StudentController {
       next(err);
     }
   }
-  static async recognizing(req, res, next) {
+  static async createStudentAnswer(req, res, next) {
+    const session = await mongoose.startSession();
     try {
-      console.log(req.file);
+      session.startTransaction();
+
+      console.log(req.user);
+      let assignmentId = req.params.courseId;
       const fileUri = req.file.linkUrl;
+
+      if (!assignmentId) {
+        throw new Errors(404, "Not found");
+      }
+
+      const assignmentCheck = await Assignment.findOne({
+        _id: new ObjectId(assignmentId),
+      });
+
+      if (!assignmentCheck) {
+        throw new Errors(404, "Not found");
+      }
 
       const options = {
         image: { source: { imageUri: fileUri } },
@@ -44,10 +61,49 @@ module.exports = class StudentController {
 
       const text = result.fullTextAnnotation.text;
 
-      const studentAnswers = ocrAdapter(text);
+      const answers = ocrAdapter(text);
 
-      res.status(200).json(studentAnswers);
+      console.log(answers);
+
+      if (!answers.length) {
+        throw new Errors(400, "Wrong Form Format");
+      }
+
+      let studentId = req.user._id;
+      let status = "Assigned";
+      let dateNow = new Date();
+      let turnedAt = dateFormatter(dateNow);
+      console.log(assignmentId);
+
+      let StudentAnswerCreate = new StudentAnswer({
+        Assignment: new ObjectId(assignmentId),
+        Student: new ObjectId(studentId),
+        status,
+        imgUrl: fileUri,
+        turnedAt,
+        Answers: answers,
+      });
+
+      let created = await StudentAnswerCreate.save({ session });
+
+      console.log(created);
+
+      let updateAssignment = await Assignment.updateOne(
+        {
+          _id: new ObjectId(assignmentId),
+        },
+        { $push: { StudentAnswers: created._id } },
+        { session }
+      );
+
+      console.log(updateAssignment);
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(200).json(created);
     } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
       next(err);
     }
   }
@@ -86,7 +142,7 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { email, name, password, address, classId } = req.body;
+      let { email, name, password, address, ClassId } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -99,25 +155,24 @@ module.exports = class StudentController {
         name,
         password,
         address,
-        Class: new ObjectId(classId),
+        Class: new ObjectId(ClassId),
         role: "Student",
       });
 
-
       let registeringUser = await user.save({
-        session
+        session,
       });
-
-      console.log(registeringUser,"ini register user baru <<<<<<<<<<<<<<<<<<,")
       let updateClass = await Class.updateOne(
         {
           _id: registeringUser.Class,
         },
         { $push: { Students: registeringUser._id } },
         {
-          session
+          session,
         }
       );
+
+      console.log(updateClass);
 
       let access_token = Token.create({ id: registeringUser._id });
 
@@ -164,10 +219,9 @@ module.exports = class StudentController {
 
   static async getStudents(req, res, next) {
     try {
-      console.log(req.user);
       let users = await User.find({
         role: "Student",
-        Class: req.user.Class,
+        // Class: req.user.Class,
       });
 
       let newUsers = users.map((el) => {
@@ -184,7 +238,7 @@ module.exports = class StudentController {
   static async getStudentById(req, res, next) {
     try {
       let user = await User.findOne({ _id: req.params.id }).populate("Class");
-      console.log(user, "ini user <<<<<<<<<<<<<<<<<<,")
+      console.log(user, "ini user <<<<<<<<<<<<<<<<<<,");
       delete user._doc.password;
 
       res.status(200).json(user);
@@ -196,12 +250,12 @@ module.exports = class StudentController {
   static async getAssignments(req, res, next) {
     try {
       let ClassId = req.user.Class
-      console.log(req.user)
+      console.log(req.user);
       let assignments = await Assignment.find({
         ClassId
-      }).populate("ClassId")
+      }).populate("ClassId");
 
-      res.status(200).json(assignments)
+      res.status(200).json(assignments);
     } catch (err) {
       next(err);
     }
@@ -213,7 +267,7 @@ module.exports = class StudentController {
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
         .populate("StudentAnswers")
-        .populate("QuestionId")
+        .populate("QuestionId");
 
       res.status(200).json(assignmentById);
     } catch (err) {
@@ -230,7 +284,6 @@ module.exports = class StudentController {
 
       let studentAnswers = await StudentAnswer.find({ Student: _id });
 
-
       res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
@@ -240,7 +293,6 @@ module.exports = class StudentController {
   static async getStudentAnswerById(req, res, next) {
     try {
       let _id = req.params.id;
-
 
       if (!_id) {
         throw new Errors(404, "Answers not found");
