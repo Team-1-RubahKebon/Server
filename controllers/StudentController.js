@@ -142,7 +142,7 @@ module.exports = class StudentController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { email, name, password, address, Class } = req.body;
+      let { email, name, password, address, ClassId } = req.body;
 
       if (!email || !name || !password) {
         throw new Errors(400, "required fields must be filled");
@@ -155,7 +155,7 @@ module.exports = class StudentController {
         name,
         password,
         address,
-        Class: new ObjectId(Class),
+        Class: new ObjectId(ClassId),
         role: "Student",
       });
 
@@ -171,6 +171,8 @@ module.exports = class StudentController {
           session,
         }
       );
+
+      console.log(updateClass);
 
       let access_token = Token.create({ id: registeringUser._id });
 
