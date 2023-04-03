@@ -1,45 +1,8 @@
-// const ocrAdapter =
-module.exports = (text) => {
-  const rows = text.split("\n");
-  const result = [];
+// const ocrAdapter
+module.exports = (input) => {
+  const inputLines = input.split("\n");
 
-  let answerType = "";
-  let isWrong = false;
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i].trim();
-
-    if (row.match(/^[A-G]\.$/)) {
-      result.push({
-        rowNumber: i + 1,
-        answer: row.slice(0, -1),
-        answerType: "mc",
-        isWrong,
-      });
-    } else if (row.match(/^[\d]+[)\.]/)) {
-      answerType = "essay";
-      isWrong = false;
-
-      result.push({
-        rowNumber: row.split(".")[0],
-        answer: row.slice(row.indexOf(")") + 1),
-        answerType,
-        isWrong,
-      });
-    } else if (row.match(/^x[\d]+[)\.]/)) {
-      answerType = "essay";
-      isWrong = true;
-
-      result.push({
-        rowNumber: row.split(".")[0].substring(1),
-        answer: row.slice(row.indexOf(")") + 1),
-        answerType,
-        isWrong,
-      });
-    }
-  }
-
-  return result;
+  return inputLines;
 };
 
 let expected = [
@@ -93,4 +56,27 @@ let expected = [
 let input = `LEMBAR JAWABAN\n(1). (A) B C D ##\n(2). A B (C) D ##\n(3). A B C (D) ##\n(4). A (B) C D ##\n(5). A B (C) D ##\n(6). A B (C) D ##\n(7). A (B) C D ##\n(8). A B C (D) ##\n(9). (A) B C D ##\n(10) A (B) C D ##\nESSAY\n(#1) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus.\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#2) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#3) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#4) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#5) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante`;
 
 // let output = ocrAdapter(input);
+// console.log(output);
 // i want output to same as expected
+
+let expectedOut = {
+  pg: {
+    1: "value",
+    2: "value",
+    3: "value",
+    4: "value",
+    5: "value",
+    6: "value",
+    7: "value",
+    8: "value",
+    9: "value",
+    10: "value",
+  },
+  essay: {
+    1: "value",
+    2: "value",
+    3: "value",
+    4: "value",
+    5: "value",
+  },
+};

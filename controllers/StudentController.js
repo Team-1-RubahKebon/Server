@@ -97,6 +97,8 @@ module.exports = class StudentController {
 
       // let created = await StudentAnswerCreate.save({ session });
 
+      // bukan buat tapi update StudentAnswer dengan answers
+
       // let updateAssignment = await Assignment.updateOne(
       //   {
       //     _id: new ObjectId(assignmentId),

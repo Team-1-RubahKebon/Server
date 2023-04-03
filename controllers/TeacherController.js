@@ -173,6 +173,24 @@ module.exports = class TeacherController {
         req.body;
 
       console.log(req.body);
+      questionForm = {
+        questions: [],
+      };
+      for (let i = 0; i < 15; i++) {
+        let question = {
+          rowNumber: ++i,
+          question: "test 1",
+          selection: {
+            A: "Test",
+            B: "Test",
+            C: "Test",
+            D: "Test",
+          },
+          answerType: i < 10 ? "pg" : "essay",
+          keyword: "test",
+        };
+        questionForm.questions.push(question);
+      }
 
       if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
         throw new Errors(400, "All assignment details must be filled");
@@ -192,6 +210,10 @@ module.exports = class TeacherController {
       });
       await assignmentCreated.save({ session });
 
+      let classAssigned = await Class.findOne({
+        _id: new ObjectId(assignmentCreated.ClassId),
+      }).populate("Students");
+
       let updateClass = await Class.updateOne(
         {
           _id: assignmentCreated.ClassId,
@@ -199,6 +221,32 @@ module.exports = class TeacherController {
         { $push: { Assignments: assignmentCreated._id } },
         { session }
       );
+      const studentAnswersArr = [];
+
+      classAssigned.Students.forEach((el) => {
+        let studentAnswer = {};
+        studentAnswer.Assignment = assignmentCreated._id;
+        studentAnswer.Student = el._id;
+        studentAnswer.status = "Assigned";
+        studentAnswer.imgUrl = "";
+        studentAnswer.Answers = [];
+        studentAnswersArr.push(studentAnswer);
+      });
+
+      let createdStudentAnswers = await StudentAnswer.insertMany(
+        studentAnswersArr,
+        { session }
+      );
+
+      await createdStudentAnswers.forEach(async (el) => {
+        let updated = await assignmentCreated.updateOne(
+          {
+            $push: { StudentAnswers: el._id, Students: el.Student },
+          },
+          { session }
+        );
+        console.log(updated);
+      });
 
       await session.commitTransaction();
       session.endSession();
@@ -320,6 +368,16 @@ module.exports = class TeacherController {
       });
 
       res.status(200).json({ message: completion.data.choices[0].text });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async studentAnswerById(req, res, next) {
+    try {
+      let _id = req.params;
+
+      let studentAnswer = await StudentAnswer.findOne({ _id });
     } catch (err) {
       next(err);
     }
