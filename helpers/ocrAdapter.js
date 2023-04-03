@@ -1,16 +1,46 @@
 // const ocrAdapter
 module.exports = (input) => {
-  input = input.split("ESSAY");
+  const essaySeparator = "ESSAY";
 
-  let pg = input[0].split("\n");
-  let essay = input[1];
+  // Split input into parts using the essay separator
+  const inputParts = input.split(essaySeparator);
 
-  let pgObj = {};
-  let essayObj = {};
+  // Extract the answers from the first part
+  const answerPart = inputParts[0];
+  const answers = answerPart.split("\n").slice(1, -1);
 
-  let answer = { pg, essay };
+  // Extract the essay answers from the second part
+  const essayPart = inputParts[1];
+  const essayAnswers = essayPart.match(/#\d+\s+([\s\S]*?)(?=\n#|$)/g) || [];
 
-  return answer;
+  // Map each answer to an object
+  const answerObjects = answers.map((answer) => {
+    const match = answer.match(/^\((\d+)\)\.((?:\s*[A-D](?=\s))+)##$/);
+    if (!match) {
+      throw new Error(`Invalid answer format: ${answer}`);
+    }
+    return {
+      rowNumber: parseInt(match[1]),
+      answer: match[2].trim(),
+      answerType: "pg",
+      isWrong: /\([^()]*\)/.test(match[2]),
+    };
+  });
+
+  // Map each essay answer to an object
+  const essayAnswerObjects = essayAnswers.map((essayAnswer, index) => {
+    return {
+      rowNumber: `#${index + 1}`,
+      answer: essayAnswer.trim(),
+      answerType: "essay",
+      isWrong: false,
+    };
+  });
+
+  // Combine the answer objects and essay answer objects into one array
+  const result = [...answerObjects, ...essayAnswerObjects];
+
+  return result;
 };
 
 let expected = [

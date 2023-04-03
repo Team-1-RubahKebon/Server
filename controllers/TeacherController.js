@@ -11,6 +11,7 @@ const Question = require("../models/Question");
 const { ObjectId } = require("mongodb");
 const StudentAnswer = require("../models/StudentAnswer");
 const openai = require("../config/openAI");
+const dateFormatter = require("../helpers/dateFormatter");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -172,48 +173,52 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      //mock push question
-      // console.log(req.body);
-      // questionForm = {
-      //   questions: [],
-      // };
-      // for (let i = 0; i < 15; i++) {
-      //   let question = {
-      //     rowNumber: ++i,
-      //     question: "test 1",
-      //     selection: {
-      //       A: "Test",
-      //       B: "Test",
-      //       C: "Test",
-      //       D: "Test",
-      //     },
-      //     answerType: i < 10 ? "pg" : "essay",
-      //     keyword: "test",
-      //   };
-      //   questionForm.questions.push(question);
-      // }
-
-      if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
-        throw new Errors(400, "All assignment details must be filled");
+      // mock push question
+      questionForm = {
+        questions: [],
+      };
+      for (let i = 0; i < 15; i++) {
+        let question = {
+          rowNumber: ++i,
+          question: "test 1",
+          selection: {
+            A: "Test",
+            B: "Test",
+            C: "Test",
+            D: "Test",
+          },
+          answerType: i < 10 ? "pg" : "essay",
+          keyword: "test",
+        };
+        questionForm.questions.push(question);
       }
+
+      // if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
+      //   throw new Errors(400, "All assignment details must be filled");
+      // }
 
       let questionCreated = new Question(questionForm);
 
       await questionCreated.save({ session });
+
+      let classAssigned = await Class.findOne({
+        _id: new ObjectId(ClassId),
+      }).populate("Students");
+
+      let classStudents = classAssigned.Students.map((el) => el.id);
+
+      console.log(classStudents);
 
       let assignmentCreated = new Assignment({
         name,
         ClassId,
         QuestionId: questionCreated._id,
         subject,
-        deadline,
-        assignmentDate,
+        deadline: dateFormatter(new Date("2023-05-20")),
+        assignmentDate: dateFormatter(new Date()),
+        Students: classStudents,
       });
       await assignmentCreated.save({ session });
-
-      let classAssigned = await Class.findOne({
-        _id: new ObjectId(assignmentCreated.ClassId),
-      }).populate("Students");
 
       let updateClass = await Class.updateOne(
         {
@@ -224,10 +229,10 @@ module.exports = class TeacherController {
       );
       const studentAnswersArr = [];
 
-      classAssigned.Students.forEach((el) => {
+      classStudents.forEach((el) => {
         let studentAnswer = {};
         studentAnswer.Assignment = assignmentCreated._id;
-        studentAnswer.Student = el._id;
+        studentAnswer.Student = el;
         studentAnswer.status = "Assigned";
         studentAnswer.imgUrl = "";
         studentAnswer.Answers = [];
@@ -236,20 +241,12 @@ module.exports = class TeacherController {
 
       console.log(studentAnswersArr);
 
-      let createdStudentAnswers = await StudentAnswer.insertMany(
-        studentAnswersArr,
-        { session }
+      Promise.all(
+        studentAnswersArr.forEach(async (el) => {
+          let createdStudentAnswers = new StudentAnswer(el);
+          await createdStudentAnswers(el).save();
+        })
       );
-
-      await createdStudentAnswers.forEach(async (el) => {
-        let updated = await assignmentCreated.updateOne(
-          {
-            $push: { StudentAnswers: el._id, Students: el.Student },
-          },
-          { session }
-        );
-        console.log(updated);
-      });
 
       await session.commitTransaction();
       session.endSession();

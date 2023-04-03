@@ -286,7 +286,35 @@ module.exports = class StudentController {
         "Assignment"
       );
 
-      let Assignment = res.status(200).json(studentAnswers);
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getAverageScore(req, res, next) {
+    try {
+      let _id = req.user._id;
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+      console.log(_id);
+
+      // let studentAnswers = await StudentAnswer.find({ Student: _id });
+
+      let avg = await StudentAnswer.aggregate([
+        {
+          $match: { Student: _id },
+        },
+        {
+          $group: {
+            _id: "$Student",
+            avgScore: { $avg: "$score" },
+          },
+        },
+      ]);
+
+      res.status(200).json(avg);
     } catch (err) {
       next(err);
     }
@@ -300,7 +328,9 @@ module.exports = class StudentController {
         throw new Errors(404, "Answers not found");
       }
 
-      let studentAnswer = await StudentAnswer.findOne({ Student: _id })
+      let studentAnswer = await StudentAnswer.findOne({
+        _id,
+      })
         .populate("Assignment")
         .populate("Student")
         .populate("Answers");

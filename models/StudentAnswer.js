@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 const Assignment = require("./Assignment");
 
@@ -32,6 +33,38 @@ const studentAnswerSchema = new mongoose.Schema({
       isWrong: Boolean,
     },
   ],
+});
+
+studentAnswerSchema.pre("insertMany", async function () {
+  try {
+    Assignment.updateOne(
+      {
+        _id: new ObjectId(this.Assignment),
+      },
+      {
+        $push: { StudentAnswers: this._id },
+      },
+      { multi: true }
+    ).exec();
+  } catch (err) {
+    next(err);
+  }
+});
+
+studentAnswerSchema.pre("save", async function () {
+  try {
+    Assignment.updateOne(
+      {
+        _id: new ObjectId(this.Assignment),
+      },
+      {
+        $push: { StudentAnswers: this._id },
+      },
+      { multi: true }
+    ).exec();
+  } catch (err) {
+    next(err);
+  }
 });
 
 const StudentAnswer = mongoose.model("StudentAnswer", studentAnswerSchema);
