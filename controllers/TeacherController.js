@@ -223,9 +223,9 @@ module.exports = class TeacherController {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      let { questionForm, StudentAnswers } = req.body;
+      let { answer } = req.body;
       let _id = req.params.id;
-
+      let { studentAnswerId, rowNumber, isWrong } = answer;
       // if (
       //   !questionForm ||
       //   !questionForm.questions ||
@@ -238,21 +238,21 @@ module.exports = class TeacherController {
       // }
 
       let assignment = await Assignment.findOne(
-        { _id: new ObjectId(_id) },
+        { _id: new ObjectId(studentAnswerId) },
         { session }
       ).populate("QuestionId");
 
+      assignment.u;
+
       let question = assignment.QuestionId;
 
-      // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
-      //   await StudentAnswer.updateOne(
-      //     {
-      //       _id: new ObjectId(el._id),
-      //     },
-      //     { status: "Returned" },
-      //     { session }
-      //   );
-      // });
+      let studentAnswerUpdate = await StudentAnswer.updateOne(
+        {
+          _id: new ObjectId(el._id),
+        },
+        { status: "Returned" },
+        { session }
+      );
 
       await session.commitTransaction();
       session.endSession();
@@ -312,20 +312,6 @@ module.exports = class TeacherController {
       res
         .status(200)
         .json({ message: "Assigment has been successfully deleted" });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async getStudentAnswers(req, res, next) {
-    try {
-      let assignmentId = req.params.courseId;
-
-      let studentAnswers = await StudentAnswer.find({
-        Assignment: new ObjectId(assignmentId),
-      }).populate("Student");
-
-      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }

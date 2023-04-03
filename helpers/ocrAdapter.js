@@ -1,6 +1,5 @@
 module.exports = (text, question) => {
-  const pattern =
-    /\((\d+)\)\. (A B C D ##)\n|\((#[0-9]+)\) (.+)\n|\((10)\)\. (A B C D ##)$/gm;
+  const pattern = /\(\d+\)\. \(\w+\) ##\n|(?:#\d+) .+\n|\(10\)\. \(\w+\) ##$/gm;
 
   const selections = {};
   const essays = {};
@@ -10,16 +9,12 @@ module.exports = (text, question) => {
     if (match[1] !== undefined) {
       let key = match[1];
       let value = match[2];
-      if (key < 10) {
-        value = "A (B) C D ##";
-      }
+
       selections[key] = value;
     } else if (match[5] !== undefined) {
       let key = match[5];
       let value = match[6];
-      if (key >= 10) {
-        value = "A (B) C D ##";
-      }
+
       selections[key] = value;
     } else {
       const key = match[3];
