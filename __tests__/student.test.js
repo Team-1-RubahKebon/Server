@@ -401,7 +401,7 @@ describe("GET /students/answers", () => {
     test('should get students answers and return status 200', async () => {
 
       const response = await request(app).get("/students/answers")
-      .set("access_token", access_token)
+        .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Array)
       expect(response.body[0]).toHaveProperty("_id", expect.any(String))
@@ -416,13 +416,14 @@ describe("GET /students/answers", () => {
     });
   })
 })
+
 describe("GET /students/answers/:id", () => {
   describe("SUCCESS CASE", () => {
 
     test('should get student answers and return status 200', async () => {
 
       const response = await request(app).get("/students/answers/6428985eda54ba5b3f904567")
-      .set("access_token", access_token)
+        .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
       expect(response.body).toHaveProperty("_id", expect.any(String))
@@ -433,6 +434,69 @@ describe("GET /students/answers/:id", () => {
       expect(response.body).toHaveProperty("Answers", expect.any(Array))
       expect(response.body).toHaveProperty("turnedAt", expect.any(String))
       expect(response.body).toHaveProperty("__v", expect.any(Number))
+
+    });
+  })
+
+})
+
+describe("POST /students/upload/:courseId", () => {
+  describe("SUCCESS CASE", () => {
+
+    test('should get student answers and return status 200', async () => {
+
+      const body = {
+        image: ''
+      }
+
+      const response = await request(app).post("/students/upload/64286992f8ed0c9380a9c8eb")
+        .set("access_token", access_token)
+        .send(body)
+
+      expect(response.status).toBe(200)
+      expect(response.body).toBeInstanceOf(Object)
+      expect(response.body).toHaveProperty("_id", expect.any(String))
+      expect(response.body).toHaveProperty("Assignment", expect.any(Object))
+      expect(response.body).toHaveProperty("Student", expect.any(Object))
+      expect(response.body).toHaveProperty("status", expect.any(String))
+      expect(response.body).toHaveProperty("imgUrl", expect.any(String))
+      expect(response.body).toHaveProperty("Answers", expect.any(Array))
+      expect(response.body).toHaveProperty("turnedAt", expect.any(String))
+      expect(response.body).toHaveProperty("__v", expect.any(Number))
+
+    });
+  })
+
+  describe("FAIL CASE", () => {
+
+    test('should fail to find assignment id and return status 404', async () => {
+
+      const body = {
+        image: 'Form-Lembar-jawaban.jpg'
+      }
+
+      const response = await request(app).post("/students/upload/1")
+        .set("access_token", access_token)
+        .send(body)
+
+      expect(response.status).toBe(404)
+      expect(response.body).toBeInstanceOf(Object)
+      expect(response.body).toHaveProperty("message", "wrong parameter")
+
+    });
+    test('should fail to post image due to empty body and return status 500', async () => {
+
+      const body = {
+        image: ''
+      }
+
+      const response = await request(app).post("/students/upload/64286992f8ed0c9380a9c8eb")
+        .set("access_token", access_token)
+        .send(body)
+
+      expect(response.status).toBe(500)
+      expect(response.body).toBeInstanceOf(Object)
+      expect(response.body).toHaveProperty("message", "Internal Server Error")
 
     });
   })

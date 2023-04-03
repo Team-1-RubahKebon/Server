@@ -37,6 +37,7 @@ module.exports = class StudentController {
       let assignmentId = req.params.courseId;
       const fileUri = req.file.linkUrl;
 
+
       if (!assignmentId) {
         throw new Errors(404, "Not found");
       }
