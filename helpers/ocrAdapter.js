@@ -8,22 +8,8 @@ module.exports = (input) => {
   let pgObj = {};
   let essayObj = {};
 
-  const pgArray = [];
-  let rowNumber = 0;
+  let answer = { pg, essay };
 
-  for (let i = 1; i < pg.length - 1; i++) {
-    const line = pg[i];
-
-    console.log(pg[i]);
-    if (line.startsWith("(")) {
-      rowNumber = line.match(/^\((\d+)\)\./);
-    } else {
-      const answer = line.match(/\(([A-Z])\)/);
-      pgArray.push({ rowNumber, answer });
-    }
-  }
-
-  let answer = { pg: pgArray };
   return answer;
 };
 

@@ -65,15 +65,15 @@ module.exports = class StudentController {
         _id: new ObjectId(questionId),
       });
 
-      let questions = questionAssignment.questions;
+      // let questions = questionAssignment.questions;
 
-      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS")
+      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
-      if (!questions) {
-        throw new Errors(404, "Assignment has no question assigned for it");
-      }
+      // if (!questions) {
+      //   throw new Errors(404, "Assignment has no question assigned for it");
+      // }
 
-      const answers = ocrAdapter(text, questions);
+      const answers = ocrAdapter(text);
 
       // if (!answers.length) {
       //   throw new Errors(400, "Wrong Form Format");
