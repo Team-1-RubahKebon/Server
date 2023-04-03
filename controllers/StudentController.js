@@ -60,29 +60,29 @@ module.exports = class StudentController {
       const [result] = await client.annotateImage(options);
       // console.log(result, "<<<<<<<<<<<<<<<<<<<<<, ini result ")
       const text = result.fullTextAnnotation.text;
-      console.log(text);
+      // console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId(questionId),
       });
 
-      // let questions = questionAssignment.questions;
+      let questions = questionAssignment.questions;
 
       // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
-      // if (!questions) {
-      //   throw new Errors(404, "Assignment has no question assigned for it");
-      // }
+      if (!questions) {
+        throw new Errors(404, "Assignment has no question assigned for it");
+      }
 
-      const answers = ocrAdapter(text);
+      const answers = ocrAdapter(text, questions);
 
-      // if (!answers.length) {
-      //   throw new Errors(400, "Wrong Form Format");
-      // }
+      if (!answers.length) {
+        throw new Errors(400, "Wrong Form Format");
+      }
 
-      // let studentId = req.user._id;
-      // let status = "Assigned";
-      // let dateNow = new Date();
-      // let turnedAt = dateFormatter(dateNow);
+      let studentId = req.user._id;
+      let status = "Assigned";
+      let dateNow = new Date();
+      let turnedAt = dateFormatter(dateNow);
 
       // let StudentAnswerCreate = new StudentAnswer({
       //   Assignment: new ObjectId(assignmentId),
