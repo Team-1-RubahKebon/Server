@@ -35,7 +35,7 @@ const assignmentSchema = new mongoose.Schema({
   Students: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
+      ref: "User",
     },
   ],
 });

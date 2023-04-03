@@ -36,6 +36,7 @@ module.exports = class StudentController {
       });
 
       let assignmentId = req.params.courseId;
+      console.log(req.file);
       const fileUri = req.file.uri;
       const fileLink = req.file.linkUrl;
       console.log(fileLink);
@@ -61,9 +62,11 @@ module.exports = class StudentController {
 
       const [result] = await client.annotateImage(options);
 
+      let questionId = "6427e7fadee199082ba386c8";
+
       const text = result.fullTextAnnotation.text;
       const questionAssignment = await Question.findOne({
-        _id: new ObjectId("6427e7fadee199082ba386c8"),
+        _id: new ObjectId(questionId),
       });
 
       let questions = questionAssignment.questions;
@@ -294,7 +297,7 @@ module.exports = class StudentController {
         "Assignment"
       );
 
-      res.status(200).json(studentAnswers);
+      let Assignment = res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
