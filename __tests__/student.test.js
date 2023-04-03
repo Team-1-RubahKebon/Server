@@ -496,8 +496,43 @@ describe("GET /students/answers", () => {
       expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
 
     });
-  })
-})
+  });
+  describe("FAILED CASE", () => {
+    test("should be handle error of get all classes", async () => {
+      jest.spyOn(Class, "find").mockRejectedValue("Error");
+
+      return await request(app)
+        .get("/students/class")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+});
+
+describe("GET /students/answers", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get students answers and return status 200", async () => {
+      const response = await request(app)
+        .get("/students/answers")
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Assignment", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  });
+});
 
 describe("GET /students/answers/:id", () => {
   describe("SUCCESS CASE", () => {
@@ -518,7 +553,8 @@ describe("GET /students/answers/:id", () => {
       expect(response.body).toHaveProperty("__v", expect.any(Number))
 
     });
-  })
+  });
+});
 
 })
 
@@ -543,19 +579,18 @@ describe.skip("POST /students/upload/:courseId", () => {
       expect(response.body).toHaveProperty("__v", expect.any(Number))
 
     });
-  })
+  });
 
   describe("FAIL CASE", () => {
-
-    test('should fail to find assignment id and return status 404', async () => {
-
+    test("should fail to find assignment id and return status 404", async () => {
       const body = {
-        image: 'Form-Lembar-jawaban.jpg'
-      }
+        image: "Form-Lembar-jawaban.jpg",
+      };
 
-      const response = await request(app).post("/students/upload/1")
+      const response = await request(app)
+        .post("/students/upload/1")
         .set("access_token", access_token)
-        .send(body)
+        .send(body);
 
       expect(response.status).toBe(404)
       expect(response.body).toBeInstanceOf(Object)
