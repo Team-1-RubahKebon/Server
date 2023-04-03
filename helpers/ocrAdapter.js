@@ -1,45 +1,42 @@
 // const ocrAdapter
 module.exports = (input) => {
-  const essaySeparator = "ESSAY";
+  input = input.split("\nESSAY\n");
+  let result = [];
+  let multipleAnswersPool = input[0];
+  let essayPool = input[1];
 
-  // Split input into parts using the essay separator
-  const inputParts = input.split(essaySeparator);
+  multipleAnswersPool = multipleAnswersPool.split("\n");
+  for (let i = 1; i < multipleAnswersPool.length; i++) {
+    let pg = {};
+    pg.rowNumber = i;
+    pg.answer = answerLocator(multipleAnswersPool[i]);
+    pg.answerType = "pg";
+    pg.isWrong = false;
+    result.push(pg);
+  }
 
-  // Extract the answers from the first part
-  const answerPart = inputParts[0];
-  const answers = answerPart.split("\n").slice(1, -1);
-
-  // Extract the essay answers from the second part
-  const essayPart = inputParts[1];
-  const essayAnswers = essayPart.match(/#\d+\s+([\s\S]*?)(?=\n#|$)/g) || [];
-
-  // Map each answer to an object
-  const answerObjects = answers.map((answer) => {
-    const match = answer.match(/^\((\d+)\)\.((?:\s*[A-D](?=\s))+)##$/);
-    if (!match) {
-      throw new Error(`Invalid answer format: ${answer}`);
+  function answerLocator(answerStr) {
+    answerArr = answerStr.split(" ");
+    var choice = "";
+    for (let i = 1; i < answerArr.length; i++) {
+      let selection = answerArr[i];
+      if (selection.startsWith("(")) {
+        choice = selection[1];
+      }
     }
-    return {
-      rowNumber: parseInt(match[1]),
-      answer: match[2].trim(),
-      answerType: "pg",
-      isWrong: /\([^()]*\)/.test(match[2]),
-    };
-  });
+    return choice;
+  }
 
-  // Map each essay answer to an object
-  const essayAnswerObjects = essayAnswers.map((essayAnswer, index) => {
-    return {
-      rowNumber: `#${index + 1}`,
-      answer: essayAnswer.trim(),
-      answerType: "essay",
-      isWrong: false,
-    };
-  });
-
-  // Combine the answer objects and essay answer objects into one array
-  const result = [...answerObjects, ...essayAnswerObjects];
-
+  essayPool = essayPool.split("(#");
+  for (let i = 1; i < essayPool.length; i++) {
+    let element = essayPool[i];
+    let essay = {};
+    essay.rowNumber = "#" + element.slice(0, 1);
+    essay.answer = element.slice(3);
+    essay.answerType = "essay";
+    essay.isWrong = false;
+    result.push(essay);
+  }
   return result;
 };
 
