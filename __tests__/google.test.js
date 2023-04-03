@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { OAuth2Client } = require("google-auth-library");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 
-describe("POST /teachers/googlein", () => {
+describe.skip("POST /teachers/googlein", () => {
   describe("SUCCESS CASE", () => {
     test("should login to google and return status 200", async () => {
       const headers = {

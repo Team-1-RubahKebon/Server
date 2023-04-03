@@ -272,7 +272,7 @@ describe("GET /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should get all classes and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .get("/teachers/class")
@@ -289,7 +289,7 @@ describe("GET /teachers/class", () => {
     });
     test("should get single class based on query and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .get("/teachers/class?name=xii-1")
@@ -306,7 +306,7 @@ describe("GET /teachers/class", () => {
     });
     test("should get get single class and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/class/6427ba76af2401519a682198")
         .set("access_token", access_token);
@@ -324,7 +324,7 @@ describe("GET /teachers/class", () => {
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/class/1")
         .set("access_token", access_token);
@@ -336,7 +336,7 @@ describe("GET /teachers/class", () => {
     test("should be handle error of get all classes", async () => {
       jest.spyOn(Class, "find").mockRejectedValue("Error");
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       return await request(app)
         .get("/teachers/class")
@@ -356,7 +356,7 @@ describe("GET /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should get all assignments and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/assignments")
         .set("access_token", access_token);
@@ -379,7 +379,7 @@ describe("GET /teachers/assignments", () => {
     });
     test("should get single assignment based on ClassId and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/assignments?Class=6427ba76af2401519a68219e")
         .set("access_token", access_token);
@@ -402,7 +402,7 @@ describe("GET /teachers/assignments", () => {
     });
     test("should get single assignment based on name and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/assignments?name=ballred0")
         .set("access_token", access_token);
@@ -425,7 +425,7 @@ describe("GET /teachers/assignments", () => {
     });
     test("should get get single assignment and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/assignments/642868c18c2b623a1796ed16")
         .set("access_token", access_token);
@@ -447,7 +447,7 @@ describe("GET /teachers/assignments", () => {
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .get("/teachers/assignments/1")
         .set("access_token", access_token);
@@ -459,7 +459,7 @@ describe("GET /teachers/assignments", () => {
     test("should be handle error of get all assignment", async () => {
       jest.spyOn(Assignment, "find").mockRejectedValue("Error");
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       return await request(app)
         .get("/teachers/assignments")
@@ -479,7 +479,7 @@ describe("DELETE /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should delete single assignment and return status 200", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .delete("/teachers/assignments/642868c18c2b623a1796ed1a")
@@ -496,7 +496,7 @@ describe("DELETE /teachers/assignments", () => {
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
       const response = await request(app)
         .delete("/teachers/assignments/1")
         .set("access_token", access_token);
@@ -512,7 +512,7 @@ describe("POST /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should create single assignment and return status 201", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         name: "bangun candi 3",
@@ -547,7 +547,7 @@ describe("POST /teachers/assignments", () => {
   describe("FAILED CASE", () => {
     test("should fail to create assignment because the name is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         // name: "bangun candi 3",
@@ -574,7 +574,7 @@ describe("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the ClassId is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         name: "bangun candi 3",
@@ -601,7 +601,7 @@ describe("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the subject is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         name: "bangun candi 3",
@@ -628,7 +628,7 @@ describe("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the deadline is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         name: "bangun candi 3",
@@ -655,7 +655,7 @@ describe("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the assignmentDate is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const body = {
         name: "bangun candi 3",
@@ -697,7 +697,7 @@ describe("POST /teachers/class", () => {
       };
 
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -725,7 +725,7 @@ describe("POST /teachers/class", () => {
       };
 
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -751,7 +751,7 @@ describe("POST /teachers/class", () => {
       };
 
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -764,6 +764,82 @@ describe("POST /teachers/class", () => {
         "message",
         "All class details must be filled"
       );
+    });
+  });
+});
+
+describe("GET /teachers/student/answer/:id", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get all classes and return status 200", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
+
+      const response = await request(app)
+        .get("/teachers/student/answer/642b2bbebff227c9ad8f14a6")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body).toHaveProperty("Student", expect.any(String));
+      expect(response.body).toHaveProperty("status", expect.any(String));
+      expect(response.body).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body).toHaveProperty("Answers", expect.any(Array));
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should be failed and return status 400", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
+      const response = await request(app)
+        .get("/teachers/student/answer/1")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "wrong parameter");
+    });
+  });
+});
+
+describe("PATCH /teachers/student/answer/:id", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get all classes and return status 200", async () => {
+      const body = {
+        newStatus: "Returned",
+      };
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
+
+      const response = await request(app)
+        .patch("/teachers/student/answer/642b2bbebff227c9ad8f14a6")
+        .set("access_token", access_token)
+        .send(body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "Student answer status already updated"
+      );
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should be failed and return status 400", async () => {
+      const body = {
+        newStatus: "Returned",
+      };
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkNzhlMTAzYzM1ODMyM2EzZjY2NiIsImlhdCI6MTY4MDU0MzQ2MX0.r0MfYjc-snAnI9ObIL5uDxzviL4zEiMwi2ku9j2cXxg";
+      const response = await request(app)
+        .patch("/teachers/student/answer/1")
+        .set("access_token", access_token)
+        .send(body);
+
+      expect(response.status).toBe(500);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "Internal Server Error");
     });
   });
 });
