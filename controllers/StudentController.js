@@ -67,7 +67,7 @@ module.exports = class StudentController {
       let questions = questionAssignment.questions;
 
       // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS")
-      
+
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
@@ -127,6 +127,7 @@ module.exports = class StudentController {
         throw new Errors(401, "Wrong Email/Password");
       }
 
+      console.log(user, "ini user login <<<<<<<<<<<<<<<<<<")
       if (user.role !== "Student") {
         throw new Errors(403, "You are not student");
       }
@@ -241,6 +242,7 @@ module.exports = class StudentController {
 
   static async getStudentById(req, res, next) {
     try {
+      console.log(req.user, " <<<<<<<<<<<<<<<<,,, user")
       let user = await User.findOne({ _id: req.user._id }).populate("Class");
 
       delete user._doc.password;
@@ -255,6 +257,8 @@ module.exports = class StudentController {
     try {
       // let ClassId = req.user.Class
       console.log(req.user);
+      // let assignments = await Assignment.find({})
+
       let assignments = await Assignment.find({}).populate("ClassId");
 
       res.status(200).json(assignments);
@@ -266,6 +270,7 @@ module.exports = class StudentController {
   static async getAssignmentById(req, res, next) {
     try {
       let _id = req.params.id;
+      // let assignmentById = await Assignment.findOne({ _id })
       let assignmentById = await Assignment.findOne({ _id })
         .populate("ClassId")
         .populate({
@@ -274,7 +279,6 @@ module.exports = class StudentController {
         })
         .populate("QuestionId");
 
-      console.log(assignmentById);
 
       res.status(200).json(assignmentById);
     } catch (err) {

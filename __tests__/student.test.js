@@ -7,6 +7,7 @@ const User = require('../models/User');
 const { ObjectId } = require("mongodb");
 const { create } = require('../helpers/Token');
 const multer = require('multer');
+const StudentAnswer = require('../models/StudentAnswer');
 
 jest.mock('../config/clientVision.js', () => {
   return {
@@ -40,7 +41,6 @@ jest.mock('multer', () => {
   const multer = () => ({
     single: () => {
       return (req, res, next) => {
-        console.log(req.user, "<<<<<<<<<<<<<<<<<<<<<<<<<<<,INI USER")
         req.file = {
           uri: 'http://test.png'
         }
@@ -55,8 +55,7 @@ jest.mock('multer', () => {
   return multer
 })
 
-let access_token = create({ id: new ObjectId("642adf528b4dbef7ea7e1721") })
-console.log(access_token, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,access token ")
+let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkZjUyOGI0ZGJlZjdlYTdlMTcyMSIsImlhdCI6MTY4MDUzMTk2N30.LrfXO8LXteEC5m-E0GQQbikfSRmNjyqK5eluhqOVWbY"
 
 // let assignments
 // beforeAll(async () => {
@@ -308,8 +307,8 @@ describe("POST /student/login", () => {
 
     test("should fail to login because the role is not student and return status 403", async () => {
       const body = {
-        email: "hehe@hehe.com",
-        password: "hehehe",
+        email: "zeke@mail.com",
+        password: "123456",
       };
 
       const response = await request(app).post("/students/login").send(body);
@@ -321,7 +320,76 @@ describe("POST /student/login", () => {
 
   })
 
+})
 
+describe("GET /students/assignments", () => {
+  describe("SUCCESS CASE", () => {
+
+    test('should get assignments and return status 200', async () => {
+
+      const response = await request(app).get("/students/assignments")
+        .set("access_token", access_token)
+
+      console.log(response, "<<<<<<<<<<<<<<<<<<<<<<,,response")
+      expect(response.status).toBe(200)
+      expect(response.body).toBeInstanceOf(Array)
+      expect(response.body[0]).toHaveProperty("StudentAnswers", expect.any(Array))
+      expect(response.body[0]).toHaveProperty("Students", expect.any(Array))
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
+      expect(response.body[0]).toHaveProperty("name", expect.any(String))
+      expect(response.body[0]).toHaveProperty("QuestionId", expect.any(String))
+      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object))
+      expect(response.body[0]).toHaveProperty("subject", expect.any(String))
+      expect(response.body[0]).toHaveProperty("deadline", expect.any(String))
+      expect(response.body[0]).toHaveProperty("assignmentDate", expect.any(String))
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
+
+    });
+
+    test('should get assignment by id and return status 200', async () => {
+
+      const response = await request(app).get("/students/assignments/642ad62e4115b7a593cee3c3")
+        .set("access_token", access_token)
+      expect(response.status).toBe(200)
+      expect(response.body).toBeInstanceOf(Object)
+      expect(response.body).toHaveProperty("StudentAnswers", expect.any(Array))
+      expect(response.body).toHaveProperty("Students", expect.any(Array))
+      expect(response.body).toHaveProperty("_id", expect.any(String))
+      expect(response.body).toHaveProperty("name", expect.any(String))
+      expect(response.body).toHaveProperty("QuestionId", expect.any(Object))
+      expect(response.body).toHaveProperty("ClassId", expect.any(Object))
+      expect(response.body).toHaveProperty("subject", expect.any(String))
+      expect(response.body).toHaveProperty("deadline", expect.any(String))
+      expect(response.body).toHaveProperty("assignmentDate", expect.any(String))
+      expect(response.body).toHaveProperty("__v", expect.any(Number))
+
+    });
+  })
+
+  describe("FAILED CASE", () => {
+
+    test("should be handle error of get all students assignments", async () => {
+
+      jest.spyOn(Assignment, "find").mockRejectedValue("Error");
+
+      return await request(app).get("/students/assignments")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+
+    test("should be failed and return status 500", async () => {
+      const response = await request(app).get("/students/assignments/1")
+        .set("access_token", access_token)
+      expect(response.status).toBe(500);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "Internal Server Error");
+    });
+  });
 })
 
 describe("GET /students", () => {
@@ -331,7 +399,7 @@ describe("GET /students", () => {
 
       const response = await request(app).get("/students")
         .set("access_token", access_token)
-      console.log(response, "<<<<<<<<<<<<<<<<<<<<< ini response ")
+
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Array)
       expect(response.body[0]).toHaveProperty("_id", expect.any(String))
@@ -361,7 +429,7 @@ describe("GET /students", () => {
 
   describe("FAILED CASE", () => {
 
-    test("should be handle error of get all classes", async () => {
+    test("should be handle error of get students", async () => {
 
       jest.spyOn(User, "find").mockRejectedValue("Error");
 
@@ -374,72 +442,24 @@ describe("GET /students", () => {
           console.log(err);
         });
     });
-    
+
     test("should be failed and return status 500", async () => {
 
       jest.spyOn(User, "findOne").mockRejectedValue("Error");
 
-      const response = await request(app).get("/students/profile")
+      return await request(app).get("/students/profile")
         .set("access_token", access_token)
-
-      expect(response.status).toBe(500);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toHaveProperty("message", "Internal Server Error");
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   });
 })
 
-
-describe("GET /students/assignments", () => {
-  describe("SUCCESS CASE", () => {
-
-    test('should get assignments and return status 200', async () => {
-
-      const response = await request(app).get("/students/assignments")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Array)
-      expect(response.body[0]).toHaveProperty("StudentAnswers", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
-      expect(response.body[0]).toHaveProperty("name", expect.any(String))
-      // expect(response.body[0]).toHaveProperty("QuestionId", expect.any(Object))
-      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object))
-      expect(response.body[0]).toHaveProperty("subject", expect.any(String))
-      expect(response.body[0]).toHaveProperty("deadline", expect.any(String))
-      expect(response.body[0]).toHaveProperty("assignmentDate", expect.any(String))
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
-
-    });
-
-    test('should get assignments by id and return status 200', async () => {
-
-      const response = await request(app).get("/students/assignments/642868c18c2b623a1796ed16")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("StudentAnswers", expect.any(Array))
-      expect(response.body).toHaveProperty("_id", expect.any(String))
-      expect(response.body).toHaveProperty("name", expect.any(String))
-      // expect(response.body).toHaveProperty("QuestionId", expect.any(Object))
-      expect(response.body).toHaveProperty("ClassId", expect.any(Object))
-      expect(response.body).toHaveProperty("subject", expect.any(String))
-      expect(response.body).toHaveProperty("deadline", expect.any(String))
-      expect(response.body).toHaveProperty("assignmentDate", expect.any(String))
-      expect(response.body).toHaveProperty("__v", expect.any(Number))
-
-    });
-  })
-
-  describe("FAILED CASE", () => {
-    it("should be failed and return status 500", async () => {
-      const response = await request(app).get("/students/assignments/1")
-        .set("access_token", access_token)
-      expect(response.status).toBe(500);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toHaveProperty("message", "Internal Server Error");
-    });
-  });
-})
 
 describe("GET /students/class", () => {
   describe("SUCCESS CASE", () => {
@@ -497,6 +517,22 @@ describe("GET /students/answers", () => {
 
     });
   })
+
+  describe("FAILED CASE", () => {
+    test("should be handle error of get all student answers", async () => {
+
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+
+      return await request(app).get("/students/answers")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
 })
 
 describe("GET /students/answers/:id", () => {
@@ -504,7 +540,7 @@ describe("GET /students/answers/:id", () => {
 
     test('should get student answers and return status 200', async () => {
 
-      const response = await request(app).get("/students/answers/6428985eda54ba5b3f904567")
+      const response = await request(app).get("/students/answers/642aeb1a982c231706fa3202")
         .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
@@ -519,7 +555,21 @@ describe("GET /students/answers/:id", () => {
 
     });
   })
+  describe("FAILED CASE", () => {
+    test("should be handle error of get student answer by id", async () => {
 
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+
+      return await request(app).get("/students/answers/642aeb1a982c231706fa3202")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
 })
 
 describe.skip("POST /students/upload/:courseId", () => {
