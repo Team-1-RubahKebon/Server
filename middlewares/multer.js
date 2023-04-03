@@ -17,7 +17,7 @@ const multerStorage = new MulterGoogleCloudStorage({
   projectId: credential.project_id,
   keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
   bucket: process.env.BUCKET_NAME,
-});
+}); 
 
 const upload = multer({ storage: multerStorage });
 

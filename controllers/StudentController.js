@@ -1,7 +1,7 @@
-const { ImageAnnotatorClient } = require("@google-cloud/vision");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
+const client = require("../config/clientVision");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
@@ -21,19 +21,16 @@ module.exports = class StudentController {
   static async getClass(req, res, next) {
     try {
       let classes = await Class.find();
-
       res.status(200).json(classes);
     } catch (err) {
       next(err);
     }
   }
   static async createStudentAnswer(req, res, next) {
+    console.log(req.file, req.params, "<<<<<<<<<<<<ini dari controller");
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
-      const client = new ImageAnnotatorClient({
-        keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
-      });
 
       let assignmentId = req.params.courseId;
       console.log(req.file);
@@ -61,15 +58,16 @@ module.exports = class StudentController {
       };
 
       const [result] = await client.annotateImage(options);
-
-      let questionId = "6427e7fadee199082ba386c8";
-
+      // console.log(result, "<<<<<<<<<<<<<<<<<<<<<, ini result ")
       const text = result.fullTextAnnotation.text;
+      // console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId(questionId),
       });
 
       let questions = questionAssignment.questions;
+
+      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS")
 
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
@@ -77,14 +75,14 @@ module.exports = class StudentController {
 
       const answers = ocrAdapter(text, questions);
 
-      // if (!answers.length) {
-      //   throw new Errors(400, "Wrong Form Format");
-      // }
+      if (!answers.length) {
+        throw new Errors(400, "Wrong Form Format");
+      }
 
-      // let studentId = req.user._id;
-      // let status = "Assigned";
-      // let dateNow = new Date();
-      // let turnedAt = dateFormatter(dateNow);
+      let studentId = req.user._id;
+      let status = "Assigned";
+      let dateNow = new Date();
+      let turnedAt = dateFormatter(dateNow);
 
       // let StudentAnswerCreate = new StudentAnswer({
       //   Assignment: new ObjectId(assignmentId),
@@ -181,8 +179,6 @@ module.exports = class StudentController {
           session,
         }
       );
-
-      console.log(updateClass);
 
       let access_token = Token.create({ id: registeringUser._id });
 
