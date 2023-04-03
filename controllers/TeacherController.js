@@ -112,12 +112,14 @@ module.exports = class TeacherController {
       if (name) {
         query.name = { $regex: `${name}` };
       }
-      let allClass = await Class.find(query)
+      let allClass = await Class.find(query);
+
+      const newAllClass = await Class.find(query)
         .populate("Assignments")
         .populate("Teacher")
         .populate("Students");
 
-      res.status(200).json(allClass);
+      res.status(200).json(newAllClass);
     } catch (err) {
       next(err);
     }
@@ -130,16 +132,18 @@ module.exports = class TeacherController {
       let query = {};
 
       if (ClassId) {
-        query.ClassId = ClassId;
+        query.ClassId = new ObjectId(ClassId);
       }
 
       if (name) {
         query.name = { $regex: `${name}` };
       }
 
-      let assignments = await Assignment.find(query).populate("ClassId");
+      let assignments = await Assignment.find();
 
-      res.status(200).json(assignments);
+      let NewAssignments = await Assignment.find(query).populate("ClassId");
+
+      res.status(200).json(NewAssignments);
     } catch (err) {
       next(err);
     }
@@ -169,17 +173,6 @@ module.exports = class TeacherController {
         req.body;
 
       console.log(req.body);
-
-      // if (
-      //   !questionForm ||
-      //   !questionForm.questions ||
-      //   questionForm.questions.length < 15
-      // ) {
-      //   throw new Errors(
-      //     400,
-      //     "Must include 15 questions when creating assignment"
-      //   );
-      // }
 
       if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
         throw new Errors(400, "All assignment details must be filled");
@@ -219,52 +212,52 @@ module.exports = class TeacherController {
     }
   }
 
-  static async updateAssignment(req, res, next) {
-    const session = await mongoose.startSession();
-    try {
-      session.startTransaction();
-      let { answer } = req.body;
-      let _id = req.params.id;
-      let { studentAnswerId, rowNumber, isWrong } = answer;
-      // if (
-      //   !questionForm ||
-      //   !questionForm.questions ||
-      //   questionForm.questions.length < 15
-      // ) {
-      //   throw new Errors(
-      //     400,
-      //     "Must include 15 questions when creating assignment"
-      //   );
-      // }
+  // static async updateAssignment(req, res, next) {
+  //   const session = await mongoose.startSession();
+  //   try {
+  //     session.startTransaction();
+  //     let { questionForm, StudentAnswers } = req.body;
+  //     let _id = req.params.id;
 
-      let assignment = await Assignment.findOne(
-        { _id: new ObjectId(studentAnswerId) },
-        { session }
-      ).populate("QuestionId");
+  // if (
+  //   !questionForm ||
+  //   !questionForm.questions ||
+  //   questionForm.questions.length < 15
+  // ) {
+  //   throw new Errors(
+  //     400,
+  //     "Must include 15 questions when creating assignment"
+  //   );
+  // }
 
-      assignment.u;
+  // let assignment = await Assignment.findOne(
+  //   { _id: new ObjectId(_id) },
+  //   { session }
+  // ).populate("QuestionId");
 
-      let question = assignment.QuestionId;
+  // let question = assignment.QuestionId;
 
-      let studentAnswerUpdate = await StudentAnswer.updateOne(
-        {
-          _id: new ObjectId(el._id),
-        },
-        { status: "Returned" },
-        { session }
-      );
+  // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
+  //   await StudentAnswer.updateOne(
+  //     {
+  //       _id: new ObjectId(el._id),
+  //     },
+  //     { status: "Returned" },
+  //     { session }
+  //   );
+  // });
 
-      await session.commitTransaction();
-      session.endSession();
+  //     await session.commitTransaction();
+  //     session.endSession();
 
-      res.status(200).json(question);
-    } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
-      console.log(err);
-      next(err);
-    }
-  }
+  //     res.status(200).json(question);
+  //   } catch (err) {
+  //     await session.abortTransaction();
+  //     session.endSession();
+  //     console.log(err);
+  //     next(err);
+  //   }
+  // }
 
   static async createClass(req, res, next) {
     try {
