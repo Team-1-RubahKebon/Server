@@ -397,4 +397,22 @@ module.exports = class TeacherController {
       next(err);
     }
   }
+
+  static async updateStudentAnswerStatus(req, res, next) {
+    try {
+      let _id = req.params.id;
+      let newStatus = req.body.newStatus;
+
+      const filter = { _id };
+      const update = { $set: { status: newStatus } };
+
+      await StudentAnswer.updateOne(filter, update);
+
+      res
+        .status(200)
+        .json({ message: "Student answer status already updated" });
+    } catch (err) {
+      next(err);
+    }
+  }
 };
