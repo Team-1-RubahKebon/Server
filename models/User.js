@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", function (next) {
   this.password = Hash.create(this.password);
+  Class.update(
+    { _id: new ObjectId(this.Class) },
+    { $push: { Students: this._id } },
+    { multi: true }
+  ).exec();
   next();
 });
 

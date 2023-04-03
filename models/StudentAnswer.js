@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Assignment = require("./Assignment");
 
 const studentAnswerSchema = new mongoose.Schema({
   Assignment: {

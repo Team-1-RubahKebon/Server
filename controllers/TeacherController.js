@@ -155,7 +155,7 @@ module.exports = class TeacherController {
       console.log(_id);
 
       let assignmentById = await Assignment.findOne({ _id })
-        .populate("ClassId")
+        .populate({ path: "ClassId", populate: "Students" })
         .populate("StudentAnswers")
         .populate("QuestionId");
 
@@ -233,6 +233,8 @@ module.exports = class TeacherController {
         studentAnswer.Answers = [];
         studentAnswersArr.push(studentAnswer);
       });
+
+      console.log(studentAnswersArr);
 
       let createdStudentAnswers = await StudentAnswer.insertMany(
         studentAnswersArr,
@@ -359,14 +361,6 @@ module.exports = class TeacherController {
     }
   }
 
-  static async getAssignmentStudents(req, res, next) {
-    try {
-      let students;
-    } catch (err) {
-      next(err);
-    }
-  }
-
   static async chatOpenAi(req, res, next) {
     try {
       const completion = await openai.createCompletion({
@@ -386,13 +380,19 @@ module.exports = class TeacherController {
     try {
       let _id = req.params.id;
 
-      let studentAnswer = await StudentAnswer.findOne({ _id })
-        .populate({
-          path: "Assignment",
-          populate: ["Question", "Class"],
-        })
-        .res.status(200)
-        .json(studentAnswer);
+      let studentAnswer = await StudentAnswer.findOne({
+        _id: new ObjectId(_id),
+      }).populate({
+        path: "Assignment",
+        populate: [
+          "Question",
+          {
+            path: "Class",
+            populate: "Students",
+          },
+        ],
+      });
+      res.status(200).json(studentAnswer);
     } catch (err) {
       next(err);
     }

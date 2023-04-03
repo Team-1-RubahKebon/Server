@@ -1,4 +1,7 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
+const Class = require("./Class");
+const StudentAnswer = require("./StudentAnswer");
 
 const assignmentSchema = new mongoose.Schema({
   name: {
@@ -38,6 +41,16 @@ const assignmentSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+});
+
+assignmentSchema.pre("deleteOne", function (next) {
+  Class.updateOne(
+    { _id: new ObjectId(this.ClassId) },
+    { $pull: { Assignments: this._id } },
+    { multi: true }
+  ).exec();
+  StudentAnswer.deleteMany({ Assignment: this._id }).exec();
+  next();
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);
