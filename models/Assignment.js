@@ -53,6 +53,30 @@ assignmentSchema.pre("deleteOne", function (next) {
   next();
 });
 
+assignmentSchema.pre("save", function (next) {
+  Class.updateOne(
+    { _id: new ObjectId(this.ClassId) },
+    { $push: { Assignments: this._id } },
+    { multi: true }
+  ).exec();
+
+  let students = this.Students;
+
+  students.forEach(async (el) => {
+    let studentAnswer = new StudentAnswer({
+      Assignment: this._id,
+      Student: el._id,
+      status: "Assigned",
+      imgUrl: "",
+      score: 0,
+      Answers: [],
+    });
+    let createdStudentAnswer = await studentAnswer.save();
+    this.StudentAnswers.push(createdStudentAnswer._id);
+  });
+  next();
+});
+
 const Assignment = mongoose.model("Assignment", assignmentSchema);
 
 module.exports = Assignment;
