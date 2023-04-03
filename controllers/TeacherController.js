@@ -11,6 +11,7 @@ const Question = require("../models/Question");
 const { ObjectId } = require("mongodb");
 const StudentAnswer = require("../models/StudentAnswer");
 const openai = require("../config/openAI");
+const dateFormatter = require("../helpers/dateFormatter");
 
 module.exports = class TeacherController {
   static async login(req, res, next) {
@@ -112,12 +113,14 @@ module.exports = class TeacherController {
       if (name) {
         query.name = { $regex: `${name}` };
       }
-      let allClass = await Class.find(query)
+      let allClass = await Class.find(query);
+
+      const newAllClass = await Class.find(query)
         .populate("Assignments")
         .populate("Teacher")
         .populate("Students");
 
-      res.status(200).json(allClass);
+      res.status(200).json(newAllClass);
     } catch (err) {
       next(err);
     }
@@ -130,16 +133,18 @@ module.exports = class TeacherController {
       let query = {};
 
       if (ClassId) {
-        query.ClassId = ClassId;
+        query.ClassId = new ObjectId(ClassId);
       }
 
       if (name) {
         query.name = { $regex: `${name}` };
       }
 
-      let assignments = await Assignment.find(query).populate("ClassId");
+      let assignments = await Assignment.find();
 
-      res.status(200).json(assignments);
+      let NewAssignments = await Assignment.find(query).populate("ClassId");
+
+      res.status(200).json(NewAssignments);
     } catch (err) {
       next(err);
     }
@@ -151,7 +156,7 @@ module.exports = class TeacherController {
       console.log(_id);
 
       let assignmentById = await Assignment.findOne({ _id })
-        .populate("ClassId")
+        .populate({ path: "ClassId", populate: "Students" })
         .populate("StudentAnswers")
         .populate("QuestionId");
 
@@ -168,34 +173,50 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      console.log(req.body);
-
-      // if (
-      //   !questionForm ||
-      //   !questionForm.questions ||
-      //   questionForm.questions.length < 15
-      // ) {
-      //   throw new Errors(
-      //     400,
-      //     "Must include 15 questions when creating assignment"
-      //   );
-      // }
-
-      if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
-        throw new Errors(400, "All assignment details must be filled");
+      // mock push question
+      questionForm = {
+        questions: [],
+      };
+      for (let i = 0; i < 15; i++) {
+        let question = {
+          rowNumber: ++i,
+          question: "test 1",
+          selection: {
+            A: "Test",
+            B: "Test",
+            C: "Test",
+            D: "Test",
+          },
+          answerType: i < 10 ? "pg" : "essay",
+          keyword: "test",
+        };
+        questionForm.questions.push(question);
       }
+
+      // if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
+      //   throw new Errors(400, "All assignment details must be filled");
+      // }
 
       let questionCreated = new Question(questionForm);
 
       await questionCreated.save({ session });
+
+      let classAssigned = await Class.findOne({
+        _id: new ObjectId(ClassId),
+      }).populate("Students");
+
+      let classStudents = classAssigned.Students.map((el) => el.id);
+
+      console.log(classStudents);
 
       let assignmentCreated = new Assignment({
         name,
         ClassId,
         QuestionId: questionCreated._id,
         subject,
-        deadline,
-        assignmentDate,
+        deadline: dateFormatter(new Date("2023-05-20")),
+        assignmentDate: dateFormatter(new Date()),
+        Students: classStudents,
       });
       await assignmentCreated.save({ session });
 
@@ -205,6 +226,26 @@ module.exports = class TeacherController {
         },
         { $push: { Assignments: assignmentCreated._id } },
         { session }
+      );
+      const studentAnswersArr = [];
+
+      classStudents.forEach((el) => {
+        let studentAnswer = {};
+        studentAnswer.Assignment = assignmentCreated._id;
+        studentAnswer.Student = el;
+        studentAnswer.status = "Assigned";
+        studentAnswer.imgUrl = "";
+        studentAnswer.Answers = [];
+        studentAnswersArr.push(studentAnswer);
+      });
+
+      console.log(studentAnswersArr);
+
+      Promise.all(
+        studentAnswersArr.forEach(async (el) => {
+          let createdStudentAnswers = new StudentAnswer(el);
+          await createdStudentAnswers(el).save();
+        })
       );
 
       await session.commitTransaction();
@@ -219,52 +260,52 @@ module.exports = class TeacherController {
     }
   }
 
-  static async updateAssignment(req, res, next) {
-    const session = await mongoose.startSession();
-    try {
-      session.startTransaction();
-      let { questionForm, StudentAnswers } = req.body;
-      let _id = req.params.id;
+  // static async updateAssignment(req, res, next) {
+  //   const session = await mongoose.startSession();
+  //   try {
+  //     session.startTransaction();
+  //     let { questionForm, StudentAnswers } = req.body;
+  //     let _id = req.params.id;
 
-      // if (
-      //   !questionForm ||
-      //   !questionForm.questions ||
-      //   questionForm.questions.length < 15
-      // ) {
-      //   throw new Errors(
-      //     400,
-      //     "Must include 15 questions when creating assignment"
-      //   );
-      // }
+  // if (
+  //   !questionForm ||
+  //   !questionForm.questions ||
+  //   questionForm.questions.length < 15
+  // ) {
+  //   throw new Errors(
+  //     400,
+  //     "Must include 15 questions when creating assignment"
+  //   );
+  // }
 
-      let assignment = await Assignment.findOne(
-        { _id: new ObjectId(_id) },
-        { session }
-      ).populate("QuestionId");
+  // let assignment = await Assignment.findOne(
+  //   { _id: new ObjectId(_id) },
+  //   { session }
+  // ).populate("QuestionId");
 
-      let question = assignment.QuestionId;
+  // let question = assignment.QuestionId;
 
-      // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
-      //   await StudentAnswer.updateOne(
-      //     {
-      //       _id: new ObjectId(el._id),
-      //     },
-      //     { status: "Returned" },
-      //     { session }
-      //   );
-      // });
+  // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
+  //   await StudentAnswer.updateOne(
+  //     {
+  //       _id: new ObjectId(el._id),
+  //     },
+  //     { status: "Returned" },
+  //     { session }
+  //   );
+  // });
 
-      await session.commitTransaction();
-      session.endSession();
+  //     await session.commitTransaction();
+  //     session.endSession();
 
-      res.status(200).json(question);
-    } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
-      console.log(err);
-      next(err);
-    }
-  }
+  //     res.status(200).json(question);
+  //   } catch (err) {
+  //     await session.abortTransaction();
+  //     session.endSession();
+  //     console.log(err);
+  //     next(err);
+  //   }
+  // }
 
   static async createClass(req, res, next) {
     try {
@@ -317,20 +358,6 @@ module.exports = class TeacherController {
     }
   }
 
-  static async getStudentAnswers(req, res, next) {
-    try {
-      let assignmentId = req.params.courseId;
-
-      let studentAnswers = await StudentAnswer.find({
-        Assignment: new ObjectId(assignmentId),
-      }).populate("Student");
-
-      res.status(200).json(studentAnswers);
-    } catch (err) {
-      next(err);
-    }
-  }
-
   static async chatOpenAi(req, res, next) {
     try {
       const completion = await openai.createCompletion({
@@ -341,6 +368,46 @@ module.exports = class TeacherController {
       });
 
       res.status(200).json({ message: completion.data.choices[0].text });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async studentAnswerById(req, res, next) {
+    try {
+      let _id = req.params.id;
+
+      let studentAnswer = await StudentAnswer.findOne({
+        _id: new ObjectId(_id),
+      }).populate({
+        path: "Assignment",
+        populate: [
+          "QuestionId",
+          {
+            path: "ClassId",
+            populate: "Students",
+          },
+        ],
+      });
+      res.status(200).json(studentAnswer);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async updateStudentAnswerStatus(req, res, next) {
+    try {
+      let _id = req.params.id;
+      let newStatus = req.body.newStatus;
+
+      const filter = { _id };
+      const update = { $set: { status: newStatus } };
+
+      await StudentAnswer.updateOne(filter, update);
+
+      res
+        .status(200)
+        .json({ message: "Student answer status already updated" });
     } catch (err) {
       next(err);
     }

@@ -1,25 +1,27 @@
-const app = require('../app')
-const request = require("supertest")
-const { Hash } = require('../helpers/Hash');
-const Assignment = require('../models/Assignment');
-const Class = require('../models/Class');
-const User = require('../models/User');
+const app = require("../app");
+const request = require("supertest");
+const { Hash } = require("../helpers/Hash");
+const Assignment = require("../models/Assignment");
+const Class = require("../models/Class");
+const User = require("../models/User");
 const { ObjectId } = require("mongodb");
 const { create } = require('../helpers/Token');
 const multer = require('multer');
 const StudentAnswer = require('../models/StudentAnswer');
 
-jest.mock('../config/clientVision.js', () => {
+jest.mock("../config/clientVision.js", () => {
   return {
     annotateImage: () => {
-      return [{
-        fullTextAnnotation: {
-          text: "LEMBAR JAWABAN\n(1). (A) B C D ##\n(2). A B (C) D ##\n(3). A B C (D) ##\n(4). A (B) C D ##\n(5). A B (C) D ##\n(6). A B (C) D ##\n(7). A (B) C D ##\n(8). A B C (D) ##\n(9). (A) B C D ##\n(10) A (B) C D ##\nESSAY\n(#1) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus.\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#2) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#3) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#4) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#5) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante"
-        }
-      }]
+      return [
+        {
+          fullTextAnnotation: {
+            text: "LEMBAR JAWABAN\n(1). (A) B C D ##\n(2). A B (C) D ##\n(3). A B C (D) ##\n(4). A (B) C D ##\n(5). A B (C) D ##\n(6). A B (C) D ##\n(7). A (B) C D ##\n(8). A B C (D) ##\n(9). (A) B C D ##\n(10) A (B) C D ##\nESSAY\n(#1) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus.\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#2) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#3) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dianissim ante\n(#4) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante\n(#5) Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Sed sagittis velit arcu, non\nporttitor lorem euismod et. Donec tellus\nlacus, varius at commodo convallis,\ncondimentum id erat. Fusce sollicitudin nunc\nvitae magna sollicitudin in dignissim ante",
+          },
+        },
+      ];
     },
   };
-})
+});
 // jest.mock("@google-cloud/vision", () => {
 //   const vision = () => ({
 //     ImageAnnotatorClient: jest.fn().mockImplementation(() => {
@@ -37,23 +39,23 @@ jest.mock('../config/clientVision.js', () => {
 //   })
 //   return vision
 // })
-jest.mock('multer', () => {
+jest.mock("multer", () => {
   const multer = () => ({
     single: () => {
       return (req, res, next) => {
         req.file = {
-          uri: 'http://test.png'
-        }
+          uri: "http://test.png",
+        };
         req.params = {
-          courseId: '64286992f8ed0c9380a9c8eb'
-        }
-        return next()
-      }
-    }
-  })
-  multer.storage = () => jest.fn()
-  return multer
-})
+          courseId: "64286992f8ed0c9380a9c8eb",
+        };
+        return next();
+      };
+    },
+  });
+  multer.storage = () => jest.fn();
+  return multer;
+});
 
 let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkZjUyOGI0ZGJlZjdlYTdlMTcyMSIsImlhdCI6MTY4MDUzMTk2N30.LrfXO8LXteEC5m-E0GQQbikfSRmNjyqK5eluhqOVWbY"
 
@@ -69,7 +71,6 @@ let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkZjUyOGI
 //     });
 //     console.log(hashedUsers ," BEFORE <<<<<<<<<<<<<<<<<<<<<<<<<<")
 //     await User.insertMany(hashedUsers);
-
 
 //     assignments = require("../mock_data/assignment.json");
 //     let classes = await (await Class.find()).map((el) => el.id);
@@ -94,98 +95,98 @@ let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkZjUyOGI
 
 describe("POST /students/register", () => {
   describe("SUCCESS CASE", () => {
-
-    test.skip('should create new student and return status 201', async () => {
-
+    test.skip("should create new student and return status 201", async () => {
       const body = {
-        email: 'poror@mail.com',
-        password: '123456',
-        name: 'poror',
-        Class: new Object('6426f6c99381fcb4116592f9'),
-        address: 'shigansina',
-      }
+        email: "poror@mail.com",
+        password: "123456",
+        name: "poror",
+        Class: new Object("6426f6c99381fcb4116592f9"),
+        address: "shigansina",
+      };
 
-      const response = await request(app).post("/students/register").send(body)
+      const response = await request(app).post("/students/register").send(body);
 
-      expect(response.status).toBe(201)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("access_token", expect.any(String))
-      expect(response.body).toHaveProperty("name", expect.any(String))
-
+      expect(response.status).toBe(201);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("access_token", expect.any(String));
+      expect(response.body).toHaveProperty("name", expect.any(String));
     });
-  })
+  });
 
   describe("FAIL CASE", () => {
-
-    test('should fail to create student because email is registered and return status 400', async () => {
-
+    test("should fail to create student because email is registered and return status 400", async () => {
       const body = {
-        email: 'bimbing@mail.com',
-        password: '123456',
-        name: 'bimbing',
-        Class: new Object('6426f6c99381fcb4116592f9'),
-        address: 'shigansina',
-      }
+        email: "bimbing@mail.com",
+        password: "123456",
+        name: "bimbing",
+        Class: new Object("6426f6c99381fcb4116592f9"),
+        address: "shigansina",
+      };
 
-      const response = await request(app).post("/students/register").send(body)
+      const response = await request(app).post("/students/register").send(body);
 
-      expect(response.status).toBe(400)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "Email has registered already")
-
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "Email has registered already"
+      );
     });
-    test('should fail to create student because email is null and return status 400', async () => {
-
+    test("should fail to create student because email is null and return status 400", async () => {
       const body = {
         // email: 'eren@mail.com',
-        name: 'bimbing',
-        password: '123456',
-        Class: new Object('6426f6c99381fcb4116592f9'),
-        address: 'shigansina',
-      }
+        name: "bimbing",
+        password: "123456",
+        Class: new Object("6426f6c99381fcb4116592f9"),
+        address: "shigansina",
+      };
 
-      const response = await request(app).post("/students/register").send(body)
+      const response = await request(app).post("/students/register").send(body);
 
-      expect(response.status).toBe(400)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "required fields must be filled")
-
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "required fields must be filled"
+      );
     });
 
-    test('should fail to create student because password is null and return status 400', async () => {
-
+    test("should fail to create student because password is null and return status 400", async () => {
       const body = {
-        email: 'eren@mail.com',
-        name: 'bimbing',
+        email: "eren@mail.com",
+        name: "bimbing",
         // password: '123456',
-        Class: new Object('6426f6c99381fcb4116592f9'),
-        address: 'shigansina',
-      }
+        Class: new Object("6426f6c99381fcb4116592f9"),
+        address: "shigansina",
+      };
 
-      const response = await request(app).post("/students/register").send(body)
+      const response = await request(app).post("/students/register").send(body);
 
-      expect(response.status).toBe(400)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "required fields must be filled")
-
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "required fields must be filled"
+      );
     });
 
-    test('should fail to create student because name is null and return status 400', async () => {
-
+    test("should fail to create student because name is null and return status 400", async () => {
       const body = {
-        email: 'eren@mail.com',
+        email: "eren@mail.com",
         // name: 'bimbing',
-        password: '123456',
-        Class: new Object('6426f6c99381fcb4116592f9'),
-        address: 'shigansina',
-      }
+        password: "123456",
+        Class: new Object("6426f6c99381fcb4116592f9"),
+        address: "shigansina",
+      };
 
-      const response = await request(app).post("/students/register").send(body)
+      const response = await request(app).post("/students/register").send(body);
 
-      expect(response.status).toBe(400)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "required fields must be filled")
-
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty(
+        "message",
+        "required fields must be filled"
+      );
     });
 
     test("should fail to create student because email is empty and return status 400", async () => {
@@ -219,58 +220,50 @@ describe("POST /students/register", () => {
         "required fields must be filled"
       );
     });
-  })
-})
+  });
+});
 
 describe("POST /student/login", () => {
   describe("SUCCESS CASE", () => {
-
-    test('should let student in and return status 200', async () => {
-
+    test("should let student in and return status 200", async () => {
       const body = {
-        email: 'eren@mail.com',
-        password: '123456'
-      }
+        email: "eren@mail.com",
+        password: "123456",
+      };
 
-      const response = await request(app).post("/students/login").send(body)
+      const response = await request(app).post("/students/login").send(body);
 
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("access_token", expect.any(String))
-      expect(response.body).toHaveProperty("name", expect.any(String))
-
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("access_token", expect.any(String));
+      expect(response.body).toHaveProperty("name", expect.any(String));
     });
-  })
+  });
 
   describe("FAIL CASE", () => {
-
-    test('should fail to create student because of invalid email and return status 401', async () => {
-
+    test("should fail to create student because of invalid email and return status 401", async () => {
       const body = {
-        email: 'hura@mail.com',
-        password: '123456'
-      }
+        email: "hura@mail.com",
+        password: "123456",
+      };
 
-      const response = await request(app).post("/students/login").send(body)
+      const response = await request(app).post("/students/login").send(body);
 
-      expect(response.status).toBe(401)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "Wrong Email/Password")
-
+      expect(response.status).toBe(401);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "Wrong Email/Password");
     });
-    test('should fail to create student because of invalid password and return status 401', async () => {
-
+    test("should fail to create student because of invalid password and return status 401", async () => {
       const body = {
-        email: 'eren@mail.com',
-        password: '123'
-      }
+        email: "eren@mail.com",
+        password: "123",
+      };
 
-      const response = await request(app).post("/students/login").send(body)
+      const response = await request(app).post("/students/login").send(body);
 
-      expect(response.status).toBe(401)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "Wrong Email/Password")
-
+      expect(response.status).toBe(401);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "Wrong Email/Password");
     });
 
     test("should fail to login student because password is null and return status 400", async () => {
@@ -411,21 +404,20 @@ describe("GET /students", () => {
 
     });
 
-    test('should get student by id and return status 200', async () => {
-
-      const response = await request(app).get("/students/profile")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("_id", expect.any(String))
-      expect(response.body).toHaveProperty("name", expect.any(String))
-      expect(response.body).toHaveProperty("email", expect.any(String))
-      expect(response.body).toHaveProperty("__v", expect.any(Number))
-      expect(response.body).toHaveProperty("role", expect.any(String))
-      expect(response.body).toHaveProperty("Class", expect.any(Object))
-
+    test("should get student by id and return status 200", async () => {
+      const response = await request(app)
+        .get("/students/profile")
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toHaveProperty("name", expect.any(String));
+      expect(response.body).toHaveProperty("email", expect.any(String));
+      expect(response.body).toHaveProperty("__v", expect.any(Number));
+      expect(response.body).toHaveProperty("role", expect.any(String));
+      expect(response.body).toHaveProperty("Class", expect.any(Object));
     });
-  })
+  });
 
   describe("FAILED CASE", () => {
 
@@ -433,7 +425,8 @@ describe("GET /students", () => {
 
       jest.spyOn(User, "find").mockRejectedValue("Error");
 
-      return await request(app).get("/students")
+      return await request(app)
+        .get("/students")
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -443,8 +436,8 @@ describe("GET /students", () => {
         });
     });
 
-    test("should be failed and return status 500", async () => {
 
+    test("should be failed and return status 500", async () => {
       jest.spyOn(User, "findOne").mockRejectedValue("Error");
 
       return await request(app).get("/students/profile")
@@ -463,29 +456,26 @@ describe("GET /students", () => {
 
 describe("GET /students/class", () => {
   describe("SUCCESS CASE", () => {
+    test("should get class and return status 200", async () => {
+      const response = await request(app).get("/students/class");
 
-    test('should get class and return status 200', async () => {
-
-      const response = await request(app).get("/students/class")
-
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Array)
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
-      expect(response.body[0]).toHaveProperty("name", expect.any(String))
-      expect(response.body[0]).toHaveProperty("schedule", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("Assignments", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("Students", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("Teacher", expect.any(String))
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
-
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("schedule", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Assignments", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Students", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Teacher", expect.any(String));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
     });
-  })
+  });
   describe("FAILED CASE", () => {
     test("should be handle error of get all classes", async () => {
-
       jest.spyOn(Class, "find").mockRejectedValue("Error");
 
-      return await request(app).get("/students/class")
+      return await request(app)
+        .get("/students/class")
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -495,26 +485,59 @@ describe("GET /students/class", () => {
         });
     });
   });
-})
+});
 
 describe("GET /students/answers", () => {
   describe("SUCCESS CASE", () => {
+    test("should get students answers and return status 200", async () => {
+      const response = await request(app)
+        .get("/students/answers")
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Assignment", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  });
+  describe("FAILED CASE", () => {
+    test("should be handle error of get all classes", async () => {
+      jest.spyOn(Class, "find").mockRejectedValue("Error");
 
-    test('should get students answers and return status 200', async () => {
+      return await request(app)
+        .get("/students/class")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+});
 
-      const response = await request(app).get("/students/answers")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Array)
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
-      expect(response.body[0]).toHaveProperty("Assignment", expect.any(String))
-      expect(response.body[0]).toHaveProperty("Student", expect.any(String))
-      expect(response.body[0]).toHaveProperty("status", expect.any(String))
-      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String))
-      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String))
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
-
+describe("GET /students/answers", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get students answers and return status 200", async () => {
+      const response = await request(app)
+        .get("/students/answers")
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Assignment", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
     });
   })
 
@@ -574,43 +597,39 @@ describe("GET /students/answers/:id", () => {
 
 describe.skip("POST /students/upload/:courseId", () => {
   describe("SUCCESS CASE", () => {
-
-    test('should get student answers and return status 200', async () => {
-
-      const response = await request(app).post("/students/upload/64286992f8ed0c9380a9c8eb")
+    test("should get student answers and return status 200", async () => {
+      const response = await request(app)
+        .post("/students/upload/64286992f8ed0c9380a9c8eb")
         .set("access_token", access_token)
-        .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg")
+        .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
 
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("_id", expect.any(String))
-      expect(response.body).toHaveProperty("Assignment", expect.any(String))
-      expect(response.body).toHaveProperty("Student", expect.any(Object))
-      expect(response.body).toHaveProperty("status", expect.any(String))
-      expect(response.body).toHaveProperty("imgUrl", expect.any(String))
-      expect(response.body).toHaveProperty("Answers", expect.any(Array))
-      expect(response.body).toHaveProperty("turnedAt", expect.any(String))
-      expect(response.body).toHaveProperty("__v", expect.any(Number))
-
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toHaveProperty("Assignment", expect.any(String));
+      expect(response.body).toHaveProperty("Student", expect.any(Object));
+      expect(response.body).toHaveProperty("status", expect.any(String));
+      expect(response.body).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body).toHaveProperty("turnedAt", expect.any(String));
+      expect(response.body).toHaveProperty("__v", expect.any(Number));
     });
-  })
+  });
 
   describe("FAIL CASE", () => {
-
-    test('should fail to find assignment id and return status 404', async () => {
-
+    test("should fail to find assignment id and return status 404", async () => {
       const body = {
-        image: 'Form-Lembar-jawaban.jpg'
-      }
+        image: "Form-Lembar-jawaban.jpg",
+      };
 
-      const response = await request(app).post("/students/upload/1")
+      const response = await request(app)
+        .post("/students/upload/1")
         .set("access_token", access_token)
-        .send(body)
+        .send(body);
 
-      expect(response.status).toBe(404)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("message", "wrong parameter")
-
+      expect(response.status).toBe(404);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "wrong parameter");
     });
-  })
-})
+  });
+});

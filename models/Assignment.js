@@ -1,4 +1,7 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
+const Class = require("./Class");
+const StudentAnswer = require("./StudentAnswer");
 
 const assignmentSchema = new mongoose.Schema({
   name: {
@@ -12,7 +15,7 @@ const assignmentSchema = new mongoose.Schema({
   ClassId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    required: "Class is required",
+    // required: "Class is required",
   },
   subject: {
     type: String,
@@ -35,9 +38,43 @@ const assignmentSchema = new mongoose.Schema({
   Students: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
+      ref: "User",
     },
   ],
+});
+
+assignmentSchema.pre("deleteOne", function (next) {
+  Class.updateOne(
+    { _id: new ObjectId(this.ClassId) },
+    { $pull: { Assignments: this._id } },
+    { multi: true }
+  ).exec();
+  StudentAnswer.deleteMany({ Assignment: this._id }).exec();
+  next();
+});
+
+assignmentSchema.pre("save", function (next) {
+  Class.updateOne(
+    { _id: new ObjectId(this.ClassId) },
+    { $push: { Assignments: this._id } },
+    { multi: true }
+  ).exec();
+
+  let students = this.Students;
+
+  students.forEach(async (el) => {
+    let studentAnswer = new StudentAnswer({
+      Assignment: this._id,
+      Student: el._id,
+      status: "Assigned",
+      imgUrl: "",
+      score: 0,
+      Answers: [],
+    });
+    let createdStudentAnswer = await studentAnswer.save();
+    this.StudentAnswers.push(createdStudentAnswer._id);
+  });
+  next();
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);

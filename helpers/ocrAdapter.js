@@ -1,68 +1,45 @@
-module.exports = (text, question) => {
-  const pattern =
-    /\((\d+)\)\. (A B C D ##)\n|\((#[0-9]+)\) (.+)\n|\((10)\)\. (A B C D ##)$/gm;
+// const ocrAdapter
+module.exports = (input, question) => {
+  input = input.split("\nESSAY\n");
+  let result = [];
+  let multipleAnswersPool = input[0];
+  let essayPool = input[1];
 
-  const selections = {};
-  const essays = {};
-
-  let match;
-  while ((match = pattern.exec(text)) !== null) {
-    if (match[1] !== undefined) {
-      let key = match[1];
-      let value = match[2];
-      if (key < 10) {
-        value = "A (B) C D ##";
-      }
-      selections[key] = value;
-    } else if (match[5] !== undefined) {
-      let key = match[5];
-      let value = match[6];
-      if (key >= 10) {
-        value = "A (B) C D ##";
-      }
-      selections[key] = value;
-    } else {
-      const key = match[3];
-      const value = match[4];
-      essays[key] = value;
+  multipleAnswersPool = multipleAnswersPool.split("\n");
+  for (let i = 1; i < multipleAnswersPool.length; i++) {
+    let pg = {};
+    let filteredQuestion = question.filter((el) => el.rowNumber == i);
+    pg.isWrong = false;
+    pg.rowNumber = i;
+    pg.answer = answerLocator(multipleAnswersPool[i]);
+    pg.answerType = "pg";
+    if (filteredQuestion.keyword !== pg.answer) {
+      pg.isWrong = true;
     }
+    result.push(pg);
   }
 
-  const answers = [];
-
-  for (const rowNumber in selections) {
-    const answerText = selections[rowNumber];
-
-    if (answerText.includes("(")) {
-      const answer = answerText.match(/\(([A-D])\)/)[1];
-
-      let isWrong = false;
-
-      question.forEach((el) => {
-        if (el.rowNumber == rowNumber) {
-          if (answer != el.keyword) {
-            isWrong = true;
-          }
-        }
-      });
-
-      answers.push({
-        rowNumber: Number(rowNumber),
-        answer,
-        answerType: "pg",
-        isWrong,
-      });
+  function answerLocator(answerStr) {
+    answerArr = answerStr.split(" ");
+    var choice = "";
+    for (let i = 1; i < answerArr.length; i++) {
+      let selection = answerArr[i];
+      if (selection.startsWith("(")) {
+        choice = selection[1];
+      }
     }
+    return choice;
   }
 
-  for (const rowNumber in essays) {
-    const answer = essays[rowNumber];
-    answers.push({
-      rowNumber,
-      answer,
-      answerType: "essay",
-      isWrong: false,
-    });
+  essayPool = essayPool.split("(#");
+  for (let i = 1; i < essayPool.length; i++) {
+    let element = essayPool[i];
+    let essay = {};
+    essay.rowNumber = element.slice(0, 1);
+    essay.answer = element.slice(3);
+    essay.answerType = "essay";
+    essay.isWrong = false;
+    result.push(essay);
   }
-  return answers;
+  return result;
 };

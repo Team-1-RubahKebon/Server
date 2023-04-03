@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-const client = require('../config/clientVision')
+const client = require("../config/clientVision");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
@@ -27,17 +27,16 @@ module.exports = class StudentController {
     }
   }
   static async createStudentAnswer(req, res, next) {
-    console.log(req.file, req.params, '<<<<<<<<<<<<ini dari controller')
+    console.log(req.file, req.params, "<<<<<<<<<<<<ini dari controller");
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
 
       let assignmentId = req.params.courseId;
       const fileUri = req.file.uri;
-
-
+      const fileLink = req.file.linkUrl;
       if (!assignmentId) {
-        throw new Errors(404, "Not found");
+        throw new Errors(404, "Class not found");
       }
 
       const assignmentCheck = await Assignment.findOne({
@@ -56,24 +55,25 @@ module.exports = class StudentController {
         ],
       };
 
+      let questionId = assignmentCheck.QuestionId;
+
       const [result] = await client.annotateImage(options);
       // console.log(result, "<<<<<<<<<<<<<<<<<<<<<, ini result ")
       const text = result.fullTextAnnotation.text;
       // console.log(text);
       const questionAssignment = await Question.findOne({
-        _id: new ObjectId("6427e7fadee199082ba386c8"),
+        _id: new ObjectId(questionId),
       });
 
       let questions = questionAssignment.questions;
 
-      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS")
+      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
 
       const answers = ocrAdapter(text, questions);
-      // console.log(answers, '<<<<<<<<<<<<<<<<<<<<<<<<<<< ANSWERS')
 
       if (!answers.length) {
         throw new Errors(400, "Wrong Form Format");
@@ -84,29 +84,31 @@ module.exports = class StudentController {
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
 
-      let StudentAnswerCreate = new StudentAnswer({
-        Assignment: new ObjectId(assignmentId),
-        Student: new ObjectId(studentId),
-        status,
-        imgUrl: fileUri,
-        turnedAt,
-        Answers: answers,
-      });
+      // let StudentAnswerCreate = new StudentAnswer({
+      //   Assignment: new ObjectId(assignmentId),
+      //   Student: new ObjectId(studentId),
+      //   status,
+      //   imgUrl: fileLink,
+      //   turnedAt,
+      //   Answers: answers,
+      // });
 
-      let created = await StudentAnswerCreate.save({ session });
+      // let created = await StudentAnswerCreate.save({ session });
 
-      let updateAssignment = await Assignment.updateOne(
-        {
-          _id: new ObjectId(assignmentId),
-        },
-        { $push: { StudentAnswers: created._id } },
-        { session }
-      );
+      // bukan buat tapi update StudentAnswer dengan answers
+
+      // let updateAssignment = await Assignment.updateOne(
+      //   {
+      //     _id: new ObjectId(assignmentId),
+      //   },
+      //   { $push: { StudentAnswers: created._id } },
+      //   { session }
+      // );
 
       await session.commitTransaction();
       session.endSession();
 
-      res.status(200).json(created);
+      res.status(200).json(answers);
     } catch (err) {
       await session.abortTransaction();
       session.endSession();
@@ -169,15 +171,6 @@ module.exports = class StudentController {
       let registeringUser = await user.save({
         session,
       });
-      let updateClass = await Class.updateOne(
-        {
-          _id: registeringUser.Class,
-        },
-        { $push: { Students: registeringUser._id } },
-        {
-          session,
-        }
-      );
 
       let access_token = Token.create({ id: registeringUser._id });
 
@@ -303,6 +296,34 @@ module.exports = class StudentController {
     }
   }
 
+  static async getAverageScore(req, res, next) {
+    try {
+      let _id = req.user._id;
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+      console.log(_id);
+
+      // let studentAnswers = await StudentAnswer.find({ Student: _id });
+
+      let avg = await StudentAnswer.aggregate([
+        {
+          $match: { Student: _id },
+        },
+        {
+          $group: {
+            _id: "$Student",
+            avgScore: { $avg: "$score" },
+          },
+        },
+      ]);
+
+      res.status(200).json(avg);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async getStudentAnswerById(req, res, next) {
     try {
       let _id = req.params.id;
@@ -311,7 +332,9 @@ module.exports = class StudentController {
         throw new Errors(404, "Answers not found");
       }
 
-      let studentAnswer = await StudentAnswer.findOne({ Student: _id })
+      let studentAnswer = await StudentAnswer.findOne({
+        _id,
+      })
         .populate("Assignment")
         .populate("Student")
         .populate("Answers");

@@ -22,5 +22,6 @@ studentsRouter.post(
 );
 studentsRouter.get("/profile", StudentController.getStudentById);
 studentsRouter.get("/assignments/:id", StudentController.getAssignmentById);
+studentsRouter.get("/average", StudentController.getAverageScore);
 
 module.exports = studentsRouter;
