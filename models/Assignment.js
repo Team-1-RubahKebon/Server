@@ -8,14 +8,14 @@ const assignmentSchema = new mongoose.Schema({
     type: String,
     required: "Assignment name is required",
   },
-  QuestionId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Question",
-  },
+  // QuestionId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Question",
+  // },
   ClassId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    required: "Class is required",
+    // required: "Class is required",
   },
   subject: {
     type: String,

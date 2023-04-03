@@ -5,12 +5,12 @@ const studentAnswerSchema = new mongoose.Schema({
   Assignment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Assignment",
-    required: true,
+    // required: true,
   },
   Student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    // required: true,
   },
   status: {
     type: String,

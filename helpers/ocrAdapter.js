@@ -1,8 +1,30 @@
 // const ocrAdapter
 module.exports = (input) => {
-  const inputLines = input.split("\n");
+  input = input.split("ESSAY");
 
-  return inputLines;
+  let pg = input[0].split("\n");
+  let essay = input[1];
+
+  let pgObj = {};
+  let essayObj = {};
+
+  const pgArray = [];
+  let rowNumber = 0;
+
+  for (let i = 1; i < pg.length - 1; i++) {
+    const line = pg[i];
+
+    console.log(pg[i]);
+    if (line.startsWith("(")) {
+      rowNumber = line.match(/^\((\d+)\)\./);
+    } else {
+      const answer = line.match(/\(([A-Z])\)/);
+      pgArray.push({ rowNumber, answer });
+    }
+  }
+
+  let answer = { pg: pgArray };
+  return answer;
 };
 
 let expected = [

@@ -385,9 +385,9 @@ module.exports = class TeacherController {
       }).populate({
         path: "Assignment",
         populate: [
-          "Question",
+          "QuestionId",
           {
-            path: "Class",
+            path: "ClassId",
             populate: "Students",
           },
         ],

@@ -1,5 +1,7 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 const Hash = require("../helpers/Hash");
+const Class = require("./Class");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,7 +27,7 @@ const userSchema = new mongoose.Schema({
   Class: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    required: "Class Id is required",
+    // required: "Class Id is required",
   },
   scoreAvg: {
     type: Number,
@@ -36,7 +38,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", function (next) {
   this.password = Hash.create(this.password);
-  Class.update(
+  Class.updateOne(
     { _id: new ObjectId(this.Class) },
     { $push: { Students: this._id } },
     { multi: true }

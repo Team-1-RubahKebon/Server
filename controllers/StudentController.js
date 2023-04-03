@@ -33,12 +33,10 @@ module.exports = class StudentController {
       session.startTransaction();
 
       let assignmentId = req.params.courseId;
-      console.log(req.file);
       const fileUri = req.file.uri;
       const fileLink = req.file.linkUrl;
-      console.log(fileLink);
       if (!assignmentId) {
-        throw new Errors(404, "Not found");
+        throw new Errors(404, "Class not found");
       }
 
       const assignmentCheck = await Assignment.findOne({
@@ -57,10 +55,12 @@ module.exports = class StudentController {
         ],
       };
 
+      let questionId = assignmentCheck.QuestionId;
+
       const [result] = await client.annotateImage(options);
       // console.log(result, "<<<<<<<<<<<<<<<<<<<<<, ini result ")
       const text = result.fullTextAnnotation.text;
-      // console.log(text);
+      console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId(questionId),
       });
@@ -75,14 +75,14 @@ module.exports = class StudentController {
 
       const answers = ocrAdapter(text, questions);
 
-      if (!answers.length) {
-        throw new Errors(400, "Wrong Form Format");
-      }
+      // if (!answers.length) {
+      //   throw new Errors(400, "Wrong Form Format");
+      // }
 
-      let studentId = req.user._id;
-      let status = "Assigned";
-      let dateNow = new Date();
-      let turnedAt = dateFormatter(dateNow);
+      // let studentId = req.user._id;
+      // let status = "Assigned";
+      // let dateNow = new Date();
+      // let turnedAt = dateFormatter(dateNow);
 
       // let StudentAnswerCreate = new StudentAnswer({
       //   Assignment: new ObjectId(assignmentId),
@@ -170,15 +170,6 @@ module.exports = class StudentController {
       let registeringUser = await user.save({
         session,
       });
-      let updateClass = await Class.updateOne(
-        {
-          _id: registeringUser.Class,
-        },
-        { $push: { Students: registeringUser._id } },
-        {
-          session,
-        }
-      );
 
       let access_token = Token.create({ id: registeringUser._id });
 
