@@ -18,7 +18,7 @@ routerTeacher.get(
 ); //done testing
 routerTeacher.post(
   "/assignments",
-
+  authentication,
   TeacherController.createAssignment
 ); //done testing
 routerTeacher.get("/class/:id", authentication, TeacherController.getClass); //done testing

@@ -35,7 +35,7 @@ const studentAnswerSchema = new mongoose.Schema({
   ],
 });
 
-studentAnswerSchema.pre("insertMany", async function () {
+studentAnswerSchema.pre("insertMany", async function (next) {
   try {
     Assignment.updateOne(
       {
@@ -51,21 +51,21 @@ studentAnswerSchema.pre("insertMany", async function () {
   }
 });
 
-studentAnswerSchema.pre("save", async function () {
-  try {
-    Assignment.updateOne(
-      {
-        _id: new ObjectId(this.Assignment),
-      },
-      {
-        $push: { StudentAnswers: this._id },
-      },
-      { multi: true }
-    ).exec();
-  } catch (err) {
-    next(err);
-  }
-});
+// studentAnswerSchema.pre("save", async function (next) {
+//   try {
+//     Assignment.updateOne(
+//       {
+//         _id: new ObjectId(this.Assignment),
+//       },
+//       {
+//         $push: { StudentAnswers: this._id },
+//       },
+//       { multi: true }
+//     ).exec();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 const StudentAnswer = mongoose.model("StudentAnswer", studentAnswerSchema);
 
