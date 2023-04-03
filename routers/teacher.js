@@ -32,6 +32,7 @@ routerTeacher.delete(
   authentication,
   TeacherController.destroyAssignment
 ); //done testing
+routerTeacher.get("/student/answer/:id");
 routerTeacher.post("/ai", TeacherController.chatOpenAi);
 
 module.exports = routerTeacher;

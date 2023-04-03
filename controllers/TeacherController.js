@@ -359,6 +359,14 @@ module.exports = class TeacherController {
     }
   }
 
+  static async getAssignmentStudents(req, res, next) {
+    try {
+      let students;
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async chatOpenAi(req, res, next) {
     try {
       const completion = await openai.createCompletion({
@@ -376,9 +384,15 @@ module.exports = class TeacherController {
 
   static async studentAnswerById(req, res, next) {
     try {
-      let _id = req.params;
+      let _id = req.params.id;
 
-      let studentAnswer = await StudentAnswer.findOne({ _id });
+      let studentAnswer = await StudentAnswer.findOne({ _id })
+        .populate({
+          path: "Assignment",
+          populate: ["Question", "Class"],
+        })
+        .res.status(200)
+        .json(studentAnswer);
     } catch (err) {
       next(err);
     }
