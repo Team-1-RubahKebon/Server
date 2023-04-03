@@ -172,25 +172,26 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      console.log(req.body);
-      questionForm = {
-        questions: [],
-      };
-      for (let i = 0; i < 15; i++) {
-        let question = {
-          rowNumber: ++i,
-          question: "test 1",
-          selection: {
-            A: "Test",
-            B: "Test",
-            C: "Test",
-            D: "Test",
-          },
-          answerType: i < 10 ? "pg" : "essay",
-          keyword: "test",
-        };
-        questionForm.questions.push(question);
-      }
+      //mock push question
+      // console.log(req.body);
+      // questionForm = {
+      //   questions: [],
+      // };
+      // for (let i = 0; i < 15; i++) {
+      //   let question = {
+      //     rowNumber: ++i,
+      //     question: "test 1",
+      //     selection: {
+      //       A: "Test",
+      //       B: "Test",
+      //       C: "Test",
+      //       D: "Test",
+      //     },
+      //     answerType: i < 10 ? "pg" : "essay",
+      //     keyword: "test",
+      //   };
+      //   questionForm.questions.push(question);
+      // }
 
       if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
         throw new Errors(400, "All assignment details must be filled");
