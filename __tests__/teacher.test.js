@@ -7,15 +7,35 @@ const Token = require("../helpers/Token");
 
 beforeAll(async () => {});
 
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
+
 afterAll(async () => {});
 
-describe.skip("POST /teachers/register", () => {
+describe("POST /teachers/register", () => {
   describe("SUCCESS CASE", () => {
     test("should create new teacher and return status 201", async () => {
+      function makeid(length) {
+        let result = "";
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+          counter += 1;
+        }
+        return result;
+      }
+
+      const nameRandom = makeid(5);
       const body = {
-        email: "teachertest2@mail.com",
+        email: nameRandom + "@mail.com",
         password: "123456",
-        name: "teachertest",
+        name: nameRandom,
         address: "Namek",
       };
 
@@ -125,7 +145,7 @@ describe.skip("POST /teachers/register", () => {
   });
 });
 
-describe.skip("POST /teachers/login", () => {
+describe("POST /teachers/login", () => {
   describe("SUCCESS CASE", () => {
     test("should login teacher and return status 201", async () => {
       const body = {
@@ -250,12 +270,29 @@ describe.skip("POST /teachers/login", () => {
 
 describe("GET /teachers/class", () => {
   describe("SUCCESS CASE", () => {
-    test("should get get all classes and return status 200", async () => {
+    test("should get all classes and return status 200", async () => {
       const access_token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
 
       const response = await request(app)
         .get("/teachers/class")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("schedule", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Assignments", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Students", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("Teacher", expect.any(Object));
+    });
+    test("should get single class based on query and return status 200", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      const response = await request(app)
+        .get("/teachers/class?name=xii-1")
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -286,18 +323,38 @@ describe("GET /teachers/class", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const response = await request(app).get("/teachers/class/1");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/class/1")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(500);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("message", "Internal Server Error");
+    });
+    test("should be handle error of get all classes", async () => {
+      jest.spyOn(Class, "find").mockRejectedValue("Error");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      return await request(app)
+        .get("/teachers/class")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   });
 });
 
 describe("GET /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
-    test("should get get all assignments and return status 200", async () => {
+    test("should get all assignments and return status 200", async () => {
       const access_token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
       const response = await request(app)
@@ -308,7 +365,53 @@ describe("GET /teachers/assignments", () => {
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toHaveProperty("_id", expect.any(String));
       expect(response.body[0]).toHaveProperty("name", expect.any(String));
-      expect(response.body[0]).toHaveProperty("ClassId", expect.any(String));
+      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("subject", expect.any(String));
+      expect(response.body[0]).toHaveProperty("deadline", expect.any(String));
+      expect(response.body[0]).toHaveProperty(
+        "assignmentDate",
+        expect.any(String)
+      );
+      expect(response.body[0]).toHaveProperty(
+        "StudentAnswers",
+        expect.any(Array)
+      );
+    });
+    test("should get single assignment based on ClassId and return status 200", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/assignments?Class=6427ba76af2401519a68219e")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("subject", expect.any(String));
+      expect(response.body[0]).toHaveProperty("deadline", expect.any(String));
+      expect(response.body[0]).toHaveProperty(
+        "assignmentDate",
+        expect.any(String)
+      );
+      expect(response.body[0]).toHaveProperty(
+        "StudentAnswers",
+        expect.any(Array)
+      );
+    });
+    test("should get single assignment based on name and return status 200", async () => {
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/assignments?name=ballred0")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object));
       expect(response.body[0]).toHaveProperty("subject", expect.any(String));
       expect(response.body[0]).toHaveProperty("deadline", expect.any(String));
       expect(response.body[0]).toHaveProperty(
@@ -343,11 +446,31 @@ describe("GET /teachers/assignments", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const response = await request(app).get("/teachers/assignments/1");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+      const response = await request(app)
+        .get("/teachers/assignments/1")
+        .set("access_token", access_token);
 
       expect(response.status).toBe(500);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("message", "Internal Server Error");
+    });
+    test("should be handle error of get all assignment", async () => {
+      jest.spyOn(Assignment, "find").mockRejectedValue("Error");
+      const access_token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Mjg2Yjg5M2EzMTVlOWRhNjcxMTJmNCIsImlhdCI6MTY4MDQxODk3NH0.f-wMWz6zSgmEXv0EP1PztjHD3Ba7DXOIpVlcdx19DnY";
+
+      return await request(app)
+        .get("/teachers/assignments")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   });
 });
@@ -560,7 +683,7 @@ describe("POST /teachers/assignments", () => {
   });
 });
 
-describe.only("POST /teachers/class", () => {
+describe("POST /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should post single class and return status 200", async () => {
       const body = {
