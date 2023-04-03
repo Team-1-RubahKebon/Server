@@ -9,7 +9,7 @@ beforeAll(async () => {});
 
 afterAll(async () => {});
 
-describe.skip("POST /teachers/register", () => {
+describe("POST /teachers/register", () => {
   describe("SUCCESS CASE", () => {
     test("should create new teacher and return status 201", async () => {
       const body = {
@@ -125,7 +125,7 @@ describe.skip("POST /teachers/register", () => {
   });
 });
 
-describe.skip("POST /teachers/login", () => {
+describe("POST /teachers/login", () => {
   describe("SUCCESS CASE", () => {
     test("should login teacher and return status 201", async () => {
       const body = {
@@ -560,7 +560,7 @@ describe("POST /teachers/assignments", () => {
   });
 });
 
-describe.only("POST /teachers/class", () => {
+describe("POST /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should post single class and return status 200", async () => {
       const body = {

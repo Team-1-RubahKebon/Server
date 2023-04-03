@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", function (next) {
-  console.log(this.password);
   this.password = Hash.create(this.password);
   next();
 });
