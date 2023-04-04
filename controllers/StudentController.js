@@ -188,7 +188,6 @@ module.exports = class StudentController {
 
   static async googleLogin(req, res, next) {
     try {
-
       const ticket = await googleAuth.verifyIdToken({
         idToken: req.headers.token_google,
         audience: credential.client_id,
@@ -207,7 +206,7 @@ module.exports = class StudentController {
           role: "Student",
         })
         userId = newUser._id
-      }else {
+      } else {
         userId = user._id
       }
 
@@ -309,15 +308,19 @@ module.exports = class StudentController {
   static async getStudentAnswers(req, res, next) {
     try {
       let _id = req.user._id;
+
+      console.log(req.user,"<<<<<<<<<<<<<<<<<<<INI REQ USER DARI CONTROLLER")
       if (!_id) {
         throw new Errors(404, "Student not found");
       }
 
-      let studentAnswers = await StudentAnswer.find({ Student: _id }).populate(
+      let studentAnswers = await StudentAnswer.find({ Student: _id })
+
+      let newStudentAnswers = await StudentAnswer.find({ Student: _id }).populate(
         "Assignment"
       );
 
-      res.status(200).json(studentAnswers);
+      res.status(200).json(newStudentAnswers);
     } catch (err) {
       next(err);
     }
