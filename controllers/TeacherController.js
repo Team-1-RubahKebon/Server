@@ -76,7 +76,6 @@ module.exports = class TeacherController {
 
   static async googleLogin(req, res, next) {
     try {
-
       const ticket = await googleAuth.verifyIdToken({
         idToken: req.headers.token_google,
         audience: credential.client_id,
@@ -86,18 +85,18 @@ module.exports = class TeacherController {
         where: { email: payload.email },
       });
 
-      let userId
+      let userId;
       if (!user) {
         let newUser = await User.create({
           username: payload.name,
           email: payload.email,
           password: "bebas",
           role: "Teacher",
-        })
-        userId = newUser._id
-        console.log(newUser, "<<<<<<<<<<<<<<<<new user")
-      }else {
-        userId = user._id
+        });
+        userId = newUser._id;
+        console.log(newUser, "<<<<<<<<<<<<<<<<new user");
+      } else {
+        userId = user._id;
       }
 
       const payloadController = {
@@ -106,7 +105,7 @@ module.exports = class TeacherController {
 
       const access_token = Token.create(payloadController);
 
-      console.log(access_token,"<<<<<<<<<<<<,,accesstoken")
+      console.log(access_token, "<<<<<<<<<<<<,,accesstoken");
       res.status(200).json({ access_token, user });
     } catch (err) {
       next(err);
@@ -180,6 +179,17 @@ module.exports = class TeacherController {
       session.startTransaction();
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
+
+      if (
+        !name ||
+        !ClassId ||
+        !subject ||
+        !deadline ||
+        !assignmentDate ||
+        !questionForm
+      ) {
+        throw new Errors(400, "All assignment details must be filled");
+      }
 
       // mock push question
       questionForm = {
@@ -273,38 +283,41 @@ module.exports = class TeacherController {
   //     let { questionForm, StudentAnswers } = req.body;
   //     let _id = req.params.id;
 
-  // if (
-  //   !questionForm ||
-  //   !questionForm.questions ||
-  //   questionForm.questions.length < 15
-  // ) {
-  //   throw new Errors(
-  //     400,
-  //     "Must include 15 questions when creating assignment"
-  //   );
-  // }
+  //     if (
+  //       !questionForm ||
+  //       !questionForm.questions ||
+  //       questionForm.questions.length < 15
+  //     ) {
+  //       throw new Errors(
+  //         400,
+  //         "Must include 15 questions when creating assignment"
+  //       );
+  //     }
 
-  // let assignment = await Assignment.findOne(
-  //   { _id: new ObjectId(_id) },
-  //   { session }
-  // ).populate("QuestionId");
+  //     let assignment = await Assignment.findOne({
+  //       _id: new ObjectId(_id),
+  //     }).populate("QuestionId");
 
-  // let question = assignment.QuestionId;
+  //     if (!assignment) {
+  //       throw new Errors(404, "Data not found");
+  //     }
 
-  // let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
-  //   await StudentAnswer.updateOne(
-  //     {
-  //       _id: new ObjectId(el._id),
-  //     },
-  //     { status: "Returned" },
-  //     { session }
-  //   );
-  // });
+  //     let question = assignment.QuestionId;
+
+  //     let studentAnswerUpdate = StudentAnswers.forEach(async (el) => {
+  //       await StudentAnswer.updateOne(
+  //         {
+  //           _id: new ObjectId(el._id),
+  //         },
+  //         { status: "Returned" },
+  //         { session }
+  //       );
+  //     });
 
   //     await session.commitTransaction();
   //     session.endSession();
 
-  //     res.status(200).json(question);
+  //     res.status(200).json({ message: "assignment already updated" });
   //   } catch (err) {
   //     await session.abortTransaction();
   //     session.endSession();
