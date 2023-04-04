@@ -43,7 +43,7 @@ module.exports = class StudentController {
         _id: new ObjectId(assignmentId),
       });
 
-      console.log(assignmentCheck, "<<<<<<<<<<<<<<,assign check")
+      console.log(assignmentCheck, "<<<<<<<<<<<<<<,assign check");
 
       if (!assignmentCheck) {
         throw new Errors(404, "Not found");
@@ -53,7 +53,7 @@ module.exports = class StudentController {
         image: { source: { imageUri: fileUri } },
         features: [
           { type: "DOCUMENT_TEXT_DETECTION" },
-          { type: "FORMULA_DETECTION" },
+          { type: "TEXT_DETECTION" },
         ],
       };
 
@@ -131,7 +131,7 @@ module.exports = class StudentController {
         throw new Errors(401, "Wrong Email/Password");
       }
 
-      console.log(user, "ini user login <<<<<<<<<<<<<<<<<<")
+      console.log(user, "ini user login <<<<<<<<<<<<<<<<<<");
       if (user.role !== "Student") {
         throw new Errors(403, "You are not student");
       }
@@ -188,7 +188,6 @@ module.exports = class StudentController {
 
   static async googleLogin(req, res, next) {
     try {
-
       const ticket = await googleAuth.verifyIdToken({
         idToken: req.headers.token_google,
         audience: credential.client_id,
@@ -198,17 +197,17 @@ module.exports = class StudentController {
         where: { email: payload.email },
       });
 
-      let userId
+      let userId;
       if (!user) {
         let newUser = await User.create({
           username: payload.name,
           email: payload.email,
           password: "bebas",
           role: "Student",
-        })
-        userId = newUser._id
-      }else {
-        userId = user._id
+        });
+        userId = newUser._id;
+      } else {
+        userId = user._id;
       }
 
       const payloadController = {
@@ -243,7 +242,7 @@ module.exports = class StudentController {
 
   static async getStudentById(req, res, next) {
     try {
-      console.log(req.user, " <<<<<<<<<<<<<<<<,,, user")
+      console.log(req.user, " <<<<<<<<<<<<<<<<,,, user");
       let user = await User.findOne({ _id: req.user._id }).populate("Class");
 
       delete user._doc.password;
@@ -280,7 +279,6 @@ module.exports = class StudentController {
         })
         .populate("QuestionId");
 
-
       res.status(200).json(assignmentById);
     } catch (err) {
       next(err);
@@ -296,10 +294,8 @@ module.exports = class StudentController {
 
       let studentAnswers = await StudentAnswer.find({
         Student: _id,
-        status: 'Assigned'
-      }).populate(
-        "Assignment"
-      );
+        status: "Assigned",
+      }).populate("Assignment");
 
       res.status(200).json(studentAnswers);
     } catch (err) {
