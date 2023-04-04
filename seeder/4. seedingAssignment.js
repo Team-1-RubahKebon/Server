@@ -11,9 +11,9 @@ async function seeding() {
   questionForm = {
     questions: [],
   };
-  for (let i = 0; i < 15; i++) {
+  for (let i = 1; i <= 15; i++) {
     let question = {
-      rowNumber: ++i,
+      rowNumber: i,
       question: "test 1",
       selection: {
         A: "Test",
@@ -22,7 +22,7 @@ async function seeding() {
         D: "Test",
       },
       answerType: i < 10 ? "pg" : "essay",
-      keyword: "test",
+      keyword: "A",
     };
     questionForm.questions.push(question);
   }
@@ -34,11 +34,10 @@ async function seeding() {
 
     let classId = await Class.findById(el.ClassId);
 
-    // let adaptedStudents = classId.Students.map((el) => el._id);
-
-    console.log(classId.Students);
+    let adaptedStudents = classId.Students.map((el) => el._id);
 
     let questionCreate = new Question(questionForm);
+
     let createdQues = await questionCreate.save();
 
     let assignmentCreate = new Assignment({

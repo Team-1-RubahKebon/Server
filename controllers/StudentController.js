@@ -306,8 +306,15 @@ module.exports = class StudentController {
         Student: _id,
         status: "Assigned",
       }).populate("Assignment");
+        status: "Assigned",
+      });
 
-      res.status(200).json(studentAnswers);
+      let newStudentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: "Assigned",
+      }).populate("Assignment");
+
+      res.status(200).json(newStudentAnswers);
     } catch (err) {
       next(err);
     }
@@ -324,8 +331,15 @@ module.exports = class StudentController {
         Student: _id,
         status: "Returned",
       }).populate("Assignment");
+        status: "Returned",
+      });
 
-      res.status(200).json(studentAnswers);
+      let newStudentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: "Returned",
+      }).populate("Assignment");
+
+      res.status(200).json(newStudentAnswers);
     } catch (err) {
       next(err);
     }
