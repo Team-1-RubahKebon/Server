@@ -1,42 +1,42 @@
 [
   {
-    "name": "ballred0",
+    "name": "Ujian Tengah Semester",
     "QuestionId": 1,
     "ClassId": 3,
     "subject": "Chemistry",
     "deadline": "2023-02-04",
-    "assignmentDate": "2022-10-26"
+    "assignmentDate": "2023-02-011"
   },
   {
-    "name": "rhagston1",
+    "name": "Ujian Tengah Semester",
     "QuestionId": 1,
     "ClassId": 5,
     "subject": "Math",
-    "deadline": "2023-02-09",
-    "assignmentDate": "2022-09-17"
+    "deadline": "2023-02-04",
+    "assignmentDate": "2023-02-011"
   },
   {
-    "name": "ljedraszczyk2",
+    "name": "Ujian Tengah Semester",
     "QuestionId": 1,
     "ClassId": 3,
     "subject": "Physics",
-    "deadline": "2023-01-07",
-    "assignmentDate": "2023-02-09"
+    "deadline": "2023-02-04",
+    "assignmentDate": "2023-02-011"
   },
   {
-    "name": "bbrayson3",
+    "name": "Ujian Tengah Semester",
     "QuestionId": 1,
     "ClassId": 1,
     "subject": "Math",
-    "deadline": "2022-09-25",
-    "assignmentDate": "2022-09-13"
+    "deadline": "2023-02-04",
+    "assignmentDate": "2023-02-011"
   },
   {
-    "name": "rshobrook4",
+    "name": "Ujian Tengah Semester",
     "QuestionId": 5,
     "ClassId": 4,
     "subject": "Biology",
-    "deadline": "2023-03-13",
-    "assignmentDate": "2023-01-22"
+    "deadline": "2023-02-04",
+    "assignmentDate": "2023-02-011"
   }
 ]

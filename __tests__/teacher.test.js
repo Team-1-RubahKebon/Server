@@ -508,16 +508,15 @@ describe("DELETE /teachers/assignments", () => {
   });
 });
 
-//TODO handle this later
-describe.only("POST /teachers/assignments", () => {
+describe("POST /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should create single assignment and return status 201", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
-        name: "bangun candi 3",
-        ClassId: "642ba838c6456c3c494a2736",
+        name: "makan bubur pake sumpit",
+        ClassId: "642bbda7f2a80b1610bb84db",
         subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -545,14 +544,14 @@ describe.only("POST /teachers/assignments", () => {
       expect(response.body).toHaveProperty("_id", expect.any(String));
     });
   });
-  describe("FAILED CASE", () => {
+  describe.only("FAILED CASE", () => {
     test("should fail to create assignment because the name is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
         // name: "bangun candi 3",
-        ClassId: "6427ba76af2401519a68219e",
+        ClassId: "642bbda7f2a80b1610bb84db",
         subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -575,11 +574,11 @@ describe.only("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the ClassId is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
         name: "bangun candi 3",
-        // ClassId: "6427ba76af2401519a68219e",
+        // ClassId: "642bbda7f2a80b1610bb84db",
         subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -602,11 +601,11 @@ describe.only("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the subject is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
         name: "bangun candi 3",
-        ClassId: "6427ba76af2401519a68219e",
+        ClassId: "642bbda7f2a80b1610bb84db",
         // subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -629,11 +628,11 @@ describe.only("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the deadline is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
         name: "bangun candi 3",
-        ClassId: "6427ba76af2401519a68219e",
+        ClassId: "642bbda7f2a80b1610bb84db",
         subject: "Chemistry",
         // deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -656,11 +655,11 @@ describe.only("POST /teachers/assignments", () => {
     });
     test("should fail to create assignment because the assignmentDate is not inputted and return status 400", async () => {
       const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU4ODU0MX0.5OPRDPskxxjIo6mT47TaxL_7Px0_u-P8WyP0Xsq3iLM";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
 
       const body = {
         name: "bangun candi 3",
-        ClassId: "6427ba76af2401519a68219e",
+        ClassId: "642bbda7f2a80b1610bb84db",
         subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         // assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -783,7 +782,7 @@ describe("GET /teachers/student/answer/:id", () => {
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("_id", expect.any(String));
       expect(response.body).toHaveProperty("Assignment", expect.any(Object));
-      expect(response.body).toHaveProperty("Student", expect.any(String));
+      expect(response.body).toHaveProperty("Students", expect.any(String));
       expect(response.body).toHaveProperty("status", expect.any(String));
       expect(response.body).toHaveProperty("imgUrl", expect.any(String));
       expect(response.body).toHaveProperty("Answers", expect.any(Array));
@@ -814,7 +813,7 @@ describe("PATCH /teachers/student/answer/:id", () => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
 
       const response = await request(app)
-        .patch("/teachers/student/answer/642ba93ff087b1b30882666f")
+        .put("/teachers/student/answer/642ba93ff087b1b30882666f")
         .set("access_token", access_token)
         .send(body);
 
