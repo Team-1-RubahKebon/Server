@@ -296,11 +296,16 @@ module.exports = class StudentController {
       let studentAnswers = await StudentAnswer.find({
         Student: _id,
         status: 'Assigned'
+      })
+
+      let newStudentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: 'Assigned'
       }).populate(
         "Assignment"
       );
 
-      res.status(200).json(studentAnswers);
+      res.status(200).json(newStudentAnswers);
     } catch (err) {
       next(err);
     }
@@ -316,11 +321,16 @@ module.exports = class StudentController {
       let studentAnswers = await StudentAnswer.find({
         Student: _id,
         status: 'Returned'
+      })
+
+      let newStudentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: 'Returned'
       }).populate(
         "Assignment"
       );
 
-      res.status(200).json(studentAnswers);
+      res.status(200).json(newStudentAnswers);
     } catch (err) {
       next(err);
     }
@@ -330,7 +340,6 @@ module.exports = class StudentController {
     try {
       let _id = req.user._id;
 
-      console.log(req.user,"<<<<<<<<<<<<<<<<<<<INI REQ USER DARI CONTROLLER")
       if (!_id) {
         throw new Errors(404, "Student not found");
       }
