@@ -60,21 +60,43 @@ assignmentSchema.pre("save", function (next) {
     { multi: true }
   ).exec();
 
-  let students = this.Students;
+  this.StudentAnswers = [];
 
-  students.forEach(async (el) => {
-    let studentAnswer = new StudentAnswer({
-      Assignment: this._id,
-      Student: el._id,
-      status: "Assigned",
-      imgUrl: "",
-      score: 0,
-      Answers: [],
-    });
-    let createdStudentAnswer = await studentAnswer.save();
-    this.StudentAnswers.push(createdStudentAnswer._id);
-  });
   next();
+});
+
+assignmentSchema.post("save", async function (next) {
+  try {
+    let studentAnswers = [];
+    let students = this.Students;
+    let assignmentId = this._id;
+
+    students.forEach(async (el) => {
+      let studentAnswer = new StudentAnswer({
+        Assignment: assignmentId,
+        Student: el._id,
+        status: "Assigned",
+        imgUrl: "",
+        score: 0,
+        Answers: [],
+      });
+      let createdStudentAnswer = await studentAnswer.save();
+      studentAnswers.push(createdStudentAnswer._id);
+    });
+
+    let updated = await Assignment.collection.updateOne(
+      { _id: assignmentId },
+      {
+        $push: {
+          StudentAnswers: {
+            $each: studentAnswers,
+          },
+        },
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);

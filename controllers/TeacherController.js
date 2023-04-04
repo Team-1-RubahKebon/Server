@@ -228,33 +228,33 @@ module.exports = class TeacherController {
       });
       await assignmentCreated.save({ session });
 
-      let updateClass = await Class.updateOne(
-        {
-          _id: assignmentCreated.ClassId,
-        },
-        { $push: { Assignments: assignmentCreated._id } },
-        { session }
-      );
+      // let updateClass = await Class.updateOne(
+      //   {
+      //     _id: assignmentCreated.ClassId,
+      //   },
+      //   { $push: { Assignments: assignmentCreated._id } },
+      //   { session }
+      // );
       const studentAnswersArr = [];
 
-      classStudents.forEach((el) => {
-        let studentAnswer = {};
-        studentAnswer.Assignment = assignmentCreated._id;
-        studentAnswer.Student = el;
-        studentAnswer.status = "Assigned";
-        studentAnswer.imgUrl = "";
-        studentAnswer.Answers = [];
-        studentAnswersArr.push(studentAnswer);
-      });
+      // classStudents.forEach((el) => {
+      //   let studentAnswer = {};
+      //   studentAnswer.Assignment = assignmentCreated._id;
+      //   studentAnswer.Student = el;
+      //   studentAnswer.status = "Assigned";
+      //   studentAnswer.imgUrl = "";
+      //   studentAnswer.Answers = [];
+      //   studentAnswersArr.push(studentAnswer);
+      // });
 
       console.log(studentAnswersArr);
 
-      Promise.all(
-        studentAnswersArr.forEach(async (el) => {
-          let createdStudentAnswers = new StudentAnswer(el);
-          await createdStudentAnswers(el).save();
-        })
-      );
+      // Promise.all(
+      //   studentAnswersArr.forEach(async (el) => {
+      //     let createdStudentAnswers = new StudentAnswer(el);
+      //     await createdStudentAnswers(el).save();
+      //   })
+      // );
 
       await session.commitTransaction();
       session.endSession();
