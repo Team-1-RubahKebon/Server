@@ -67,7 +67,7 @@ assignmentSchema.pre("save", function (next) {
 
 assignmentSchema.post("save", async function (next) {
   try {
-    let studentAnswers = [];
+    // let studentAnswers = [];
     let students = this.Students;
     let assignmentId = this._id;
 
@@ -81,19 +81,17 @@ assignmentSchema.post("save", async function (next) {
         Answers: [],
       });
       let createdStudentAnswer = await studentAnswer.save();
-      studentAnswers.push(createdStudentAnswer._id);
-    });
-
-    let updated = await Assignment.collection.updateOne(
-      { _id: assignmentId },
-      {
-        $push: {
-          StudentAnswers: {
-            $each: studentAnswers,
+      // studentAnswers.push(createdStudentAnswer._id);
+      let updated = await Assignment.collection.updateOne(
+        { _id: assignmentId },
+        {
+          $push: {
+            StudentAnswers: createdStudentAnswer._id,
           },
-        },
-      }
-    );
+        }
+      );
+      console.log(updated);
+    });
   } catch (err) {
     console.log(err);
   }
