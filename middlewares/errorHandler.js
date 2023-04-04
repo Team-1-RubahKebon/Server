@@ -9,7 +9,10 @@ module.exports = (err, req, res, next) => {
     res.status(401).json({ message: "Wrong Token" });
   } else if (err.name?.match(/(BSON)/gi) || err.message?.match(/(BSON)/gi)) {
     res.status(400).json({ message: "wrong parameter" });
-  } else {
+  } else if (err.message === 'You are not authorized') {
+    res.status(401).json({ message: "You are not authorized" });
+  }
+  else {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

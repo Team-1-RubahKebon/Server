@@ -46,9 +46,6 @@ jest.mock("multer", () => {
         req.file = {
           uri: "http://test.png",
         };
-        req.params = {
-          courseId: "64286992f8ed0c9380a9c8eb",
-        };
         return next();
       };
     },
@@ -57,7 +54,7 @@ jest.mock("multer", () => {
   return multer;
 });
 
-let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmFkZjUyOGI0ZGJlZjdlYTdlMTcyMSIsImlhdCI6MTY4MDUzMTk2N30.LrfXO8LXteEC5m-E0GQQbikfSRmNjyqK5eluhqOVWbY"
+let access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmI2OTVlMzE2MDM1ZGU1YmVhZTNkYSIsImlhdCI6MTY4MDU2Njc3N30.HobR2opE_bhIKOFbQC0pGWyqxAn1QmNeaX9LsCEIc3c"
 
 // let assignments
 // beforeAll(async () => {
@@ -97,11 +94,12 @@ describe("POST /students/register", () => {
   describe("SUCCESS CASE", () => {
     test.skip("should create new student and return status 201", async () => {
       const body = {
-        email: "poror@mail.com",
+        email: "zoro@mail.com",
         password: "123456",
-        name: "poror",
-        Class: new Object("6426f6c99381fcb4116592f9"),
+        name: "zoro",
+        Class: new Object("642b4196153a77181758b232"),
         address: "shigansina",
+        role: "Student"
       };
 
       const response = await request(app).post("/students/register").send(body);
@@ -227,7 +225,7 @@ describe("POST /student/login", () => {
   describe("SUCCESS CASE", () => {
     test("should let student in and return status 200", async () => {
       const body = {
-        email: "eren@mail.com",
+        email: "zoro@mail.com",
         password: "123456",
       };
 
@@ -315,6 +313,40 @@ describe("POST /student/login", () => {
 
 })
 
+describe("POST /students/upload/:courseId", () => {
+  describe("SUCCESS CASE", () => {
+    test("should post student answers and return status 200", async () => {
+      const response = await request(app)
+        .post("/students/upload/642b533a95e81ac193fea001")
+        .set("access_token", access_token)
+        .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("isWrong", expect.any(Boolean));
+      expect(response.body[0]).toHaveProperty("rowNumber", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("answer", expect.any(String));
+      expect(response.body[0]).toHaveProperty("answerType", expect.any(String));
+    });
+  });
+
+  describe("FAIL CASE", () => {
+    test("should fail to post student answer and return status 400", async () => {
+
+      const courseId = '1'
+
+      const response = await request(app)
+        .post(`/students/upload/${courseId}`)
+        .set("access_token", access_token)
+        .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("message", "wrong parameter");
+    });
+  });
+});
+
 describe("GET /students/assignments", () => {
   describe("SUCCESS CASE", () => {
 
@@ -341,7 +373,7 @@ describe("GET /students/assignments", () => {
 
     test('should get assignment by id and return status 200', async () => {
 
-      const response = await request(app).get("/students/assignments/642ad62e4115b7a593cee3c3")
+      const response = await request(app).get("/students/assignments/642b533a95e81ac193fea001")
         .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
@@ -427,6 +459,7 @@ describe("GET /students", () => {
 
       return await request(app)
         .get("/students")
+        .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -487,40 +520,40 @@ describe("GET /students/class", () => {
   });
 });
 
-describe("GET /students/answers", () => {
-  describe("SUCCESS CASE", () => {
-    test("should get students answers and return status 200", async () => {
-      const response = await request(app)
-        .get("/students/answers")
-        .set("access_token", access_token);
-      expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
-      expect(response.body[0]).toHaveProperty("Assignment", expect.any(String));
-      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
-      expect(response.body[0]).toHaveProperty("status", expect.any(String));
-      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
-      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
-      expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String));
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
-    });
-  });
-  describe("FAILED CASE", () => {
-    test("should be handle error of get all classes", async () => {
-      jest.spyOn(Class, "find").mockRejectedValue("Error");
+// describe("GET /students/answers", () => {
+//   describe("SUCCESS CASE", () => {
+//     test("should get students answers and return status 200", async () => {
+//       const response = await request(app)
+//         .get("/students/answers")
+//         .set("access_token", access_token);
+//       expect(response.status).toBe(200);
+//       expect(response.body).toBeInstanceOf(Array);
+//       expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("Assignment", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("status", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+//       expect(response.body[0]).toHaveProperty("turnedAt", expect.any(String));
+//       expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+//     });
+//   });
+//   describe("FAILED CASE", () => {
+//     test("should be handle error of get all classes", async () => {
+//       jest.spyOn(Class, "find").mockRejectedValue("Error");
 
-      return await request(app)
-        .get("/students/class")
-        .then((res) => {
-          expect(res.status).toBe(500);
-          expect(res.body.message).toBe("Internal Server Error");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
-  });
-});
+//       return await request(app)
+//         .get("/students/class")
+//         .then((res) => {
+//           expect(res.status).toBe(500);
+//           expect(res.body.message).toBe("Internal Server Error");
+//         })
+//         .catch((err) => {
+//           console.log(err);
+//         });
+//     });
+//   });
+// });
 
 describe("GET /students/answers", () => {
   describe("SUCCESS CASE", () => {
@@ -547,6 +580,7 @@ describe("GET /students/answers", () => {
       jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
 
       return await request(app).get("/students/answers")
+        .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -561,9 +595,9 @@ describe("GET /students/answers", () => {
 describe("GET /students/answers/:id", () => {
   describe("SUCCESS CASE", () => {
 
-    test('should get student answers and return status 200', async () => {
+    test('should get student answers by id and return status 200', async () => {
 
-      const response = await request(app).get("/students/answers/642aeb1a982c231706fa3202")
+      const response = await request(app).get("/students/answers/642b695e316035de5beae3da")
         .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
@@ -584,6 +618,7 @@ describe("GET /students/answers/:id", () => {
       jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
 
       return await request(app).get("/students/answers/642aeb1a982c231706fa3202")
+        .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -595,41 +630,3 @@ describe("GET /students/answers/:id", () => {
   });
 })
 
-describe.skip("POST /students/upload/:courseId", () => {
-  describe("SUCCESS CASE", () => {
-    test("should get student answers and return status 200", async () => {
-      const response = await request(app)
-        .post("/students/upload/64286992f8ed0c9380a9c8eb")
-        .set("access_token", access_token)
-        .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
-
-      expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toHaveProperty("_id", expect.any(String));
-      expect(response.body).toHaveProperty("Assignment", expect.any(String));
-      expect(response.body).toHaveProperty("Student", expect.any(Object));
-      expect(response.body).toHaveProperty("status", expect.any(String));
-      expect(response.body).toHaveProperty("imgUrl", expect.any(String));
-      expect(response.body).toHaveProperty("Answers", expect.any(Array));
-      expect(response.body).toHaveProperty("turnedAt", expect.any(String));
-      expect(response.body).toHaveProperty("__v", expect.any(Number));
-    });
-  });
-
-  describe("FAIL CASE", () => {
-    test("should fail to find assignment id and return status 404", async () => {
-      const body = {
-        image: "Form-Lembar-jawaban.jpg",
-      };
-
-      const response = await request(app)
-        .post("/students/upload/1")
-        .set("access_token", access_token)
-        .send(body);
-
-      expect(response.status).toBe(404);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toHaveProperty("message", "wrong parameter");
-    });
-  });
-});

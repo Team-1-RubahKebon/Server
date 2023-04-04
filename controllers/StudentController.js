@@ -2,12 +2,12 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 const client = require("../config/clientVision");
+const googleAuth = require("../config/googleAuth");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Errors = require("../helpers/Errors");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
 const User = require("../models/User");
-const { OAuth2Client, auth } = require("google-auth-library");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const StudentAnswer = require("../models/StudentAnswer");
@@ -32,7 +32,7 @@ module.exports = class StudentController {
     try {
       session.startTransaction();
 
-      let assignmentId = req.params.courseId;
+      let assignmentId = req.params.assignmentId;
       const fileUri = req.file.uri;
       const fileLink = req.file.linkUrl;
       if (!assignmentId) {
@@ -42,6 +42,8 @@ module.exports = class StudentController {
       const assignmentCheck = await Assignment.findOne({
         _id: new ObjectId(assignmentId),
       });
+
+      console.log(assignmentCheck, "<<<<<<<<<<<<<<,assign check")
 
       if (!assignmentCheck) {
         throw new Errors(404, "Not found");
@@ -186,29 +188,35 @@ module.exports = class StudentController {
 
   static async googleLogin(req, res, next) {
     try {
-      const client = new OAuth2Client(credential.client_id);
 
-      const ticket = await client.verifyIdToken({
+      const ticket = await googleAuth.verifyIdToken({
         idToken: req.headers.token_google,
         audience: credential.client_id,
       });
       const payload = ticket.getPayload();
-
-      const [user] = await User.findOrCreate({
+      const user = await User.findOne({
         where: { email: payload.email },
-        defaults: {
+      });
+
+      let userId
+      if (!user) {
+        let newUser = await User.create({
           username: payload.name,
           email: payload.email,
           password: "bebas",
-          role: "student",
-        },
-        hooks: false,
-      });
+          role: "Student",
+        })
+        userId = newUser._id
+      }else {
+        userId = user._id
+      }
+
       const payloadController = {
-        id: user.id,
+        id: userId,
       };
 
-      const access_token = createToken(payloadController);
+      const access_token = Token.create(payloadController);
+
       res.status(200).json({ access_token, user });
     } catch (err) {
       next(err);
@@ -279,6 +287,25 @@ module.exports = class StudentController {
     }
   }
 
+  static async getStudentAnswersAssigned(req, res, next) {
+    try {
+      let _id = req.user._id;
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+
+      let studentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: 'Assigned'
+      }).populate(
+        "Assignment"
+      );
+
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
   static async getStudentAnswers(req, res, next) {
     try {
       let _id = req.user._id;
