@@ -180,16 +180,16 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      if (
-        !name ||
-        !ClassId ||
-        !subject ||
-        !deadline ||
-        !assignmentDate ||
-        !questionForm
-      ) {
-        throw new Errors(400, "All assignment details must be filled");
-      }
+      // if (
+      //   !name ||
+      //   !ClassId ||
+      //   !subject ||
+      //   !deadline ||
+      //   !assignmentDate ||
+      //   !questionForm
+      // ) {
+      //   throw new Errors(400, "All assignment details must be filled");
+      // }
 
       // mock push question
       questionForm = {
@@ -225,13 +225,16 @@ module.exports = class TeacherController {
 
       let classStudents = classAssigned.Students.map((el) => el.id);
 
+      assignmentDate = dateFormatter(new Date());
+      deadline = dateFormatter(new Date("2023-05-20"));
+
       let assignmentCreated = new Assignment({
         name,
         ClassId,
         QuestionId: questionCreated._id,
         subject,
-        deadline: dateFormatter(new Date("2023-05-20")),
-        assignmentDate: dateFormatter(new Date()),
+        deadline,
+        assignmentDate,
         Students: classStudents,
       });
       await assignmentCreated.save({ session });

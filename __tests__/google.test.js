@@ -31,12 +31,12 @@ describe("POST /students/googlein", () => {
         return {
           getPayload: () => {
             return {
-              name: 'renji',
-              email: 'renji@mail.com'
-            }
+              name: "renji",
+              email: "renji@mail.com",
+            };
           },
-        }
-      }
+        };
+      },
     };
   });
   describe("SUCCESS CASE", () => {
@@ -69,12 +69,12 @@ describe("POST /teachers/googlein", () => {
         return {
           getPayload: () => {
             return {
-              name: 'denji',
-              email: 'denji@mail.com'
-            }
+              name: "denji",
+              email: "denji@mail.com",
+            };
           },
-        }
-      }
+        };
+      },
     };
   });
   describe("SUCCESS CASE", () => {
