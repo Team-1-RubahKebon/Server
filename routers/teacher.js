@@ -21,6 +21,7 @@ routerTeacher.post(
   authentication,
   TeacherController.createAssignment
 ); //done testing
+routerTeacher.post("/ai", TeacherController.chatOpenAi); //on progress testing;
 routerTeacher.get("/class/:id", authentication, TeacherController.getClass); //done testing
 routerTeacher.get(
   "/assignments/:id",
@@ -42,6 +43,10 @@ routerTeacher.put(
   authentication,
   TeacherController.updateStudentAnswer
 ); //done testing
-routerTeacher.post("/ai", TeacherController.chatOpenAi); //on progress testing;
+// routerTeacher.put(
+//   "/assignments/:id",
+//   authentication,
+//   TeacherController.updateAssignment
+// );
 
 module.exports = routerTeacher;
