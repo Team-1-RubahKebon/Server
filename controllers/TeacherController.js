@@ -2,7 +2,7 @@ const Errors = require("../helpers/Errors");
 const User = require("../models/User");
 const Hash = require("../helpers/Hash");
 const Token = require("../helpers/Token");
-const { OAuth2Client } = require("google-auth-library");
+const googleAuth = require("../config/googleAuth");
 const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 const Class = require("../models/Class");
 const Assignment = require("../models/Assignment");
@@ -76,30 +76,38 @@ module.exports = class TeacherController {
 
   static async googleLogin(req, res, next) {
     try {
-      const { token_google } = req.headers;
-      const client = new OAuth2Client(credential.client_id);
-      const ticket = await client.verifyIdToken({
-        idToken: token_google,
+
+      const ticket = await googleAuth.verifyIdToken({
+        idToken: req.headers.token_google,
         audience: credential.client_id,
       });
       const payload = ticket.getPayload();
-      const filter = { email: payload.email };
-      const update = {
-        $setOnInsert: {
+      const user = await User.findOne({
+        where: { email: payload.email },
+      });
+
+      let userId
+      if (!user) {
+        let newUser = await User.create({
           username: payload.name,
           email: payload.email,
-          password: "googlePassword",
+          password: "bebas",
           role: "Teacher",
-        },
+        })
+        userId = newUser._id
+        console.log(newUser, "<<<<<<<<<<<<<<<<new user")
+      }else {
+        userId = user._id
+      }
+
+      const payloadController = {
+        id: userId,
       };
 
-      const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+      const access_token = Token.create(payloadController);
 
-      const result = await User.findOneAndUpdate(filter, update, options);
-      const user = result.toObject();
-
-      const access_token = createToken({ id: user.id });
-      res.status(200).json({ access_token });
+      console.log(access_token,"<<<<<<<<<<<<,,accesstoken")
+      res.status(200).json({ access_token, user });
     } catch (err) {
       next(err);
     }

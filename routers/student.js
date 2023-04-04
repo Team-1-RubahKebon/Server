@@ -14,9 +14,10 @@ studentsRouter.get("/", StudentController.getStudents);
 studentsRouter.get("/assignments", StudentController.getAssignments);
 studentsRouter.get("/class", StudentController.getClass);
 studentsRouter.get("/answers", StudentController.getStudentAnswers);
+studentsRouter.get("/answers/assigned", StudentController.getStudentAnswersAssigned);
 studentsRouter.get("/answers/:id", StudentController.getStudentAnswerById);
 studentsRouter.post(
-  "/upload/:courseId",
+  "/upload/:assignmentId",
   upload.single("image"),
   StudentController.createStudentAnswer
 );
