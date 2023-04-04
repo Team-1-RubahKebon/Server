@@ -55,7 +55,7 @@ jest.mock("multer", () => {
   return multer;
 });
 
-let access_token = Token.create({ id: '642bbe41f8d0adffae825aa7' })
+let access_token = Token.create({ id: '642c74d1895e662920e1bacd' })
 
 // let assignments
 // beforeAll(async () => {
@@ -318,7 +318,7 @@ describe("POST /students/upload/:courseId", () => {
   describe("SUCCESS CASE", () => {
     test("should post student answers and return status 200", async () => {
       const response = await request(app)
-        .post("/students/upload/642bd2d8d87ee1d800d4df69")
+        .post("/students/upload/642c6fe9d93b17c1b8505f80")
         .set("access_token", access_token)
         .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
 
@@ -374,7 +374,7 @@ describe("GET /students/assignments", () => {
 
     test('should get assignment by id and return status 200', async () => {
 
-      const response = await request(app).get("/students/assignments/642bd2d8d87ee1d800d4df69")
+      const response = await request(app).get("/students/assignments/642c6fe9d93b17c1b8505f80")
         .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
@@ -528,12 +528,11 @@ describe("GET /students/answers", () => {
   describe("SUCCESS CASE", () => {
 
     test("should get students answers and return status 200", async () => {
-      console.log(access_token, "<<<<<<<<<<<<<<<<<,ACCESS TOKEN")
+
       const response = await request(app)
         .get("/students/answers")
         .set("access_token", access_token);
 
-      console.log(response, "<<<<<<<<<<<<<<< ini reesponse student answer")
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toHaveProperty("_id", expect.any(String));
@@ -570,7 +569,7 @@ describe("GET /students/answers/:id", () => {
 
     test('should get student answers by id and return status 200', async () => {
 
-      const response = await request(app).get("/students/answers/642bd2d8d87ee1d800d4df6c")
+      const response = await request(app).get("/students/answers/642c6fe9d93b17c1b8505f86")
         .set("access_token", access_token)
 
       expect(response.status).toBe(200)
@@ -661,7 +660,6 @@ describe("GET /students/answers/returned", () => {
         .get("/students/answers/returned")
         .set("access_token", access_token);
 
-      console.log(response, "<<<<<<<<<<<<<<<,,ini response terbaru")
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toHaveProperty("_id", expect.any(String));
