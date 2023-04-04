@@ -37,10 +37,10 @@ routerTeacher.get(
   authentication,
   TeacherController.studentAnswerById
 ); //done testing
-routerTeacher.patch(
+routerTeacher.put(
   "/student/answer/:id",
   authentication,
-  TeacherController.updateStudentAnswerStatus
+  TeacherController.updateStudentAnswer
 ); //done testing
 routerTeacher.post("/ai", TeacherController.chatOpenAi); //on progress testing;
 

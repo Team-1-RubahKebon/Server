@@ -215,8 +215,6 @@ module.exports = class TeacherController {
 
       let classStudents = classAssigned.Students.map((el) => el.id);
 
-      console.log(classStudents);
-
       let assignmentCreated = new Assignment({
         name,
         ClassId,
@@ -403,19 +401,25 @@ module.exports = class TeacherController {
     }
   }
 
-  static async updateStudentAnswerStatus(req, res, next) {
+  static async updateStudentAnswer(req, res, next) {
     try {
       let _id = req.params.id;
       let newStatus = req.body.newStatus;
+      let newScore = req.body.newScore;
+      let newAnswer = req.body.newAnswer;
 
       const filter = { _id };
-      const update = { $set: { status: newStatus } };
+      const update = {
+        $set: {
+          status: newStatus,
+          score: newScore,
+          Answers: newAnswer,
+        },
+      };
 
       await StudentAnswer.updateOne(filter, update);
 
-      res
-        .status(200)
-        .json({ message: "Student answer status already updated" });
+      res.status(200).json({ message: "Student answer has already updated" });
     } catch (err) {
       next(err);
     }
