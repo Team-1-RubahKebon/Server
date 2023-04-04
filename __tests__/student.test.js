@@ -318,7 +318,7 @@ describe("POST /students/upload/:courseId", () => {
   describe("SUCCESS CASE", () => {
     test("should post student answers and return status 200", async () => {
       const response = await request(app)
-        .post("/students/upload/642bd2d8d87ee1d800d4df63")
+        .post("/students/upload/642bd2d8d87ee1d800d4df69")
         .set("access_token", access_token)
         .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
 
@@ -374,7 +374,7 @@ describe("GET /students/assignments", () => {
 
     test('should get assignment by id and return status 200', async () => {
 
-      const response = await request(app).get("/students/assignments/642bd2d8d87ee1d800d4df63")
+      const response = await request(app).get("/students/assignments/642bd2d8d87ee1d800d4df69")
         .set("access_token", access_token)
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
@@ -572,6 +572,7 @@ describe("GET /students/answers/:id", () => {
 
       const response = await request(app).get("/students/answers/642bd2d8d87ee1d800d4df6c")
         .set("access_token", access_token)
+
       expect(response.status).toBe(200)
       expect(response.body).toBeInstanceOf(Object)
       expect(response.body).toHaveProperty("_id", expect.any(String))
@@ -586,11 +587,143 @@ describe("GET /students/answers/:id", () => {
     });
   })
   describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
     test("should be handle error of get student answer by id", async () => {
 
       jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
 
       return await request(app).get("/students/answers/642aeb1a982c231706fa3202")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+})
+
+describe("GET /students/answers/assigned", () => {
+  describe("SUCCESS CASE", () => {
+
+    test("should get students assignment with status assigned and return status 200", async () => {
+
+      const response = await request(app)
+        .get("/students/answers/assigned")
+        .set("access_token", access_token);
+
+      console.log(response, "<<<<<<<<<<<<<<<,,ini response terbaru")
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      // expect(response.body[0]).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("score", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  })
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test("should be handle error of get all student answers", async () => {
+
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+
+      return await request(app).get("/students/answers/assigned")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+})
+
+describe("GET /students/answers/returned", () => {
+  describe("SUCCESS CASE", () => {
+
+    test("should get students assignment with status assigned and return status 200", async () => {
+
+      const response = await request(app)
+        .get("/students/answers/returned")
+        .set("access_token", access_token);
+
+      console.log(response, "<<<<<<<<<<<<<<<,,ini response terbaru")
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("score", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  })
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test("should be handle error of get all student answers returned", async () => {
+
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+
+      return await request(app).get("/students/answers/returned")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+})
+
+describe("GET /students/average", () => {
+  describe("SUCCESS CASE", () => {
+
+    test("should get students assignment average score 200", async () => {
+
+      const response = await request(app)
+        .get("/students/average")
+        .set("access_token", access_token);
+
+      
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("avgScore", expect.any(Number));
+    });
+  })
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test("should be handle error of get student average score", async () => {
+
+      jest.spyOn(StudentAnswer, "aggregate").mockRejectedValue("Error");
+
+      return await request(app).get("/students/average")
         .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
