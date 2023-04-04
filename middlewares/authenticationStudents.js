@@ -5,7 +5,7 @@ const User = require("../models/User");
 module.exports = async (req, res, next) => {
   try {
     let token = req.headers.access_token;
-    console.log(token, " ini token <<<<<<<<<<<<<<<<<<<<<<<")
+    
     if (!token) {
       throw new Errors(401, "You are not authorized");
     }

@@ -2,20 +2,20 @@ const request = require("supertest");
 const app = require("../app");
 const User = require("../models/User");
 
-jest.mock("../config/googleAuth.js", () => {
-  return {
-    verifyIdToken: () => {
-      return {
-        getPayload: () => {
-          return {
-            name: 'bebas',
-            email: 'bebas@mail.com'
-          }
-        },
-      }
-    }
-  };
-});
+// jest.mock("../config/googleAuth.js", () => {
+//   return {
+//     verifyIdToken: () => {
+//       return {
+//         getPayload: () => {
+//           return {
+//             name: 'denji',
+//             email: 'denji@mail.com'
+//           }
+//         },
+//       }
+//     }
+//   };
+// });
 
 describe("POST /students/googlein", () => {
   // afterAll(async () => {
@@ -25,6 +25,20 @@ describe("POST /students/googlein", () => {
   //     console.log(error)
   //   }
   // })
+  jest.mock("../config/googleAuth.js", () => {
+    return {
+      verifyIdToken: () => {
+        return {
+          getPayload: () => {
+            return {
+              name: 'renji',
+              email: 'renji@mail.com'
+            }
+          },
+        }
+      }
+    };
+  });
   describe("SUCCESS CASE", () => {
     test("should login to google and return status 200", async () => {
       const headers = {
@@ -49,6 +63,20 @@ describe("POST /teachers/googlein", () => {
   //     console.log(error)
   //   }
   // })
+  jest.mock("../config/googleAuth.js", () => {
+    return {
+      verifyIdToken: () => {
+        return {
+          getPayload: () => {
+            return {
+              name: 'denji',
+              email: 'denji@mail.com'
+            }
+          },
+        }
+      }
+    };
+  });
   describe("SUCCESS CASE", () => {
     test("should login to google and return status 200", async () => {
       const headers = {

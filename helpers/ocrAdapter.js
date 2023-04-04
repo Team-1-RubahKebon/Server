@@ -1,8 +1,8 @@
 // const ocrAdapter
 module.exports = (input, question) => {
+  input = input.split("\nESSAY\n");
   // input = input.replaceAll("Ⓒ", "(C)");
   // input = input.replaceAll("©", "(C)");
-  // input = input.split("\nESSAY\n");
   let result = [];
   let multipleAnswersPool = input[0];
   let essayPool = input[1];
@@ -45,5 +45,5 @@ module.exports = (input, question) => {
     essay.isWrong = false;
     result.push(essay);
   }
-  return input;
+  return result;
 };
