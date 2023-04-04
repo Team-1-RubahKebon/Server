@@ -15,6 +15,7 @@ studentsRouter.get("/assignments", StudentController.getAssignments);
 studentsRouter.get("/class", StudentController.getClass);
 studentsRouter.get("/answers", StudentController.getStudentAnswers);
 studentsRouter.get("/answers/assigned", StudentController.getStudentAnswersAssigned);
+studentsRouter.get("/answers/returned", StudentController.getStudentAnswersReturned);
 studentsRouter.get("/answers/:id", StudentController.getStudentAnswerById);
 studentsRouter.post(
   "/upload/:assignmentId",

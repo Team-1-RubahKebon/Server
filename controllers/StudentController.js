@@ -305,6 +305,27 @@ module.exports = class StudentController {
       next(err);
     }
   }
+
+  static async getStudentAnswersReturned(req, res, next) {
+    try {
+      let _id = req.user._id;
+      if (!_id) {
+        throw new Errors(404, "Student not found");
+      }
+
+      let studentAnswers = await StudentAnswer.find({
+        Student: _id,
+        status: 'Returned'
+      }).populate(
+        "Assignment"
+      );
+
+      res.status(200).json(studentAnswers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async getStudentAnswers(req, res, next) {
     try {
       let _id = req.user._id;
