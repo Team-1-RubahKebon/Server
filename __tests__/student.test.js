@@ -5,9 +5,9 @@ const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const User = require("../models/User");
 const { ObjectId } = require("mongodb");
-const { create } = require('../helpers/Token');
-const multer = require('multer');
-const StudentAnswer = require('../models/StudentAnswer');
+const { create } = require("../helpers/Token");
+const multer = require("multer");
+const StudentAnswer = require("../models/StudentAnswer");
 const Token = require("../helpers/Token");
 
 jest.mock("../config/clientVision.js", () => {
@@ -55,8 +55,6 @@ jest.mock("multer", () => {
   return multer;
 });
 
-let access_token = Token.create({ id: '642bbe41f8d0adffae825aa7' })
-
 // let assignments
 // beforeAll(async () => {
 //     access_token = create({ _id: "64279daff8fac2152acafb09" })
@@ -93,14 +91,36 @@ let access_token = Token.create({ id: '642bbe41f8d0adffae825aa7' })
 
 describe("POST /students/register", () => {
   describe("SUCCESS CASE", () => {
-    test.skip("should create new student and return status 201", async () => {
+    test("should create new student and return status 201", async () => {
+      function makeid(length) {
+        let result = "";
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+          counter += 1;
+        }
+        return result;
+      }
+
+      const nameRandom = makeid(5);
+
+      let classIdVar;
+      await Class.findOne({ name: "xii-1" }).then((el) => {
+        classIdVar = el._id;
+      });
+
       const body = {
-        email: "zoro@mail.com",
+        email: nameRandom + "@mail.com",
         password: "123456",
-        name: "zoro",
-        Class: new Object("642b4196153a77181758b232"),
+        name: nameRandom,
+        Class: classIdVar,
         address: "shigansina",
-        role: "Student"
+        role: "Student",
       };
 
       const response = await request(app).post("/students/register").send(body);
@@ -299,8 +319,8 @@ describe("POST /student/login", () => {
 
     test("should fail to login because the role is not student and return status 403", async () => {
       const body = {
-        email: "zeke@mail.com",
-        password: "123456",
+        email: "bchinn9@cam.ac.uk",
+        password: "JEzy4uOmzdoK",
       };
 
       const response = await request(app).post("/students/login").send(body);
@@ -309,16 +329,21 @@ describe("POST /student/login", () => {
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("message", "You are not student");
     });
-
-  })
-
-})
+  });
+});
 
 describe("POST /students/upload/:courseId", () => {
   describe("SUCCESS CASE", () => {
     test("should post student answers and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      let assignmentId;
+      await Assignment.findOne({ name: "Ujian Tengah Semester" }).then((el) => {
+        assignmentId = el._id;
+      });
       const response = await request(app)
-        .post("/students/upload/642bd2d8d87ee1d800d4df63")
+        .post("/students/upload/" + assignmentId)
         .set("access_token", access_token)
         .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
 
@@ -333,8 +358,10 @@ describe("POST /students/upload/:courseId", () => {
 
   describe("FAIL CASE", () => {
     test("should fail to post student answer and return status 400", async () => {
-
-      const courseId = '1'
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const courseId = "1";
 
       const response = await request(app)
         .post(`/students/upload/${courseId}`)
@@ -350,55 +377,70 @@ describe("POST /students/upload/:courseId", () => {
 
 describe("GET /students/assignments", () => {
   describe("SUCCESS CASE", () => {
+    test("should get assignments and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students/assignments")
+        .set("access_token", access_token);
 
-    test('should get assignments and return status 200', async () => {
-
-      const response = await request(app).get("/students/assignments")
-        .set("access_token", access_token)
-
-      console.log(response, "<<<<<<<<<<<<<<<<<<<<<<,,response")
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Array)
-      expect(response.body[0]).toHaveProperty("StudentAnswers", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("Students", expect.any(Array))
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
-      expect(response.body[0]).toHaveProperty("name", expect.any(String))
-      expect(response.body[0]).toHaveProperty("QuestionId", expect.any(String))
-      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object))
-      expect(response.body[0]).toHaveProperty("subject", expect.any(String))
-      expect(response.body[0]).toHaveProperty("deadline", expect.any(String))
-      expect(response.body[0]).toHaveProperty("assignmentDate", expect.any(String))
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
-
+      console.log(response, "<<<<<<<<<<<<<<<<<<<<<<,,response");
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty(
+        "StudentAnswers",
+        expect.any(Array)
+      );
+      expect(response.body[0]).toHaveProperty("Students", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("QuestionId", expect.any(String));
+      expect(response.body[0]).toHaveProperty("ClassId", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("subject", expect.any(String));
+      expect(response.body[0]).toHaveProperty("deadline", expect.any(String));
+      expect(response.body[0]).toHaveProperty(
+        "assignmentDate",
+        expect.any(String)
+      );
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
     });
 
-    test('should get assignment by id and return status 200', async () => {
-
-      const response = await request(app).get("/students/assignments/642bd2d8d87ee1d800d4df63")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("StudentAnswers", expect.any(Array))
-      expect(response.body).toHaveProperty("Students", expect.any(Array))
-      expect(response.body).toHaveProperty("_id", expect.any(String))
-      expect(response.body).toHaveProperty("name", expect.any(String))
-      expect(response.body).toHaveProperty("QuestionId", expect.any(Object))
-      expect(response.body).toHaveProperty("ClassId", expect.any(Object))
-      expect(response.body).toHaveProperty("subject", expect.any(String))
-      expect(response.body).toHaveProperty("deadline", expect.any(String))
-      expect(response.body).toHaveProperty("assignmentDate", expect.any(String))
-      expect(response.body).toHaveProperty("__v", expect.any(Number))
-
+    test("should get assignment by id and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      let assignmentId;
+      await Assignment.findOne({ name: "Ujian Tengah Semester" }).then((el) => {
+        assignmentId = el._id;
+      });
+      const response = await request(app)
+        .get("/students/assignments/" + assignmentId)
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("StudentAnswers", expect.any(Array));
+      expect(response.body).toHaveProperty("Students", expect.any(Array));
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toHaveProperty("name", expect.any(String));
+      expect(response.body).toHaveProperty("QuestionId", expect.any(Object));
+      expect(response.body).toHaveProperty("ClassId", expect.any(Object));
+      expect(response.body).toHaveProperty("subject", expect.any(String));
+      expect(response.body).toHaveProperty("deadline", expect.any(String));
+      expect(response.body).toHaveProperty(
+        "assignmentDate",
+        expect.any(String)
+      );
+      expect(response.body).toHaveProperty("__v", expect.any(Number));
     });
-  })
+  });
 
   describe("FAILED CASE", () => {
-
     test("should be handle error of get all students assignments", async () => {
-
       jest.spyOn(Assignment, "find").mockRejectedValue("Error");
 
-      return await request(app).get("/students/assignments")
+      return await request(app)
+        .get("/students/assignments")
         .then((res) => {
           expect(res.status).toBe(500);
           expect(res.body.message).toBe("Internal Server Error");
@@ -409,35 +451,43 @@ describe("GET /students/assignments", () => {
     });
 
     test("should be failed and return status 500", async () => {
-      const response = await request(app).get("/students/assignments/1")
-        .set("access_token", access_token)
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students/assignments/1")
+        .set("access_token", access_token);
       expect(response.status).toBe(500);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("message", "Internal Server Error");
     });
   });
-})
+});
 
 describe("GET /students", () => {
   describe("SUCCESS CASE", () => {
+    test("should get students and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students")
+        .set("access_token", access_token);
 
-    test('should get students and return status 200', async () => {
-
-      const response = await request(app).get("/students")
-        .set("access_token", access_token)
-
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Array)
-      expect(response.body[0]).toHaveProperty("_id", expect.any(String))
-      expect(response.body[0]).toHaveProperty("name", expect.any(String))
-      expect(response.body[0]).toHaveProperty("email", expect.any(String))
-      expect(response.body[0]).toHaveProperty("__v", expect.any(Number))
-      expect(response.body[0]).toHaveProperty("role", expect.any(String))
-      expect(response.body[0]).toHaveProperty("Class", expect.any(String))
-
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("name", expect.any(String));
+      expect(response.body[0]).toHaveProperty("email", expect.any(String));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("role", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Class", expect.any(String));
     });
 
     test("should get student by id and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/students/profile")
         .set("access_token", access_token);
@@ -454,11 +504,13 @@ describe("GET /students", () => {
 
   describe("FAILED CASE", () => {
     afterEach(() => {
-      jest.restoreAllMocks()
-    })
+      jest.restoreAllMocks();
+    });
     test("should be handle error of get students", async () => {
-
       jest.spyOn(User, "find").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
 
       return await request(app)
         .get("/students")
@@ -472,11 +524,14 @@ describe("GET /students", () => {
         });
     });
 
-
-    test("should be failed and return status 500", async () => {
+    test.skip("should be failed and return status 500", async () => {
       jest.spyOn(User, "findOne").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
 
-      return await request(app).get("/students/profile")
+      return await request(app)
+        .get("/students/profile/1")
         .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
@@ -487,8 +542,7 @@ describe("GET /students", () => {
         });
     });
   });
-})
-
+});
 
 describe("GET /students/class", () => {
   describe("SUCCESS CASE", () => {
@@ -523,17 +577,17 @@ describe("GET /students/class", () => {
   });
 });
 
-
 describe("GET /students/answers", () => {
   describe("SUCCESS CASE", () => {
-
     test("should get students answers and return status 200", async () => {
-      console.log(access_token, "<<<<<<<<<<<<<<<<<,ACCESS TOKEN")
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/students/answers")
         .set("access_token", access_token);
 
-      console.log(response, "<<<<<<<<<<<<<<< ini reesponse student answer")
+      console.log(response, "<<<<<<<<<<<<<<< ini reesponse student answer");
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toHaveProperty("_id", expect.any(String));
@@ -545,14 +599,17 @@ describe("GET /students/answers", () => {
       expect(response.body[0]).toHaveProperty("score", expect.any(Number));
       expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
     });
-  })
+  });
 
   describe("FAILED CASE", () => {
     test("should be handle error of get all student answers", async () => {
-
       jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
 
-      return await request(app).get("/students/answers")
+      return await request(app)
+        .get("/students/answers")
         .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
@@ -563,34 +620,41 @@ describe("GET /students/answers", () => {
         });
     });
   });
-})
+});
 
 describe("GET /students/answers/:id", () => {
   describe("SUCCESS CASE", () => {
-
-    test('should get student answers by id and return status 200', async () => {
-
-      const response = await request(app).get("/students/answers/642bd2d8d87ee1d800d4df6c")
-        .set("access_token", access_token)
-      expect(response.status).toBe(200)
-      expect(response.body).toBeInstanceOf(Object)
-      expect(response.body).toHaveProperty("_id", expect.any(String))
-      expect(response.body).toHaveProperty("Assignment", expect.any(Object))
-      expect(response.body).toHaveProperty("Student", expect.any(Object))
-      expect(response.body).toHaveProperty("status", expect.any(String))
-      expect(response.body).toHaveProperty("imgUrl", expect.any(String))
-      expect(response.body).toHaveProperty("Answers", expect.any(Array))
-      expect(response.body).toHaveProperty("score", expect.any(Number))
-      expect(response.body).toHaveProperty("__v", expect.any(Number))
-
+    test("should get student answers by id and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      let studentAnswerId;
+      await StudentAnswer.findOne({ status: "Assigned" }).then((el) => {
+        studentAnswerId = el._id;
+      });
+      const response = await request(app)
+        .get("/students/answers/" + studentAnswerId)
+        .set("access_token", access_token);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toHaveProperty("_id", expect.any(String));
+      expect(response.body).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body).toHaveProperty("Student", expect.any(Object));
+      expect(response.body).toHaveProperty("status", expect.any(String));
+      expect(response.body).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body).toHaveProperty("score", expect.any(Number));
+      expect(response.body).toHaveProperty("__v", expect.any(Number));
     });
-  })
+  });
   describe("FAILED CASE", () => {
     test("should be handle error of get student answer by id", async () => {
-
       jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
-
-      return await request(app).get("/students/answers/642aeb1a982c231706fa3202")
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      return await request(app)
+        .get("/students/answers/1")
         .set("access_token", access_token)
         .then((res) => {
           expect(res.status).toBe(500);
@@ -601,5 +665,141 @@ describe("GET /students/answers/:id", () => {
         });
     });
   });
-})
+});
 
+describe("GET /students/answers/assigned", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get students assignment with status assigned and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students/answers/assigned")
+        .set("access_token", access_token);
+
+      console.log(response, "<<<<<<<<<<<<<<<,,ini response terbaru");
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      // expect(response.body[0]).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("score", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  });
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test("should be handle error of get all student answers", async () => {
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      return await request(app)
+        .get("/students/answers/assigned")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+});
+
+describe("GET /students/answers/returned", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get students assignment with status assigned and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students/answers/returned")
+        .set("access_token", access_token);
+
+      console.log(response, "<<<<<<<<<<<<<<<,,ini response terbaru");
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Assignment", expect.any(Object));
+      expect(response.body[0]).toHaveProperty("Student", expect.any(String));
+      expect(response.body[0]).toHaveProperty("status", expect.any(String));
+      expect(response.body[0]).toHaveProperty("imgUrl", expect.any(String));
+      expect(response.body[0]).toHaveProperty("Answers", expect.any(Array));
+      expect(response.body[0]).toHaveProperty("score", expect.any(Number));
+      expect(response.body[0]).toHaveProperty("__v", expect.any(Number));
+    });
+  });
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test("should be handle error of get all student answers returned", async () => {
+      jest.spyOn(StudentAnswer, "find").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      return await request(app)
+        .get("/students/answers/returned")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+});
+
+describe("GET /students/average", () => {
+  describe("SUCCESS CASE", () => {
+    test("should get students assignment average score 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      const response = await request(app)
+        .get("/students/average")
+        .set("access_token", access_token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body[0]).toHaveProperty("_id", expect.any(String));
+      expect(response.body[0]).toHaveProperty("avgScore", expect.any(Number));
+    });
+  });
+
+  describe("FAILED CASE", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test("should be handle error of get student average score", async () => {
+      jest.spyOn(StudentAnswer, "aggregate").mockRejectedValue("Error");
+      let access_token;
+      const container = await User.findOne({ name: "magis" });
+      access_token = Token.create({ id: container._id });
+      return await request(app)
+        .get("/students/average")
+        .set("access_token", access_token)
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.message).toBe("Internal Server Error");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+});

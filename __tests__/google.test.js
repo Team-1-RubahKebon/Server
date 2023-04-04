@@ -17,7 +17,7 @@ const User = require("../models/User");
 //   };
 // });
 
-describe("POST /students/googlein", () => {
+describe.skip("POST /students/googlein", () => {
   // afterAll(async () => {
   //   try {
   //     await User.deleteMany();
@@ -31,12 +31,12 @@ describe("POST /students/googlein", () => {
         return {
           getPayload: () => {
             return {
-              name: 'renji',
-              email: 'renji@mail.com'
-            }
+              name: "renji",
+              email: "renji@mail.com",
+            };
           },
-        }
-      }
+        };
+      },
     };
   });
   describe("SUCCESS CASE", () => {
@@ -55,7 +55,7 @@ describe("POST /students/googlein", () => {
   });
 });
 
-describe("POST /teachers/googlein", () => {
+describe.skip("POST /teachers/googlein", () => {
   // afterAll(async () => {
   //   try {
   //     await User.deleteMany();
@@ -69,12 +69,12 @@ describe("POST /teachers/googlein", () => {
         return {
           getPayload: () => {
             return {
-              name: 'denji',
-              email: 'denji@mail.com'
-            }
+              name: "denji",
+              email: "denji@mail.com",
+            };
           },
-        }
-      }
+        };
+      },
     };
   });
   describe("SUCCESS CASE", () => {

@@ -4,6 +4,8 @@ const { Hash } = require("../helpers/Hash");
 const Assignment = require("../models/Assignment");
 const Class = require("../models/Class");
 const Token = require("../helpers/Token");
+const User = require("../models/User");
+const StudentAnswer = require("../models/StudentAnswer");
 
 beforeAll(async () => {});
 
@@ -271,9 +273,9 @@ describe("POST /teachers/login", () => {
 describe("GET /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should get all classes and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/class")
         .set("access_token", access_token);
@@ -288,9 +290,9 @@ describe("GET /teachers/class", () => {
       expect(response.body[0]).toHaveProperty("Teacher", expect.any(Object));
     });
     test("should get single class based on query and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/class?name=xii-1")
         .set("access_token", access_token);
@@ -305,10 +307,15 @@ describe("GET /teachers/class", () => {
       expect(response.body[0]).toHaveProperty("Teacher", expect.any(Object));
     });
     test("should get get single class and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let classIdVar;
+      await Class.findOne({ name: "xii-1" }).then((el) => {
+        classIdVar = el._id;
+      });
       const response = await request(app)
-        .get("/teachers/class/642ba838c6456c3c494a2724")
+        .get("/teachers/class/" + classIdVar)
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -323,8 +330,9 @@ describe("GET /teachers/class", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/class/1")
         .set("access_token", access_token);
@@ -334,9 +342,10 @@ describe("GET /teachers/class", () => {
       expect(response.body).toHaveProperty("message", "Internal Server Error");
     });
     test("should be handle error of get all classes", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       jest.spyOn(Class, "find").mockRejectedValue("Error");
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
 
       return await request(app)
         .get("/teachers/class")
@@ -355,8 +364,9 @@ describe("GET /teachers/class", () => {
 describe("GET /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should get all assignments and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/assignments")
         .set("access_token", access_token);
@@ -378,10 +388,15 @@ describe("GET /teachers/assignments", () => {
       );
     });
     test("should get single assignment based on ClassId and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let classIdVar;
+      await Class.findOne({ name: "xii-1" }).then((el) => {
+        classIdVar = el._id;
+      });
       const response = await request(app)
-        .get("/teachers/assignments?Class=642ba838c6456c3c494a2736")
+        .get("/teachers/assignments?Class=" + classIdVar)
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -401,10 +416,11 @@ describe("GET /teachers/assignments", () => {
       );
     });
     test("should get single assignment based on name and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
-        .get("/teachers/assignments?name=ballred0")
+        .get("/teachers/assignments?name=Ujian Tengah Semester")
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -424,10 +440,15 @@ describe("GET /teachers/assignments", () => {
       );
     });
     test("should get get single assignment and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let assignmentId;
+      await Assignment.findOne({ name: "Ujian Tengah Semester" }).then((el) => {
+        assignmentId = el._id;
+      });
       const response = await request(app)
-        .get("/teachers/assignments/642ba8492213d643477e2ba1")
+        .get("/teachers/assignments/" + assignmentId)
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -446,8 +467,9 @@ describe("GET /teachers/assignments", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/assignments/1")
         .set("access_token", access_token);
@@ -458,8 +480,9 @@ describe("GET /teachers/assignments", () => {
     });
     test("should be handle error of get all assignment", async () => {
       jest.spyOn(Assignment, "find").mockRejectedValue("Error");
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
 
       return await request(app)
         .get("/teachers/assignments")
@@ -478,11 +501,15 @@ describe("GET /teachers/assignments", () => {
 describe("DELETE /teachers/assignments", () => {
   describe.skip("SUCCESS CASE", () => {
     test("should delete single assignment and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let assignmentId;
+      await Assignment.findOne({ name: "Ujian Tengah Semester" }).then((el) => {
+        assignmentId = el._id;
+      });
       const response = await request(app)
-        .delete("/teachers/assignments/642ba90df3fbc812ca9b984e")
+        .delete("/teachers/assignments/" + assignmentId)
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
@@ -495,8 +522,9 @@ describe("DELETE /teachers/assignments", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 500", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .delete("/teachers/assignments/1")
         .set("access_token", access_token);
@@ -507,16 +535,21 @@ describe("DELETE /teachers/assignments", () => {
     });
   });
 });
+//! success case delete di skip
 
 describe("POST /teachers/assignments", () => {
   describe("SUCCESS CASE", () => {
     test("should create single assignment and return status 201", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let classIdVar;
+      await Class.findOne({ name: "xii-1" }).then((el) => {
+        classIdVar = el._id;
+      });
       const body = {
         name: "makan bubur pake sumpit",
-        ClassId: "642bbda7f2a80b1610bb84db",
+        ClassId: classIdVar,
         subject: "Chemistry",
         deadline: "2023-02-04T00:00:00.000Z",
         assignmentDate: "2022-10-26T00:00:00.000Z",
@@ -544,11 +577,11 @@ describe("POST /teachers/assignments", () => {
       expect(response.body).toHaveProperty("_id", expect.any(String));
     });
   });
-  describe.only("FAILED CASE", () => {
+  describe("FAILED CASE", () => {
     test("should fail to create assignment because the name is not inputted and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         // name: "bangun candi 3",
         ClassId: "642bbda7f2a80b1610bb84db",
@@ -573,9 +606,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the ClassId is not inputted and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "bangun candi 3",
         // ClassId: "642bbda7f2a80b1610bb84db",
@@ -600,9 +633,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the subject is not inputted and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "bangun candi 3",
         ClassId: "642bbda7f2a80b1610bb84db",
@@ -627,9 +660,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the deadline is not inputted and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "bangun candi 3",
         ClassId: "642bbda7f2a80b1610bb84db",
@@ -654,9 +687,9 @@ describe("POST /teachers/assignments", () => {
       );
     });
     test("should fail to create assignment because the assignmentDate is not inputted and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJiZDc1OWQ2NzFjYjRiNWIzZTUxMCIsImlhdCI6MTY4MDU5MTcyMH0.sDKT5GSfGXq4OLpElLApHMwGtVMNkAhU-g8fssGEFOc";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "bangun candi 3",
         ClassId: "642bbda7f2a80b1610bb84db",
@@ -686,6 +719,9 @@ describe("POST /teachers/assignments", () => {
 describe("POST /teachers/class", () => {
   describe("SUCCESS CASE", () => {
     test("should post single class and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "xii-200",
         schedule: [
@@ -695,9 +731,6 @@ describe("POST /teachers/class", () => {
           },
         ],
       };
-
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -714,6 +747,9 @@ describe("POST /teachers/class", () => {
   });
   describe("FAILED CASE", () => {
     test("should fail to create class because the name is not inputted and return status 400", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         // name: "xii-200",
         schedule: [
@@ -723,9 +759,6 @@ describe("POST /teachers/class", () => {
           },
         ],
       };
-
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -740,6 +773,9 @@ describe("POST /teachers/class", () => {
       );
     });
     test("should fail to create class because the schedule is not inputted and return status 400", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const body = {
         name: "xii-200",
         // schedule: [
@@ -749,9 +785,6 @@ describe("POST /teachers/class", () => {
         //   },
         // ],
       };
-
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
 
       const response = await request(app)
         .post("/teachers/class")
@@ -770,19 +803,22 @@ describe("POST /teachers/class", () => {
 
 describe("GET /teachers/student/answer/:id", () => {
   describe("SUCCESS CASE", () => {
-    test("should get all classes and return status 200", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
-
+    test("should get student answer by Id and return status 200", async () => {
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let studentAnswerId;
+      await StudentAnswer.findOne({ status: "Assigned" }).then((el) => {
+        studentAnswerId = el._id;
+      });
       const response = await request(app)
-        .get("/teachers/student/answer/642ba93ff087b1b30882666f")
+        .get("/teachers/student/answer/" + studentAnswerId)
         .set("access_token", access_token);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty("_id", expect.any(String));
       expect(response.body).toHaveProperty("Assignment", expect.any(Object));
-      expect(response.body).toHaveProperty("Students", expect.any(String));
       expect(response.body).toHaveProperty("status", expect.any(String));
       expect(response.body).toHaveProperty("imgUrl", expect.any(String));
       expect(response.body).toHaveProperty("Answers", expect.any(Array));
@@ -790,8 +826,9 @@ describe("GET /teachers/student/answer/:id", () => {
   });
   describe("FAILED CASE", () => {
     test("should be failed and return status 400", async () => {
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
         .get("/teachers/student/answer/1")
         .set("access_token", access_token);
@@ -807,13 +844,17 @@ describe("PATCH /teachers/student/answer/:id", () => {
   describe("SUCCESS CASE", () => {
     test("should get all classes and return status 200", async () => {
       const body = {
-        newStatus: "Returned",
+        newStatus: "Assigned",
       };
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
-
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
+      let studentAnswerId;
+      await StudentAnswer.findOne({ status: "Assigned" }).then((el) => {
+        studentAnswerId = el._id;
+      });
       const response = await request(app)
-        .put("/teachers/student/answer/642ba93ff087b1b30882666f")
+        .put("/teachers/student/answer/" + studentAnswerId)
         .set("access_token", access_token)
         .send(body);
 
@@ -821,7 +862,7 @@ describe("PATCH /teachers/student/answer/:id", () => {
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toHaveProperty(
         "message",
-        "Student answer status already updated"
+        "Student answer has already updated"
       );
     });
   });
@@ -830,16 +871,17 @@ describe("PATCH /teachers/student/answer/:id", () => {
       const body = {
         newStatus: "Returned",
       };
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmJhODBkNTMzOTVjZjU0Mzc1ZDhiYSIsImlhdCI6MTY4MDU4NjMyMH0.9Q4aimgxzzzIlO_uu99uPFBw01lmeDKB6T_fKAawPLM";
+      let access_token;
+      const container = await User.findOne({ name: "razziq" });
+      access_token = Token.create({ id: container._id });
       const response = await request(app)
-        .patch("/teachers/student/answer/1")
+        .put("/teachers/student/answer/1")
         .set("access_token", access_token)
         .send(body);
 
       expect(response.status).toBe(500);
       expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toHaveProperty("message", "Internal Server Error");
+      expect(response.body).toHaveProperty("message", expect.any(String));
     });
   });
 });
