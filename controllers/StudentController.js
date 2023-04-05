@@ -27,7 +27,6 @@ module.exports = class StudentController {
     }
   }
   static async createStudentAnswer(req, res, next) {
-    console.log(req.file, req.params, "<<<<<<<<<<<<ini dari controller");
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
@@ -42,8 +41,6 @@ module.exports = class StudentController {
       const assignmentCheck = await Assignment.findOne({
         _id: new ObjectId(assignmentId),
       });
-
-      console.log(assignmentCheck, "<<<<<<<<<<<<<<,assign check");
 
       if (!assignmentCheck) {
         throw new Errors(404, "Not found");
@@ -70,16 +67,12 @@ module.exports = class StudentController {
       let questionId = assignmentCheck.QuestionId;
 
       const [result] = await client.annotateImage(options);
-      // console.log(result, "<<<<<<<<<<<<<<<<<<<<<, ini result ")
       const text = result.fullTextAnnotation.text;
-      // console.log(text);
       const questionAssignment = await Question.findOne({
         _id: new ObjectId(questionId),
       });
 
       let questions = questionAssignment.questions;
-
-      // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
@@ -105,6 +98,8 @@ module.exports = class StudentController {
       });
 
       answers = answers.filter((el) => el.answerType == "essay");
+
+      console.log(answers);
 
       let updateStudentAnswer = await StudentAnswer.updateOne(
         {

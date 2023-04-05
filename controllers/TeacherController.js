@@ -225,8 +225,8 @@ module.exports = class TeacherController {
 
       let classStudents = classAssigned.Students.map((el) => el.id);
 
-      assignmentDate = dateFormatter(new Date());
-      deadline = dateFormatter(new Date("2023-05-20"));
+      // assignmentDate = dateFormatter(new Date());
+      // deadline = dateFormatter(new Date("2023-05-20"));
 
       let assignmentCreated = new Assignment({
         name,
