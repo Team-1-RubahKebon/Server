@@ -1,7 +1,7 @@
 [
   {
     "name": "xii-1",
-    "classAvg": 0,
+    "classAvg": 80,
     "schedule": [
       {
         "day": "monday",
@@ -27,7 +27,7 @@
   },
   {
     "name": "xii-2",
-    "classAvg": 0,
+    "classAvg": 85,
     "schedule": [
       {
         "day": "monday",
@@ -53,7 +53,7 @@
   },
   {
     "name": "xii-3",
-    "classAvg": 0,
+    "classAvg": 78,
     "schedule": [
       {
         "day": "monday",
@@ -79,7 +79,7 @@
   },
   {
     "name": "xii-4",
-    "classAvg": 0,
+    "classAvg": 90,
     "schedule": [
       {
         "day": "monday",
@@ -105,7 +105,7 @@
   },
   {
     "name": "xii-5",
-    "classAvg": 0,
+    "classAvg": 65,
     "schedule": [
       {
         "day": "monday",
@@ -131,7 +131,7 @@
   },
   {
     "name": "xii-6",
-    "classAvg": 0,
+    "classAvg": 90,
     "schedule": [
       {
         "day": "monday",
