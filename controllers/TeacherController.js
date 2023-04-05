@@ -180,40 +180,40 @@ module.exports = class TeacherController {
       let { name, ClassId, subject, deadline, assignmentDate, questionForm } =
         req.body;
 
-      // if (
-      //   !name ||
-      //   !ClassId ||
-      //   !subject ||
-      //   !deadline ||
-      //   !assignmentDate ||
-      //   !questionForm
-      // ) {
-      //   throw new Errors(400, "All assignment details must be filled");
-      // }
-
-      // mock push question
-      questionForm = {
-        questions: [],
-      };
-      for (let i = 0; i < 15; i++) {
-        let question = {
-          rowNumber: i,
-          question: "test 1",
-          selection: {
-            A: "Test",
-            B: "Test",
-            C: "Test",
-            D: "Test",
-          },
-          answerType: i < 10 ? "pg" : "essay",
-          keyword: "test",
-        };
-        questionForm.questions.push(question);
+      if (
+        !name ||
+        !ClassId ||
+        !subject ||
+        !deadline ||
+        !assignmentDate ||
+        !questionForm
+      ) {
+        throw new Errors(400, "All assignment details must be filled");
       }
 
-      // if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
-      //   throw new Errors(400, "All assignment details must be filled");
+      // mock push question
+      // questionForm = {
+      //   questions: [],
+      // };
+      // for (let i = 0; i < 15; i++) {
+      //   let question = {
+      //     rowNumber: i,
+      //     question: "test 1",
+      //     selection: {
+      //       A: "Test",
+      //       B: "Test",
+      //       C: "Test",
+      //       D: "Test",
+      //     },
+      //     answerType: i < 10 ? "pg" : "essay",
+      //     keyword: "test",
+      //   };
+      //   questionForm.questions.push(question);
       // }
+
+      if (!name || !ClassId || !subject || !deadline || !assignmentDate) {
+        throw new Errors(400, "All assignment details must be filled");
+      }
 
       let questionCreated = new Question(questionForm);
 
@@ -239,31 +239,7 @@ module.exports = class TeacherController {
       });
       await assignmentCreated.save({ session });
 
-      // let updateClass = await Class.updateOne(
-      //   {
-      //     _id: assignmentCreated.ClassId,
-      //   },
-      //   { $push: { Assignments: assignmentCreated._id } },
-      //   { session }
-      // );
       const studentAnswersArr = [];
-
-      // classStudents.forEach((el) => {
-      //   let studentAnswer = {};
-      //   studentAnswer.Assignment = assignmentCreated._id;
-      //   studentAnswer.Student = el;
-      //   studentAnswer.status = "Assigned";
-      //   studentAnswer.imgUrl = "";
-      //   studentAnswer.Answers = [];
-      //   studentAnswersArr.push(studentAnswer);
-      // });
-
-      // Promise.all(
-      //   studentAnswersArr.forEach(async (el) => {
-      //     let createdStudentAnswers = new StudentAnswer(el);
-      //     await createdStudentAnswers(el).save();
-      //   })
-      // );
 
       await session.commitTransaction();
       session.endSession();

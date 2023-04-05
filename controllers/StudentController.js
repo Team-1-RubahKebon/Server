@@ -85,7 +85,7 @@ module.exports = class StudentController {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
 
-      const answers = ocrAdapter(text, questions);
+      let answers = ocrAdapter(text, questions);
 
       if (!answers.length) {
         throw new Errors(400, "Wrong Form Format");
@@ -104,6 +104,8 @@ module.exports = class StudentController {
         }
       });
 
+      answers = answers.filter((el) => el.answerType == "essay");
+
       let updateStudentAnswer = await StudentAnswer.updateOne(
         {
           Assignment: new ObjectId(assignmentId),
@@ -116,7 +118,7 @@ module.exports = class StudentController {
       await session.commitTransaction();
       session.endSession();
 
-      res.status(200).json(answers);
+      res.status(200).json(updateStudentAnswer);
     } catch (err) {
       await session.abortTransaction();
       session.endSession();
