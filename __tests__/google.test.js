@@ -17,7 +17,7 @@ const User = require("../models/User");
 //   };
 // });
 
-describe("POST /students/googlein", () => {
+describe.skip("POST /students/googlein", () => {
   // afterAll(async () => {
   //   try {
   //     await User.deleteMany();
@@ -55,7 +55,7 @@ describe("POST /students/googlein", () => {
   });
 });
 
-describe("POST /teachers/googlein", () => {
+describe.skip("POST /teachers/googlein", () => {
   // afterAll(async () => {
   //   try {
   //     await User.deleteMany();

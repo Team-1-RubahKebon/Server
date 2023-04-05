@@ -27,6 +27,7 @@ const studentAnswerSchema = new mongoose.Schema({
       },
       answer: String,
       answerType: {
+        type: String,
         enum: ["pg", "essay"],
       },
       isWrong: Boolean,

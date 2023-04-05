@@ -74,43 +74,43 @@ module.exports = class TeacherController {
     }
   }
 
-  static async googleLogin(req, res, next) {
-    try {
-      const ticket = await googleAuth.verifyIdToken({
-        idToken: req.headers.token_google,
-        audience: credential.client_id,
-      });
-      const payload = ticket.getPayload();
-      const user = await User.findOne({
-        where: { email: payload.email },
-      });
+  // static async googleLogin(req, res, next) {
+  //   try {
+  //     const ticket = await googleAuth.verifyIdToken({
+  //       idToken: req.headers.token_google,
+  //       audience: credential.client_id,
+  //     });
+  //     const payload = ticket.getPayload();
+  //     const user = await User.findOne({
+  //       where: { email: payload.email },
+  //     });
 
-      let userId;
-      if (!user) {
-        let newUser = await User.create({
-          username: payload.name,
-          email: payload.email,
-          password: "bebas",
-          role: "Teacher",
-        });
-        userId = newUser._id;
-        console.log(newUser, "<<<<<<<<<<<<<<<<new user");
-      } else {
-        userId = user._id;
-      }
+  //     let userId;
+  //     if (!user) {
+  //       let newUser = await User.create({
+  //         username: payload.name,
+  //         email: payload.email,
+  //         password: "bebas",
+  //         role: "Teacher",
+  //       });
+  //       userId = newUser._id;
+  //       console.log(newUser, "<<<<<<<<<<<<<<<<new user");
+  //     } else {
+  //       userId = user._id;
+  //     }
 
-      const payloadController = {
-        id: userId,
-      };
+  //     const payloadController = {
+  //       id: userId,
+  //     };
 
-      const access_token = Token.create(payloadController);
+  //     const access_token = Token.create(payloadController);
 
-      console.log(access_token, "<<<<<<<<<<<<,,accesstoken");
-      res.status(200).json({ access_token, user });
-    } catch (err) {
-      next(err);
-    }
-  }
+  //     console.log(access_token, "<<<<<<<<<<<<,,accesstoken");
+  //     res.status(200).json({ access_token, user });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   static async getClasses(req, res, next) {
     try {
@@ -258,8 +258,6 @@ module.exports = class TeacherController {
       //   studentAnswersArr.push(studentAnswer);
       // });
 
-      console.log(studentAnswersArr);
-
       // Promise.all(
       //   studentAnswersArr.forEach(async (el) => {
       //     let createdStudentAnswers = new StudentAnswer(el);
@@ -274,7 +272,6 @@ module.exports = class TeacherController {
     } catch (err) {
       await session.abortTransaction();
       session.endSession();
-      console.log(err);
       next(err);
     }
   }
