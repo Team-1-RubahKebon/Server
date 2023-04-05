@@ -94,6 +94,9 @@ module.exports = class StudentController {
       let studentId = req.user._id;
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
+      let score = answers.filter((el) => {
+        el.isWrong == true;
+      });
 
       let updateStudentAnswer = await StudentAnswer.updateOne(
         {
