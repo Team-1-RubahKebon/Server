@@ -21,7 +21,7 @@ async function seeding() {
         C: "Test",
         D: "Test",
       },
-      answerType: i < 10 ? "pg" : "essay",
+      answerType: i <= 10 ? "pg" : "essay",
       keyword: "A",
     };
     questionForm.questions.push(question);
