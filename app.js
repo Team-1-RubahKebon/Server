@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "Production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
