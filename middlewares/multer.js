@@ -8,7 +8,7 @@ const credential = require("../arctic-plasma-377908-7bbfda6bfa06.json");
 
 const storage = new Storage({
   projectId: credential.project_id,
-  keyFilename: "../arctic-plasma-377908-7bbfda6bfa06.json",
+  keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
 });
 
 const multerStorage = new MulterGoogleCloudStorage({
@@ -17,7 +17,7 @@ const multerStorage = new MulterGoogleCloudStorage({
   projectId: credential.project_id,
   keyFilename: "./arctic-plasma-377908-7bbfda6bfa06.json",
   bucket: process.env.BUCKET_NAME,
-}); 
+});
 
 const upload = multer({ storage: multerStorage });
 

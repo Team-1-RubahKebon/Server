@@ -398,16 +398,18 @@ module.exports = class TeacherController {
 
       let studentAnswer = await StudentAnswer.findOne({
         _id: new ObjectId(_id),
-      }).populate({
-        path: "Assignment",
-        populate: [
-          "QuestionId",
-          {
-            path: "ClassId",
-            populate: "Students",
-          },
-        ],
-      });
+      })
+        .populate({
+          path: "Assignment",
+          populate: [
+            "QuestionId",
+            {
+              path: "ClassId",
+              populate: "Students",
+            },
+          ],
+        })
+        .populate("Student");
       res.status(200).json(studentAnswer);
     } catch (err) {
       next(err);

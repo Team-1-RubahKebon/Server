@@ -53,7 +53,7 @@ module.exports = class StudentController {
         image: { source: { imageUri: fileUri } },
         features: [
           { type: "DOCUMENT_TEXT_DETECTION" },
-          { type: "FORMULA_DETECTION" },
+          { type: "TEXT_DETECTION" },
         ],
         imageContext: {
           languageHints: ["id-t-i0-handwrit"],
@@ -81,7 +81,6 @@ module.exports = class StudentController {
 
       // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
-      console.log(questions);
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
@@ -96,33 +95,12 @@ module.exports = class StudentController {
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
 
-      // let StudentAnswerCreate = new StudentAnswer({
-      //   Assignment: new ObjectId(assignmentId),
-      //   Student: new ObjectId(studentId),
-      //   status,
-      //   imgUrl: fileLink,
-      //   turnedAt,
-      //   Answers: answers,
-      // });
-
-      let updateStudentAnswer = await StudentAnswer.updateOne(
-        {
-          Assignment: new ObjectId(assignmentId),
-          Student: new ObjectId(studentId),
-        },
-        { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
-        { session }
-      );
-
-      // let created = await StudentAnswerCreate.save({ session });
-
-      // bukan buat tapi update StudentAnswer dengan answers
-
-      // let updateAssignment = await Assignment.updateOne(
+      // let updateStudentAnswer = await StudentAnswer.updateOne(
       //   {
-      //     _id: new ObjectId(assignmentId),
+      //     Assignment: new ObjectId(assignmentId),
+      //     Student: new ObjectId(studentId),
       //   },
-      //   { $push: { StudentAnswers: updateStudentAnswer._id } },
+      //   { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
       //   { session }
       // );
 
