@@ -95,14 +95,14 @@ module.exports = class StudentController {
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
 
-      // let updateStudentAnswer = await StudentAnswer.updateOne(
-      //   {
-      //     Assignment: new ObjectId(assignmentId),
-      //     Student: new ObjectId(studentId),
-      //   },
-      //   { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
-      //   { session }
-      // );
+      let updateStudentAnswer = await StudentAnswer.updateOne(
+        {
+          Assignment: new ObjectId(assignmentId),
+          Student: new ObjectId(studentId),
+        },
+        { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
+        { session }
+      );
 
       await session.commitTransaction();
       session.endSession();

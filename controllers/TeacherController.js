@@ -197,7 +197,7 @@ module.exports = class TeacherController {
       };
       for (let i = 0; i < 15; i++) {
         let question = {
-          rowNumber: ++i,
+          rowNumber: i,
           question: "test 1",
           selection: {
             A: "Test",
