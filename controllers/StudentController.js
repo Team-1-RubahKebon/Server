@@ -53,7 +53,7 @@ module.exports = class StudentController {
         image: { source: { imageUri: fileUri }, content: encodedImage },
         features: [
           { type: "DOCUMENT_TEXT_DETECTION" },
-          { type: "TEXT_DETECTION" },
+          { type: "FORMULA_DETECTION" },
         ],
         imageContext: {
           languageHints: ["id-t-i0-handwrit"],
@@ -305,9 +305,9 @@ module.exports = class StudentController {
       let studentAnswers = await StudentAnswer.find({
         Student: _id,
         status: "Assigned",
-      }).populate("Assignment");
+      });
 
-      res.status(200).json(newStudentAnswers);
+      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
@@ -323,9 +323,9 @@ module.exports = class StudentController {
       let studentAnswers = await StudentAnswer.find({
         Student: _id,
         status: "Returned",
-      }).populate("Assignment");
+      });
 
-      res.status(200).json(newStudentAnswers);
+      res.status(200).json(studentAnswers);
     } catch (err) {
       next(err);
     }
@@ -335,7 +335,6 @@ module.exports = class StudentController {
     try {
       let _id = req.user._id;
 
-      console.log(req.user, "<<<<<<<<<<<<<<<<<<<INI REQ USER DARI CONTROLLER");
       if (!_id) {
         throw new Errors(404, "Student not found");
       }
