@@ -1,8 +1,6 @@
 // const ocrAdapter
 module.exports = (input, question) => {
   input = input.split("\nESSAY\n");
-  // input = input.replaceAll("Ⓒ", "(C)");
-  // input = input.replaceAll("©", "(C)");
   let result = [];
   let multipleAnswersPool = input[0];
   let essayPool = input[1];
@@ -15,14 +13,12 @@ module.exports = (input, question) => {
     pg.rowNumber = i;
     pg.answer = answerLocator(multipleAnswersPool[i]);
     pg.answerType = "pg";
-    console.log(filteredQuestion[0]["keyword"], pg.answer);
+    console.log(filteredQuestion, pg.answer);
     if (filteredQuestion) {
-      if (filteredQuestion[0]["keyword"] != pg.answer) {
+      if (filteredQuestion[0]?.keyword != pg.answer) {
         pg.isWrong = true;
-        // console.log(pg.isWrong);
       }
     }
-
     result.push(pg);
   }
 
@@ -42,7 +38,7 @@ module.exports = (input, question) => {
   for (let i = 1; i < essayPool.length; i++) {
     let element = essayPool[i];
     let essay = {};
-    essay.rowNumber = element.slice(0, 1);
+    essay.rowNumber = "#" + element.slice(0, 1);
     essay.answer = element.slice(3);
     essay.answerType = "essay";
     essay.isWrong = false;

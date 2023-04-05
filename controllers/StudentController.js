@@ -93,28 +93,38 @@ module.exports = class StudentController {
       }
 
       let studentId = req.user._id;
-      let status = "Assigned";
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
 
-      let StudentAnswerCreate = new StudentAnswer({
-        Assignment: new ObjectId(assignmentId),
-        Student: new ObjectId(studentId),
-        status,
-        imgUrl: fileLink,
-        turnedAt,
-        Answers: answers,
-      });
+      // let StudentAnswerCreate = new StudentAnswer({
+      //   Assignment: new ObjectId(assignmentId),
+      //   Student: new ObjectId(studentId),
+      //   status,
+      //   imgUrl: fileLink,
+      //   turnedAt,
+      //   Answers: answers,
+      // });
 
-      let created = await StudentAnswerCreate.save({ session });
-
-      let updateAssignment = await Assignment.updateOne(
+      let updateStudentAnswer = await StudentAnswer.updateOne(
         {
-          _id: new ObjectId(assignmentId),
+          Assignment: new ObjectId(assignmentId),
+          Student: new ObjectId(studentId),
         },
-        { $push: { StudentAnswers: created._id } },
+        { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
         { session }
       );
+
+      // let created = await StudentAnswerCreate.save({ session });
+
+      // bukan buat tapi update StudentAnswer dengan answers
+
+      // let updateAssignment = await Assignment.updateOne(
+      //   {
+      //     _id: new ObjectId(assignmentId),
+      //   },
+      //   { $push: { StudentAnswers: updateStudentAnswer._id } },
+      //   { session }
+      // );
 
       await session.commitTransaction();
       session.endSession();
