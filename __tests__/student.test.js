@@ -347,6 +347,8 @@ describe("POST /students/upload/:courseId", () => {
         .set("access_token", access_token)
         .attach("image", "./__tests__/assets/Form_Lembar_Jawaban.jpg");
 
+      console.log(response.body, "<<<<<<<<<<< RESPONSE OCR");
+
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toHaveProperty("isWrong", expect.any(Boolean));

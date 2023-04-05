@@ -50,7 +50,7 @@ module.exports = class StudentController {
       }
 
       const options = {
-        image: { source: { imageUri: fileUri }, content: encodedImage },
+        image: { source: { imageUri: fileUri } },
         features: [
           { type: "DOCUMENT_TEXT_DETECTION" },
           { type: "FORMULA_DETECTION" },

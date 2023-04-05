@@ -12,7 +12,7 @@ module.exports = (input, question) => {
     let pg = {};
     let filteredQuestion = question.filter((el) => el.rowNumber == i);
     pg.isWrong = false;
-    pg.rowNumber = multipleAnswersPool[i].match(/\((\d)\)|\((\d\d)\)/gi);
+    pg.rowNumber = i;
     console.log(pg.rowNumber);
     pg.answer = answerLocator(multipleAnswersPool[i]);
     pg.answerType = "pg";
