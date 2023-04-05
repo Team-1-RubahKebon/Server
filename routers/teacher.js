@@ -4,7 +4,7 @@ const authentication = require("../middlewares/authenticationTeachers");
 const routerTeacher = require("express").Router();
 
 routerTeacher.post("/login", TeacherController.login); //done testting
-routerTeacher.post("/googlein", TeacherController.googleLogin);
+// routerTeacher.post("/googlein", TeacherController.googleLogin);
 routerTeacher.post("/register", TeacherController.register); //done testing
 
 routerTeacher.get("/class", authentication, TeacherController.getClasses); //done testing

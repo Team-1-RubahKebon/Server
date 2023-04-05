@@ -196,41 +196,41 @@ module.exports = class StudentController {
     }
   }
 
-  static async googleLogin(req, res, next) {
-    try {
-      const ticket = await googleAuth.verifyIdToken({
-        idToken: req.headers.token_google,
-        audience: credential.client_id,
-      });
-      const payload = ticket.getPayload();
-      const user = await User.findOne({
-        where: { email: payload.email },
-      });
+  // static async googleLogin(req, res, next) {
+  //   try {
+  //     const ticket = await googleAuth.verifyIdToken({
+  //       idToken: req.headers.token_google,
+  //       audience: credential.client_id,
+  //     });
+  //     const payload = ticket.getPayload();
+  //     const user = await User.findOne({
+  //       where: { email: payload.email },
+  //     });
 
-      let userId;
-      if (!user) {
-        let newUser = await User.create({
-          username: payload.name,
-          email: payload.email,
-          password: "bebas",
-          role: "Student",
-        });
-        userId = newUser._id;
-      } else {
-        userId = user._id;
-      }
+  //     let userId
+  //     if (!user) {
+  //       let newUser = await User.create({
+  //         username: payload.name,
+  //         email: payload.email,
+  //         password: "bebas",
+  //         role: "Student",
+  //       })
+  //       userId = newUser._id
+  //     } else {
+  //       userId = user._id
+  //     }
 
-      const payloadController = {
-        id: userId,
-      };
+  //     const payloadController = {
+  //       id: userId,
+  //     };
 
-      const access_token = Token.create(payloadController);
+  //     const access_token = Token.create(payloadController);
 
-      res.status(200).json({ access_token, user });
-    } catch (err) {
-      next(err);
-    }
-  }
+  //     res.status(200).json({ access_token, user });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   static async getStudents(req, res, next) {
     try {
@@ -306,13 +306,6 @@ module.exports = class StudentController {
         Student: _id,
         status: "Assigned",
       }).populate("Assignment");
-        status: "Assigned",
-      });
-
-      let newStudentAnswers = await StudentAnswer.find({
-        Student: _id,
-        status: "Assigned",
-      }).populate("Assignment");
 
       res.status(200).json(newStudentAnswers);
     } catch (err) {
@@ -328,13 +321,6 @@ module.exports = class StudentController {
       }
 
       let studentAnswers = await StudentAnswer.find({
-        Student: _id,
-        status: "Returned",
-      }).populate("Assignment");
-        status: "Returned",
-      });
-
-      let newStudentAnswers = await StudentAnswer.find({
         Student: _id,
         status: "Returned",
       }).populate("Assignment");
