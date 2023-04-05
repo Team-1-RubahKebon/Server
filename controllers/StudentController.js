@@ -94,8 +94,14 @@ module.exports = class StudentController {
       let studentId = req.user._id;
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
-      let score = answers.filter((el) => {
-        el.isWrong == true;
+      let score = 0;
+
+      answers.forEach((el) => {
+        if (el.answerType == "essay") {
+          if (el.isWrong !== true) {
+            score += 20;
+          }
+        }
       });
 
       let updateStudentAnswer = await StudentAnswer.updateOne(
@@ -103,7 +109,7 @@ module.exports = class StudentController {
           Assignment: new ObjectId(assignmentId),
           Student: new ObjectId(studentId),
         },
-        { $set: { turnedAt, imgUrl: fileLink, Answers: answers } },
+        { $set: { turnedAt, imgUrl: fileLink, Answers: answers, score } },
         { session }
       );
 
