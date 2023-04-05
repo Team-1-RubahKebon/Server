@@ -50,11 +50,21 @@ module.exports = class StudentController {
       }
 
       const options = {
-        image: { source: { imageUri: fileUri } },
+        image: { source: { imageUri: fileUri }, content: encodedImage },
         features: [
           { type: "DOCUMENT_TEXT_DETECTION" },
           { type: "FORMULA_DETECTION" },
         ],
+        imageContext: {
+          languageHints: ["id-t-i0-handwrit"],
+          pdfContextParams: {
+            pageNumber: 1,
+            mimeType: "application/pdf",
+            filter: {
+              types: ["text"],
+            },
+          },
+        },
       };
 
       let questionId = assignmentCheck.QuestionId;
@@ -77,35 +87,35 @@ module.exports = class StudentController {
 
       const answers = ocrAdapter(text, questions);
 
-      if (!answers.length) {
-        throw new Errors(400, "Wrong Form Format");
-      }
+      // if (!answers.length) {
+      //   throw new Errors(400, "Wrong Form Format");
+      // }
 
       let studentId = req.user._id;
       let status = "Assigned";
       let dateNow = new Date();
       let turnedAt = dateFormatter(dateNow);
 
-      // let StudentAnswerCreate = new StudentAnswer({
-      //   Assignment: new ObjectId(assignmentId),
-      //   Student: new ObjectId(studentId),
-      //   status,
-      //   imgUrl: fileLink,
-      //   turnedAt,
-      //   Answers: answers,
-      // });
+      let StudentAnswerCreate = new StudentAnswer({
+        Assignment: new ObjectId(assignmentId),
+        Student: new ObjectId(studentId),
+        status,
+        imgUrl: fileLink,
+        turnedAt,
+        Answers: answers,
+      });
 
-      // let created = await StudentAnswerCreate.save({ session });
+      let created = await StudentAnswerCreate.save({ session });
 
       // bukan buat tapi update StudentAnswer dengan answers
 
-      // let updateAssignment = await Assignment.updateOne(
-      //   {
-      //     _id: new ObjectId(assignmentId),
-      //   },
-      //   { $push: { StudentAnswers: created._id } },
-      //   { session }
-      // );
+      let updateAssignment = await Assignment.updateOne(
+        {
+          _id: new ObjectId(assignmentId),
+        },
+        { $push: { StudentAnswers: created._id } },
+        { session }
+      );
 
       await session.commitTransaction();
       session.endSession();
