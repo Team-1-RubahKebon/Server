@@ -81,15 +81,16 @@ module.exports = class StudentController {
 
       // console.log(questions, "<<<<<<<<<<<<<<<<<<<QUESTIONS");
 
+      console.log(questions);
       if (!questions) {
         throw new Errors(404, "Assignment has no question assigned for it");
       }
 
       const answers = ocrAdapter(text, questions);
 
-      // if (!answers.length) {
-      //   throw new Errors(400, "Wrong Form Format");
-      // }
+      if (!answers.length) {
+        throw new Errors(400, "Wrong Form Format");
+      }
 
       let studentId = req.user._id;
       let status = "Assigned";
@@ -106,8 +107,6 @@ module.exports = class StudentController {
       });
 
       let created = await StudentAnswerCreate.save({ session });
-
-      // bukan buat tapi update StudentAnswer dengan answers
 
       let updateAssignment = await Assignment.updateOne(
         {
@@ -141,7 +140,6 @@ module.exports = class StudentController {
         throw new Errors(401, "Wrong Email/Password");
       }
 
-      console.log(user, "ini user login <<<<<<<<<<<<<<<<<<");
       if (user.role !== "Student") {
         throw new Errors(403, "You are not student");
       }

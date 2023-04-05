@@ -13,12 +13,16 @@ module.exports = (input, question) => {
     let filteredQuestion = question.filter((el) => el.rowNumber == i);
     pg.isWrong = false;
     pg.rowNumber = i;
-    console.log(pg.rowNumber);
     pg.answer = answerLocator(multipleAnswersPool[i]);
     pg.answerType = "pg";
-    if (filteredQuestion.keyword !== pg.answer) {
-      pg.isWrong = true;
+    console.log(filteredQuestion[0]["keyword"], pg.answer);
+    if (filteredQuestion) {
+      if (filteredQuestion[0]["keyword"] != pg.answer) {
+        pg.isWrong = true;
+        // console.log(pg.isWrong);
+      }
     }
+
     result.push(pg);
   }
 
@@ -35,7 +39,6 @@ module.exports = (input, question) => {
   }
 
   essayPool = essayPool.split("(#");
-  console.log(essayPool);
   for (let i = 1; i < essayPool.length; i++) {
     let element = essayPool[i];
     let essay = {};
